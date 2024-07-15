@@ -1,18 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Socket.hpp                                         :+:      :+:    :+:   */
+/*   IRCServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cassie <cassie@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 10:26:00 by cassie            #+#    #+#             */
-/*   Updated: 2024/07/12 10:53:10 by cassie           ###   ########.fr       */
+/*   Updated: 2024/07/15 08:39:33 by cassie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SOCKET_HPP
-#define SOCKET_HPP
+#ifndef IRCSERVER_HPP
+#define IRCSERVER_HPP
 
+#include <string>
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <cstring>
@@ -25,32 +26,33 @@
 #include <stdlib.h>
 #define MAX_CLIENTS 30
 
-typedef struct s_data
-{
-	int					server_fd;
-	int					socket;
-	int					client_socket[MAX_CLIENTS];
-	int					max_sd;
-	int					sd;
-	int					activity;
-	int					valread;
-	fd_set				readfds;
-	char				buffer[1024];
-}	t_data;
-
-class Socket
+class IRCServer
 {
 	public:
 			
-		Socket(void);
-		~Socket(void);
-		Socket(Socket&);
-		Socket& operator=(Socket&);
+		IRCServer(std::string port, std::string password);
+		~IRCServer(void);
+
+		class InvalidPort: public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
+		class InvalidPassword: public std::exception {
+			public:
+				virtual const char* what() const throw();
+		};
+		
+		int	run(void);
 
 	private:
-		
-		t_data				*_socket_data;
-		struct sockaddr_in	*_address;
+
+		u_int16_t _port;
+		std::string _password;
+		unsigned	short	_client_count;
+
+		IRCServer(void);
+		IRCServer(IRCServer&);
+		IRCServer& operator=(IRCServer&);
 };
 
 #endif
