@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cassie <cassie@student.42lyon.fr>          +#+  +:+       +#+        */
+/*   By: rjacq <rjacq@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 08:21:58 by cassie            #+#    #+#             */
-/*   Updated: 2024/07/15 08:40:10 by cassie           ###   ########.fr       */
+/*   Updated: 2024/07/16 13:29:04 by rjacq            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IRCServer.hpp"
 #include <string>
+#include <iostream>
 
 IRCServer::IRCServer(std::string port, std::string password)
 {
@@ -21,9 +22,7 @@ IRCServer::IRCServer(std::string port, std::string password)
 }
 
 IRCServer::~IRCServer(void)
-{
-
-}
+{}
 
 int	IRCServer::run(void)
 {
@@ -94,6 +93,7 @@ int	IRCServer::run(void)
                     client_socket[i] = 0;
                 } else {
                     buffer[valread] = '\0';
+					std::cout << buffer;
                     send(sd, buffer, strlen(buffer), 0);
                 }
             }
