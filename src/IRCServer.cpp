@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cassie <cassie@student.42lyon.fr>          +#+  +:+       +#+        */
+/*   By: rjacq <rjacq@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 08:21:58 by cassie            #+#    #+#             */
-/*   Updated: 2024/07/17 12:36:45 by cassie           ###   ########.fr       */
+/*   Updated: 2024/07/17 14:06:05 by rjacq            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,9 +93,14 @@ int	IRCServer::run(void)
                 else {
                     if (strncmp(buffer, "JOIN", 4) == 0)
                     {
-                        send(sd, ":cassie!~c@localhost JOIN #test", 29, 0);
-                        send(sd, ":cassie!~c@localhost PRIVMSG #test :COUCOU", 42, 0);
-                        std::cout << "join ok\n";
+						int pos;
+						for (int i = 0; buffer[i] != '\0' && buffer[i] != '\r' && buffer[i] != '\n'; i++)
+							pos = i;
+						std::string test(":ray!roro@localhost " + std::string(buffer).erase(pos + 1, -1) + "\r\n");
+						send(sd, test.c_str(), test.length(), 0);
+                        //send(sd, ":ray!roro@localhost JOIN #test\r\n", 33, 0);
+                        //send(sd, ":ray!roro@localhost PRIVMSG #test :COUCOU\r\n", 44, 0);
+                        //std::cout << "join ok\n";
                     }
                     buffer[valread] = '\0';
                     // std::string test = ":cassie!c@localhost PRIVMSG #test :";
