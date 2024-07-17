@@ -6,12 +6,15 @@
 /*   By: cassie <cassie@student.42lyon.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 08:21:58 by cassie            #+#    #+#             */
-/*   Updated: 2024/07/15 08:40:10 by cassie           ###   ########.fr       */
+/*   Updated: 2024/07/17 12:36:45 by cassie           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IRCServer.hpp"
+#include <cstring>
+#include <iostream>
 #include <string>
+#include <strings.h>
 
 IRCServer::IRCServer(std::string port, std::string password)
 {
@@ -48,12 +51,10 @@ int	IRCServer::run(void)
         perror("bind failed");
         exit(EXIT_FAILURE);
     }
-
     if (listen(server_fd, 3) < 0) {
         perror("listen");
         exit(EXIT_FAILURE);
     }
-
     int addrlen = sizeof(address);
     while (true) {
         FD_ZERO(&readfds);
@@ -65,13 +66,10 @@ int	IRCServer::run(void)
             if (sd > 0) FD_SET(sd, &readfds);
             if (sd > max_sd) max_sd = sd;
         }
-
         activity = select(max_sd + 1, &readfds, NULL, NULL, NULL);
-
         if ((activity < 0) && (errno != EINTR)) {
             perror("select error");
         }
-
         if (FD_ISSET(server_fd, &readfds)) {
             if ((new_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen)) < 0) {
                 perror("accept");
@@ -85,20 +83,29 @@ int	IRCServer::run(void)
                 }
             }
         }
-
         for (int i = 0; i < MAX_CLIENTS; i++) {
             sd = client_socket[i];
             if (FD_ISSET(sd, &readfds)) {
                 if ((valread = read(sd, buffer, 1024)) == 0) {
                     close(sd);
                     client_socket[i] = 0;
-                } else {
+                }
+                else {
+                    if (strncmp(buffer, "JOIN", 4) == 0)
+                    {
+                        send(sd, ":cassie!~c@localhost JOIN #test", 29, 0);
+                        send(sd, ":cassie!~c@localhost PRIVMSG #test :COUCOU", 42, 0);
+                        std::cout << "join ok\n";
+                    }
                     buffer[valread] = '\0';
-                    send(sd, buffer, strlen(buffer), 0);
+                    // std::string test = ":cassie!c@localhost PRIVMSG #test :";
+                    // send(sd, ":cassie!~c@localhost JOIN #test\n", 30, 0);
+                    //send(sd, buffer, strlen(buffer), 0);
+                    std::cout << buffer;
+                    // bzero(buffer, 1024);
                 }
             }
         }
     }
-
     return 0;
 }

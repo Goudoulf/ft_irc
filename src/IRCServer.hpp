@@ -43,6 +43,7 @@ class IRCServer
 		};
 		
 		int	run(void);
+		int	join(void);
 
 	private:
 
