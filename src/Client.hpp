@@ -9,12 +9,13 @@ class Client
 		Client(std::string nickname, std::string username, std::string realname, std::string server, const int &socket);
 		~Client();
 
-		void	SetNickname(std::string nickname);
-		void	SetUsername(std::string username);
-		//void	SetRealname(std::string realname);
+		void		SetNickname(std::string nickname);
+		void		SetUsername(std::string username);
+		void		SetIsOP();
 		std::string	GetNickname() const;
 		std::string	GetUsername() const;
 		std::string	GetRealname() const;
+		bool		GetIsOP() const;
 
 	private:
 		std::string _nickname; // 9 char and unique ; name which appears for other users

@@ -19,6 +19,12 @@ void	Client::SetUsername(std::string username)
 	_username = username;
 }
 
+void	Client::SetIsOP()
+{
+	_isOP = true;
+	_nickname += '@';
+}
+
 std::string	Client::GetNickname() const
 {
 	return _nickname;
@@ -32,4 +38,9 @@ std::string	Client::GetUsername() const
 std::string	Client::GetRealname() const
 {
 	return _realname;
+}
+
+bool	Client::GetIsOP() const
+{
+	return _isOP;
 }
