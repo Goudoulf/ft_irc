@@ -44,3 +44,12 @@ bool	Client::GetIsOP() const
 {
 	return _isOP;
 }
+
+int		Client::GetSocket()const
+{
+	return	_socket;
+}
+void		Client::SetSocket(int i)
+{
+	_socket = i;
+}

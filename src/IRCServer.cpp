@@ -15,6 +15,7 @@
 #include <iostream>
 #include <string>
 #include <strings.h>
+#include <sys/types.h>
 
 IRCServer::IRCServer(std::string port, std::string password)
 {
@@ -60,12 +61,21 @@ int	IRCServer::run(void)
         FD_ZERO(&readfds);
         FD_SET(server_fd, &readfds);
         max_sd = server_fd;
+        
 
-        for (int i = 0; i < MAX_CLIENTS; i++) {
-            sd = client_socket[i];
+        if (_clients.size())
+        {
+            _it = _clients.end();
+            _it--;
+            sd = _it->second.GetSocket();
             if (sd > 0) FD_SET(sd, &readfds);
             if (sd > max_sd) max_sd = sd;
         }
+        // for (int i = 0; i < MAX_CLIENTS; i++) {
+        //     sd = client_socket[i];
+        //     if (sd > 0) FD_SET(sd, &readfds);
+        //     if (sd > max_sd) max_sd = sd;
+        // }
         activity = select(max_sd + 1, &readfds, NULL, NULL, NULL);
         if ((activity < 0) && (errno != EINTR)) {
             perror("select error");
@@ -75,29 +85,30 @@ int	IRCServer::run(void)
                 perror("accept");
                 exit(EXIT_FAILURE);
             }
+            _clients.insert(_it , std::pair{"goudoulf", Client("goudoulf","cassie","cassie","localhost", "ok", new_socket)});
 
-            for (int i = 0; i < MAX_CLIENTS; i++) {
-                if (client_socket[i] == 0) {
-                    client_socket[i] = new_socket;
-                    break;
-                }
-            }
+            // for (int i = 0; i < MAX_CLIENTS; i++) {
+            //     if (client_socket[i] == 0) {
+            //         client_socket[i] = new_socket;
+            //         break;
+            //     }
+            // }
         }
-        for (int i = 0; i < MAX_CLIENTS; i++) {
-            sd = client_socket[i];
+        for (_it = _clients.begin(); _it != _clients.end(); _it++) {
+            sd = _it->second.GetSocket();
             if (FD_ISSET(sd, &readfds)) {
                 if ((valread = read(sd, buffer, 1024)) == 0) {
                     close(sd);
-                    client_socket[i] = 0;
+                    _it->second.SetSocket(0);
                 }
                 else {
                     if (strncmp(buffer, "JOIN", 4) == 0)
                     {
-						int pos;
-						for (int i = 0; buffer[i] != '\0' && buffer[i] != '\r' && buffer[i] != '\n'; i++)
-							pos = i;
-						std::string test(":ray!roro@localhost " + std::string(buffer).erase(pos + 1, -1) + "\r\n");
-						send(sd, test.c_str(), test.length(), 0);
+                        int pos;
+                        for (int i = 0; buffer[i] != '\0' && buffer[i] != '\r' && buffer[i] != '\n'; i++)
+                            pos = i;
+                        std::string test(":" + _it->second.GetNickname() + "!" + _it->second.GetUsername() + "@localhost " + std::string(buffer).erase(pos + 1, -1) + "\r\n");
+                        send(sd, test.c_str(), test.length(), 0);
                         //send(sd, ":ray!roro@localhost JOIN #test\r\n", 33, 0);
                         //send(sd, ":ray!roro@localhost PRIVMSG #test :COUCOU\r\n", 44, 0);
                         //std::cout << "join ok\n";

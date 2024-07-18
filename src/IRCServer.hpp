@@ -13,6 +13,8 @@
 #ifndef IRCSERVER_HPP
 #define IRCSERVER_HPP
 
+#include <map>
+#include "Client.hpp"
 #include <string>
 #include <unistd.h>
 #include <arpa/inet.h>
@@ -50,6 +52,9 @@ class IRCServer
 		u_int16_t _port;
 		std::string _password;
 		unsigned	short	_client_count;
+		std::map<std::string, Client> _clients;
+		std::map<std::string, Client>::iterator _it;
+		//std::map<std::string, Channel> _channel;
 
 		IRCServer(void);
 		IRCServer(IRCServer&);

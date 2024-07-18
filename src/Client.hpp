@@ -15,6 +15,8 @@ class Client
 		std::string	GetNickname() const;
 		std::string	GetUsername() const;
 		std::string	GetRealname() const;
+		int	GetSocket() const;
+		void		SetSocket(int i);
 		bool		GetIsOP() const;
 
 	private:
