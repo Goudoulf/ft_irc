@@ -1,7 +1,7 @@
 #include "Client.hpp"
 
-Client::Client(std::string nickname, std::string username, std::string realname, std::string server, const int &socket):
-	_nickname(nickname), _username(username), _realname(realname), _server(server), _socket(socket)
+Client::Client(std::string nickname, std::string username, std::string realname, std::string hostname, std::string server, const int &socket):
+	_nickname(nickname), _username(username), _realname(realname), _hostname(hostname), _server(server), _socket(socket)
 {
 	_isOP = false;
 }
