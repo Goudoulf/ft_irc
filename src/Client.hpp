@@ -6,18 +6,21 @@
 class Client
 {
 	public:
-		Client(std::string nickname, std::string username, std::string realname, std::string hostname, std::string server, const int &socket);
+		Client(const int &socket);
 		~Client();
 
+		void		SetClient(std::string nickname, std::string username, std::string realname, std::string hostname, std::string server);
 		void		SetNickname(std::string nickname);
 		void		SetUsername(std::string username);
+		void		SetSocket(int i);
 		void		SetIsOP();
+		void		SetBuffer(char * string);
 		std::string	GetNickname() const;
 		std::string	GetUsername() const;
 		std::string	GetRealname() const;
 		int			GetSocket() const;
-		void		SetSocket(int i);
 		bool		GetIsOP() const;
+		std::string	GetBuffer();
 
 	private:
 		std::string _nickname; // 9 char and unique ; name which appears for other users
@@ -25,6 +28,7 @@ class Client
 		std::string _realname; // name of the host ; just additional information about you
 		std::string _hostname;
 		std::string _server;   // server to which it's connected
+		std::string _buffer;
 		int			_socket;
 		bool		_isOP;
 };
