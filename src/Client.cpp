@@ -1,18 +1,21 @@
 #include "Client.hpp"
 
-Client::Client(std::string nickname, std::string username, std::string realname, std::string hostname, std::string server, const int &socket)
+Client::Client(const int &socket): _socket(socket)
+{
+	_isOP = false;
+}
+
+Client::~Client()
+{}
+
+void	Client::SetClient(std::string nickname, std::string username, std::string realname, std::string hostname, std::string server)
 {
 	_nickname = nickname;
 	_username = username;
 	_realname = realname;
 	_hostname = hostname;
 	_server = server;
-	_socket = socket;
-	_isOP = false;
 }
-
-Client::~Client()
-{}
 
 void	Client::SetNickname(std::string nickname)
 {
@@ -27,7 +30,17 @@ void	Client::SetUsername(std::string username)
 void	Client::SetIsOP()
 {
 	_isOP = true;
-	_nickname += '@';
+	_nickname.insert(0, "@");
+}
+
+void	Client::SetSocket(int i)
+{
+	_socket = i;
+}
+
+void	Client::SetBuffer(char * string)
+{
+	_buffer = string;
 }
 
 std::string	Client::GetNickname() const
@@ -45,16 +58,17 @@ std::string	Client::GetRealname() const
 	return _realname;
 }
 
+int	Client::GetSocket() const
+{
+	return _socket;
+}
+
 bool	Client::GetIsOP() const
 {
 	return _isOP;
 }
 
-int		Client::GetSocket()const
+std::string	Client::GetBuffer()
 {
-	return	_socket;
-}
-void		Client::SetSocket(int i)
-{
-	_socket = i;
+	return _buffer;
 }
