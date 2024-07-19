@@ -20,7 +20,7 @@
 void my_exit(std::string error, int code)
 {
     std::cerr << error;
-    exit(EXIT_FAILURE);
+    exit(code);
 }
 
 IRCServer::IRCServer(std::string port, std::string password)
