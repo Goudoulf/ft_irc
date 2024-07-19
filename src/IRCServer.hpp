@@ -54,6 +54,11 @@ class IRCServer
 		unsigned	short	_client_count;
 		std::map<std::string, Client> _clients;
 		std::map<std::string, Client>::iterator _it;
+		int server_fd, new_socket, max_sd, sd, activity, valread;
+		struct sockaddr_in address;
+		fd_set readfds;
+		int addrlen;
+		char buffer[1024];
 		//std::map<std::string, Channel> _channel;
 
 		IRCServer(void);

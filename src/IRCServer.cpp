@@ -17,6 +17,12 @@
 #include <strings.h>
 #include <sys/types.h>
 
+void my_exit(std::string error, int code)
+{
+    std::cerr << error;
+    exit(EXIT_FAILURE);
+}
+
 IRCServer::IRCServer(std::string port, std::string password)
 {
     char *end;
@@ -26,37 +32,24 @@ IRCServer::IRCServer(std::string port, std::string password)
 
 IRCServer::~IRCServer(void)
 {
+    int opt = 1;
 
+    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
+        my_exit("socket failed", EXIT_FAILURE);
+    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)))
+        my_exit("setsockopt", EXIT_FAILURE);
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = INADDR_ANY;
+    address.sin_port = htons(_port);
+    if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
+        my_exit("bind failed", EXIT_FAILURE);
+    if (listen(server_fd, 3) < 0)
+        my_exit("listen error", EXIT_FAILURE);
+    addrlen = sizeof(address);
 }
 
 int	IRCServer::run(void)
 {
-    int server_fd, new_socket, max_sd, sd, activity, valread;
-    struct sockaddr_in address;
-    fd_set readfds;
-    char buffer[1024];
-
-    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
-        perror("socket failed");
-        exit(EXIT_FAILURE);
-    }
-    int opt = 1;
-    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) {
-        perror("setsockopt");
-        exit(EXIT_FAILURE);
-    }
-    address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(_port);
-    if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0) {
-        perror("bind failed");
-        exit(EXIT_FAILURE);
-    }
-    if (listen(server_fd, 3) < 0) {
-        perror("listen");
-        exit(EXIT_FAILURE);
-    }
-    int addrlen = sizeof(address);
     while (true) {
         FD_ZERO(&readfds);
         FD_SET(server_fd, &readfds);
@@ -72,14 +65,11 @@ int	IRCServer::run(void)
             if (sd > max_sd) max_sd = sd;
         }
         activity = select(max_sd + 1, &readfds, NULL, NULL, NULL);
-        if ((activity < 0) && (errno != EINTR)) {
-            perror("select error");
-        }
+        if ((activity < 0) && (errno != EINTR))
+            my_exit("select error", EXIT_FAILURE);
         if (FD_ISSET(server_fd, &readfds)) {
-            if ((new_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen)) < 0) {
-                perror("accept");
-                exit(EXIT_FAILURE);
-            }
+            if ((new_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen)) < 0)
+                my_exit("accept error", EXIT_FAILURE);
             _clients.insert(std::pair<std::string, Client>("goudoulf", Client("goudoulf","cassie","cassie","localhost", "ok", new_socket)));
 
         }
@@ -98,19 +88,19 @@ int	IRCServer::run(void)
                             pos = i;
                         std::string test(":" + _it->second.GetNickname() + "!" + _it->second.GetUsername() + "@localhost " + std::string(buffer).erase(pos + 1, -1) + "\r\n");
                         send(sd, test.c_str(), test.length(), 0);
-                        //send(sd, ":ray!roro@localhost JOIN #test\r\n", 33, 0);
-                        //send(sd, ":ray!roro@localhost PRIVMSG #test :COUCOU\r\n", 44, 0);
-                        //std::cout << "join ok\n";
                     }
                     buffer[valread] = '\0';
-                    // std::string test = ":cassie!c@localhost PRIVMSG #test :";
-                    // send(sd, ":cassie!~c@localhost JOIN #test\n", 30, 0);
-                    //send(sd, buffer, strlen(buffer), 0);
                     std::cout << buffer;
-                    // bzero(buffer, 1024);
                 }
             }
         }
     }
     return 0;
 }
+//send(sd, ":ray!roro@localhost JOIN #test\r\n", 33, 0);
+//send(sd, ":ray!roro@localhost PRIVMSG #test :COUCOU\r\n", 44, 0);
+//std::cout << "join ok\n";
+// std::string test = ":cassie!c@localhost PRIVMSG #test :";
+// send(sd, ":cassie!~c@localhost JOIN #test\n", 30, 0);
+//send(sd, buffer, strlen(buffer), 0);
+// bzero(buffer, 1024);
