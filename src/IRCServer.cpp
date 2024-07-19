@@ -6,13 +6,14 @@
 /*   By: rjacq <rjacq@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 08:21:58 by cassie            #+#    #+#             */
-/*   Updated: 2024/07/17 10:27:41 by rjacq            ###   ########.fr       */
+/*   Updated: 2024/07/18 16:01:23 by rjacq            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IRCServer.hpp"
 #include <string>
 #include <iostream>
+#include <netdb.h>
 
 IRCServer::IRCServer(std::string port, std::string password)
 {
@@ -76,6 +77,12 @@ int	IRCServer::run(void)
 				perror("accept");
 				exit(EXIT_FAILURE);
 			}
+			
+			char ip_str[INET_ADDRSTRLEN];
+			inet_ntop(AF_INET, &address.sin_addr, ip_str, sizeof(ip_str));
+			struct hostent *host = gethostbyname(ip_str);
+			std::cout << "ip_str = " << ip_str << std::endl;
+			std::cout << "hostname = " << host->h_name << " " << host->h_aliases << " " << host->h_addr_list << " " << host->h_addrtype << " " << host->h_length << std::endl;
 
 			for (int i = 0; i < MAX_CLIENTS; i++) {
 				if (client_socket[i] == 0) {
