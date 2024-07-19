@@ -6,12 +6,11 @@
 /*   By: rjacq <rjacq@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 08:21:58 by cassie            #+#    #+#             */
-/*   Updated: 2024/07/19 11:42:24 by rjacq            ###   ########.fr       */
+/*   Updated: 2024/07/17 14:06:05 by rjacq            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IRCServer.hpp"
-#include "Client.hpp"
 #include <cstring>
 #include <iostream>
 #include <string>
@@ -29,11 +28,7 @@ IRCServer::IRCServer(std::string port, std::string password)
     char *end;
     _port = static_cast<unsigned short>(std::strtod(port.c_str(), &end)); 
     _password = password;
-}
-
-IRCServer::~IRCServer(void)
-{
-    int opt = 1;
+     int opt = 1;
 
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
         my_exit("socket failed", EXIT_FAILURE);
@@ -49,8 +44,13 @@ IRCServer::~IRCServer(void)
     addrlen = sizeof(address);
 }
 
+IRCServer::~IRCServer(void)
+{
+}
+
 int	IRCServer::run(void)
 {
+    fd_set readfds;
     while (true) {
         FD_ZERO(&readfds);
         FD_SET(server_fd, &readfds);
@@ -77,7 +77,7 @@ int	IRCServer::run(void)
         for (_it = _clients.begin(); _it != _clients.end(); _it++) {
             sd = _it->second.GetSocket();
             if (FD_ISSET(sd, &readfds)) {
-                if ((valread = read(sd, buffer, 1024)) == 0) {
+                if ((valread = recv(sd, buffer, 1024, 0)) == 0) {
                     close(sd);
                     _it->second.SetSocket(0);
                 }
