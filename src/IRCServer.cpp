@@ -31,7 +31,7 @@ IRCServer::~IRCServer(void)
 
 int	IRCServer::run(void)
 {
-    int server_fd, new_socket, client_socket[MAX_CLIENTS] = {0}, max_sd, sd, activity, valread;
+    int server_fd, new_socket, max_sd, sd, activity, valread;
     struct sockaddr_in address;
     fd_set readfds;
     char buffer[1024];
@@ -71,11 +71,6 @@ int	IRCServer::run(void)
             if (sd > 0) FD_SET(sd, &readfds);
             if (sd > max_sd) max_sd = sd;
         }
-        // for (int i = 0; i < MAX_CLIENTS; i++) {
-        //     sd = client_socket[i];
-        //     if (sd > 0) FD_SET(sd, &readfds);
-        //     if (sd > max_sd) max_sd = sd;
-        // }
         activity = select(max_sd + 1, &readfds, NULL, NULL, NULL);
         if ((activity < 0) && (errno != EINTR)) {
             perror("select error");
@@ -85,14 +80,8 @@ int	IRCServer::run(void)
                 perror("accept");
                 exit(EXIT_FAILURE);
             }
-            _clients.insert(_it , std::pair{"goudoulf", Client("goudoulf","cassie","cassie","localhost", "ok", new_socket)});
+            _clients.insert(std::pair<std::string, Client>("goudoulf", Client("goudoulf","cassie","cassie","localhost", "ok", new_socket)));
 
-            // for (int i = 0; i < MAX_CLIENTS; i++) {
-            //     if (client_socket[i] == 0) {
-            //         client_socket[i] = new_socket;
-            //         break;
-            //     }
-            // }
         }
         for (_it = _clients.begin(); _it != _clients.end(); _it++) {
             sd = _it->second.GetSocket();

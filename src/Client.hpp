@@ -24,7 +24,7 @@ class Client
 		std::string _realname; // name of the host ; just additional information about you
 		std::string _username; // username on the host ; name you use to login, allows system to identify you
 		std::string _hostname;
-		const std::string _server;   // server to which it's connected
+		std::string _server;   // server to which it's connected
 		int			_socket;
 		bool		_isOP;
 };
