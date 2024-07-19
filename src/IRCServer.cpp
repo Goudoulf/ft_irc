@@ -71,7 +71,8 @@ int	IRCServer::run(void)
         if (FD_ISSET(server_fd, &readfds)) {
             if ((new_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen)) < 0)
                 my_exit("accept error", EXIT_FAILURE);
-            _clients.insert(std::pair<std::string, Client>("goudoulf", Client("goudoulf","cassie","cassie","localhost", "ok", new_socket)));
+            // _clients.insert(std::pair<std::string, Client>("goudoulf", Client("goudoulf","cassie","cassie","localhost", "ok", new_socket)));
+            _clients.insert(std::pair<std::string, Client>("temp", Client(new_socket)));
 
         }
         for (_it = _clients.begin(); _it != _clients.end(); _it++) {
@@ -82,6 +83,12 @@ int	IRCServer::run(void)
                     _it->second.SetSocket(0);
                 }
                 else {
+                    _it->second.SetBuffer(buffer);
+                    if (_it->first == "temp")
+                    {
+                        _it->second.SetClient();
+                        _clients.find("temp")->first = "goudoulf";
+                    }
                     if (strncmp(buffer, "JOIN", 4) == 0)
                     {
                         int pos;

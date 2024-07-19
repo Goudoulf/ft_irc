@@ -1,4 +1,7 @@
 #include "Client.hpp"
+#include <cstddef>
+#include <cstring>
+#include <string>
 
 Client::Client(const int &socket): _socket(socket)
 {
@@ -8,13 +11,27 @@ Client::Client(const int &socket): _socket(socket)
 Client::~Client()
 {}
 
-void	Client::SetClient(std::string nickname, std::string username, std::string realname, std::string hostname, std::string server)
+void	Client::findnick(std::string buffer)
 {
-	_nickname = nickname;
-	_username = username;
-	_realname = realname;
-	_hostname = hostname;
-	_server = server;
+	std::size_t found = buffer.find("NICK");
+	std::size_t end = buffer.find("\r", found);
+	_nickname = buffer.substr(found + 5, end - 1);
+}
+
+void	Client::finduser(std::string buffer)
+{
+	std::size_t found = buffer.find("USER");
+	std::size_t end = buffer.find(" ", found);
+	_username = buffer.substr(found + 5, end - 1);
+}
+
+void	Client::SetClient()
+{
+	findnick(_buffer);
+	finduser(_buffer);
+	_realname = "realname";
+	_hostname = "localhost";
+	_server = "unknown";
 }
 
 void	Client::SetNickname(std::string nickname)

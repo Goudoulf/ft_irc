@@ -9,7 +9,9 @@ class Client
 		Client(const int &socket);
 		~Client();
 
-		void		SetClient(std::string nickname, std::string username, std::string realname, std::string hostname, std::string server);
+		void		SetClient();
+		void		findnick(std::string buffer);
+		void		finduser(std::string buffer);
 		void		SetNickname(std::string nickname);
 		void		SetUsername(std::string username);
 		void		SetSocket(int i);
