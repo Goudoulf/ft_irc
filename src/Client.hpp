@@ -10,9 +10,10 @@ class Client
 		~Client();
 
 		void		SetClient();
-		void		findnick(std::string buffer);
-		void		finduser(std::string buffer);
+		void		findnick(char *buffer);
+		void		finduser(char *buffer);
 		void		SetNickname(std::string nickname);
+		void		SetHostname(std::string nickname);
 		void		SetUsername(std::string username);
 		void		SetSocket(int i);
 		void		SetIsOP();
@@ -20,6 +21,7 @@ class Client
 		std::string	GetNickname() const;
 		std::string	GetUsername() const;
 		std::string	GetRealname() const;
+		std::string	GetHostname() const;
 		int			GetSocket() const;
 		bool		GetIsOP() const;
 		std::string	GetBuffer();
@@ -30,7 +32,7 @@ class Client
 		std::string _realname; // name of the host ; just additional information about you
 		std::string _hostname;
 		std::string _server;   // server to which it's connected
-		std::string _buffer;
+		char		*_buffer;
 		int			_socket;
 		bool		_isOP;
 };
