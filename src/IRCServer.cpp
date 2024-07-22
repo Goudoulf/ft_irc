@@ -15,9 +15,11 @@
 #include <iostream>
 #include <string>
 #include <strings.h>
+#include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <netdb.h>
+#include <fcntl.h>
 
 void my_exit(std::string error, int code)
 {
@@ -73,6 +75,7 @@ int	IRCServer::run(void)
         if (FD_ISSET(server_fd, &readfds)) {
             if ((new_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen)) < 0)
                 my_exit("accept error", EXIT_FAILURE);
+            // fcntl(new_socket, F_SETFL, fcntl(new_socket, F_GETFL, 0) | O_NONBLOCK);
             // _clients.insert(std::pair<std::string, Client>("goudoulf", Client("goudoulf","cassie","cassie","localhost", "ok", new_socket)));
             _clients.insert(std::pair<std::string, Client*>("temp", new Client(new_socket)));
             char ip_str[INET_ADDRSTRLEN];
@@ -86,20 +89,14 @@ int	IRCServer::run(void)
         for (_it = _clients.begin(); _it != _clients.end(); _it++) {
             sd = _it->second->GetSocket();
             if (FD_ISSET(sd, &readfds)) {
-				int i = 0;
-				while ((valread = recv(sd, buffer + i, 1024, 0)))
-				{
-					i += valread;
-					break;
-				}
-                if (buffer[i] == 0 && (valread = recv(sd, buffer, 1024, 0)) == 0) {
+                if ((valread = recv(sd, _it->second->buffer, 1024, 0)) == 0) {
                     close(sd);
                     _it->second->SetSocket(0);
                 }
                 else {
-                    std::cout << "buffer =" << buffer;
+                    std::cout << "buffer =" << _it->second->buffer;
 					std::cout.flush();
-                    _it->second->SetBuffer(buffer);
+                    _it->second->SetBuffer(_it->second->buffer);
                     if (_it->first == "temp")
                     {
                         _it->second->SetClient();
@@ -108,7 +105,7 @@ int	IRCServer::run(void)
                         _clients.erase("temp");
                         _it = _clients.find(temp2);
                     }
-                    if (strncmp(buffer, "JOIN", 4) == 0)
+                    if (strncmp(_it->second->buffer, "JOIN", 4) == 0)
                     {
                         int pos;
                         for (int i = 0; buffer[i] != '\0' && buffer[i] != '\r' && buffer[i] != '\n'; i++)
@@ -116,9 +113,9 @@ int	IRCServer::run(void)
                         std::string test(":" + _it->second->GetNickname() + "!" + _it->second->GetUsername() + "@" + _it->second->GetHostname() + " " + std::string(buffer).erase(pos + 1, -1) + "\r\n");
                         send(sd, test.c_str(), test.length(), 0);
                     }
-                    buffer[valread] = '\0';
+                    _it->second->buffer[valread] = '\0';
                 }
-                //bzero(buffer, 1024);
+                bzero(_it->second->buffer, 1024);
             }
         }
     }

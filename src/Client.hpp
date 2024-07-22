@@ -17,7 +17,7 @@ class Client
 		void		SetUsername(std::string username);
 		void		SetSocket(int i);
 		void		SetIsOP();
-		void		SetBuffer(char * string);
+		void		SetBuffer(const char * string);
 		std::string	GetNickname() const;
 		std::string	GetUsername() const;
 		std::string	GetRealname() const;
@@ -25,6 +25,7 @@ class Client
 		int			GetSocket() const;
 		bool		GetIsOP() const;
 		std::string	GetBuffer();
+		char	*buffer;
 
 	private:
 		std::string _nickname; // 9 char and unique ; name which appears for other users

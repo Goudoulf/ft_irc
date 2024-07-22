@@ -8,6 +8,7 @@ Client::Client(const int &socket): _socket(socket)
 {
 	_isOP = false;
 	_buffer = new char[1024];
+	buffer = new char[1024];
 }
 
 Client::~Client()
@@ -89,7 +90,7 @@ void	Client::SetSocket(int i)
 	_socket = i;
 }
 
-void	Client::SetBuffer(char * string)
+void	Client::SetBuffer(const char * string)
 {
 	_buffer = strcpy(_buffer, string);
 }
