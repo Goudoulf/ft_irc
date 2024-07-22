@@ -6,7 +6,7 @@
 /*   By: rjacq <rjacq@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 08:21:58 by cassie            #+#    #+#             */
-/*   Updated: 2024/07/17 14:06:05 by rjacq            ###   ########.fr       */
+/*   Updated: 2024/07/22 16:20:08 by rjacq            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,18 +79,26 @@ int	IRCServer::run(void)
             inet_ntop(AF_INET, &address.sin_addr, ip_str, sizeof(ip_str));
             struct hostent *host = gethostbyname(ip_str);
             _clients["temp"]->SetHostname(ip_str);
-            std::cout << _clients["temp"]->GetHostname();
+            std::cout << _clients["temp"]->GetHostname() << std::endl;
+			std::cout.flush();
             (void)host;
         }
         for (_it = _clients.begin(); _it != _clients.end(); _it++) {
             sd = _it->second->GetSocket();
             if (FD_ISSET(sd, &readfds)) {
-                if ((valread = recv(sd, buffer, 1024, 0)) == 0) {
+				int i = 0;
+				while ((valread = recv(sd, buffer + i, 1024, 0)))
+				{
+					i += valread;
+					break;
+				}
+                if (buffer[i] == 0 && (valread = recv(sd, buffer, 1024, 0)) == 0) {
                     close(sd);
                     _it->second->SetSocket(0);
                 }
                 else {
                     std::cout << "buffer =" << buffer;
+					std::cout.flush();
                     _it->second->SetBuffer(buffer);
                     if (_it->first == "temp")
                     {
