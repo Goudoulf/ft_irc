@@ -12,12 +12,14 @@ class Client
 		void		SetClient(std::string nickname, std::string username, std::string realname, std::string hostname, std::string server);
 		void		SetNickname(std::string nickname);
 		void		SetUsername(std::string username);
+		void		SetHostname(std::string hostname);
 		void		SetSocket(int i);
 		void		SetIsOP();
 		void		SetBuffer(char * string);
 		std::string	GetNickname() const;
 		std::string	GetUsername() const;
 		std::string	GetRealname() const;
+		std::string GetHostname() const;
 		int			GetSocket() const;
 		bool		GetIsOP() const;
 		std::string	GetBuffer();

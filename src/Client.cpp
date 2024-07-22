@@ -1,4 +1,5 @@
 #include "Client.hpp"
+#include "client_checker.h"
 
 Client::Client(const int &socket): _socket(socket)
 {
@@ -10,6 +11,8 @@ Client::~Client()
 
 void	Client::SetClient(std::string nickname, std::string username, std::string realname, std::string hostname, std::string server)
 {
+	if (nickname.length() > 9)
+		nickname.erase(9, -1);
 	_nickname = nickname;
 	_username = username;
 	_realname = realname;
@@ -25,6 +28,11 @@ void	Client::SetNickname(std::string nickname)
 void	Client::SetUsername(std::string username)
 {
 	_username = username;
+}
+
+void	Client::SetHostname(std::string hostname)
+{
+	_hostname = hostname;
 }
 
 void	Client::SetIsOP()
@@ -56,6 +64,11 @@ std::string	Client::GetUsername() const
 std::string	Client::GetRealname() const
 {
 	return _realname;
+}
+
+std::string Client::GetHostname() const
+{
+	return _hostname;
 }
 
 int	Client::GetSocket() const

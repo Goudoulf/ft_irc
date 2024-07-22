@@ -6,7 +6,7 @@
 /*   By: rjacq <rjacq@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 08:21:58 by cassie            #+#    #+#             */
-/*   Updated: 2024/07/17 14:06:05 by rjacq            ###   ########.fr       */
+/*   Updated: 2024/07/22 14:07:56 by rjacq            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <string>
 #include <strings.h>
 #include <sys/types.h>
+#include "client_checker.h"
 
 void my_exit(std::string error, int code)
 {
@@ -71,7 +72,14 @@ int	IRCServer::run(void)
         if (FD_ISSET(server_fd, &readfds)) {
             if ((new_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen)) < 0)
                 my_exit("accept error", EXIT_FAILURE);
-            _clients.insert(std::pair<std::string, Client>("goudoulf", Client("goudoulf","cassie","cassie","localhost", "ok", new_socket)));
+			if (check_char("rayqua0123456789"))
+				std::cout << "error" <<std::endl;
+			std::string nick = "rayqua0123456789";
+			if (nick.length() >= 9)
+				nick.erase(9, -1);
+			std::cout << nick << std::endl;
+            _clients.insert(std::pair<std::string, Client>(nick, Client( new_socket)));
+			_clients.rbegin()->second.SetClient(nick,"roro","Romain Jacq","localhost", "ok");
 
         }
         for (_it = _clients.begin(); _it != _clients.end(); _it++) {

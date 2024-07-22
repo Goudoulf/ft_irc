@@ -12,7 +12,7 @@
 
 NAME = ircserv
 
-SRCS_FILE = main.cpp IRCServer.cpp Client.cpp
+SRCS_FILE = main.cpp IRCServer.cpp Client.cpp client_checker.cpp
 
 DIR_SRC := src/
 DIR_OBJ := .object/
