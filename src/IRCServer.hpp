@@ -46,6 +46,7 @@ class IRCServer
 		
 		int	run(void);
 		int	join(void);
+		struct timeval timeout;
 
 	private:
 

@@ -10,8 +10,8 @@ class Client
 		~Client();
 
 		void		SetClient();
-		void		findnick(char *buffer);
-		void		finduser(char *buffer);
+		void		findnick(const char *buffer);
+		void		finduser(const char *buffer);
 		void		SetNickname(std::string nickname);
 		void		SetHostname(std::string nickname);
 		void		SetUsername(std::string username);

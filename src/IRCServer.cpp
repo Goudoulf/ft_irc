@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "IRCServer.hpp"
+#include <cerrno>
 #include <cstring>
 #include <iostream>
 #include <string>
@@ -32,11 +33,12 @@ IRCServer::IRCServer(std::string port, std::string password)
     char *end;
     _port = static_cast<unsigned short>(std::strtod(port.c_str(), &end)); 
     _password = password;
-     int opt = 1;
+    timeout.tv_sec = 3;
+    timeout.tv_usec = 0;
 
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
         my_exit("socket failed", EXIT_FAILURE);
-    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)))
+    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &timeout, sizeof(timeout)))
         my_exit("setsockopt", EXIT_FAILURE);
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
@@ -69,14 +71,13 @@ int	IRCServer::run(void)
             if (sd > 0) FD_SET(sd, &readfds);
             if (sd > max_sd) max_sd = sd;
         }
-        activity = select(max_sd + 1, &readfds, NULL, NULL, NULL);
+        activity = select(max_sd + 1, &readfds, NULL, NULL, &timeout);
         if ((activity < 0) && (errno != EINTR))
             my_exit("select error", EXIT_FAILURE);
         if (FD_ISSET(server_fd, &readfds)) {
             if ((new_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen)) < 0)
                 my_exit("accept error", EXIT_FAILURE);
-            //fcntl(new_socket, F_SETFL, fcntl(new_socket, F_GETFL, 0) | O_NONBLOCK);
-            // _clients.insert(std::pair<std::string, Client>("goudoulf", Client("goudoulf","cassie","cassie","localhost", "ok", new_socket)));
+            // fcntl(new_socket, F_SETFL, fcntl(new_socket, F_GETFL, 0) | O_NONBLOCK);
             _clients.insert(std::pair<std::string, Client*>("temp", new Client(new_socket)));
             char ip_str[INET_ADDRSTRLEN];
             inet_ntop(AF_INET, &address.sin_addr, ip_str, sizeof(ip_str));
@@ -88,22 +89,37 @@ int	IRCServer::run(void)
         for (_it = _clients.begin(); _it != _clients.end(); _it++) {
             sd = _it->second->GetSocket();
             if (FD_ISSET(sd, &readfds)) {
-				/*int i = 0;
-				int count = 0;*/
-				/*while ((valread = recv(sd, _it->second->buffer + i, 1024, MSG_DONTWAIT)) != 0 && count < 2) {
-					std::cout << "{" << _it->second->buffer << "}" << std::endl;
-					i += valread;
-					std::cout << "loop" << std::endl;
-					count++;
-				}*/
-                if ((valread = recv(sd, _it->second->buffer, 1024, MSG_DONTWAIT)) == 0) {
+		// int i = 0;
+		// int count = 0;
+                // do {
+                //     valread = recv(sd, _it->second->buffer + i, 1024, 0);
+                //     std::cout << "ERRNO=" << std::strerror(errno) << std::endl;
+                //     std::cout << "{" << _it->second->buffer << "}" << std::endl;
+                //     i += valread;
+                //     std::cout << "loope" << valread << std::endl;
+                //     count++;
+                // }
+                // while (i > 2 && (_it->second->buffer[i - 2] != '\r'));
+                // while (i > 2 && (_it->second->buffer[i - 1] != '\n' && _it->second->buffer[i - 2] != '\r'));
+                    // recv(sd, _it->second->buffer + i, 1024, MSG_DONTWAIT);
+                if ((valread = recv(sd, _it->second->buffer, 1024, 0)) == 0) {
                     close(sd);
+                    std::cout << "error?" << std::endl;
                     _it->second->SetSocket(0);
                 }
                 else {
+                    std::string temp(_it->second->buffer);
                     std::cout << "buffer[" << std::endl << _it->second->buffer << std::endl << "]" << std::endl;
                     _it->second->SetBuffer(_it->second->buffer);
-                    if (_it->first == "temp")
+                    if (temp.find("USER") != (size_t)-1)
+                    {
+                        _it->second->finduser(temp.c_str());
+                    }
+                    if (temp.find("NICK") != (size_t)-1)
+                    {
+                        _it->second->findnick(temp.c_str());
+                    }
+                    if (_it->first == "temp" && _it->second->GetNickname() != "default" && _it->second->GetUsername() != "default" )
                     {
                         _it->second->SetClient();
                         std::string temp2 = _it->second->GetNickname(); 
@@ -114,7 +130,7 @@ int	IRCServer::run(void)
                     if (strncmp(_it->second->buffer, "JOIN", 4) == 0)
                     {
                         int pos;
-                        for (int i = 0; buffer[i] != '\0' && buffer[i] != '\r' && buffer[i] != '\n'; i++)
+                        for (int i = 4; _it->second->buffer[i] != '\0' && _it->second->buffer[i] != '\r' && _it->second->buffer[i] != '\n'; i++)
                             pos = i;
                         std::string test(":" + _it->second->GetNickname() + "!" + _it->second->GetUsername() + "@" + _it->second->GetHostname() + " " + std::string(_it->second->buffer).erase(pos + 1, -1) + "\r\n");
 						std::cout << "send = " << test << std::endl;

@@ -9,12 +9,14 @@ Client::Client(const int &socket): _socket(socket)
 	_isOP = false;
 	_buffer = new char[1024];
 	buffer = new char[1024];
+	_nickname = "default";
+	_hostname = "default";
 }
 
 Client::~Client()
 {}
 
-void	Client::findnick(char *buffer)
+void	Client::findnick(const char *buffer)
 {
 	char *temp = new char[1024];
 	char *p;
@@ -35,7 +37,7 @@ void	Client::findnick(char *buffer)
 	std::cout << "nick=" << _nickname << std::endl;
 }
 
-void	Client::finduser(char * buffer)
+void	Client::finduser(const char * buffer)
 {
 	char *temp = new char[1024];
 	char *p;
@@ -57,10 +59,7 @@ void	Client::finduser(char * buffer)
 
 void	Client::SetClient()
 {
-	findnick(_buffer);
-	finduser(_buffer);
 	_realname = "realname";
-	_hostname = "localhost";
 	_server = "unknown";
 }
 
