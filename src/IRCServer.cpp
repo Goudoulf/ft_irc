@@ -89,19 +89,6 @@ int	IRCServer::run(void)
         for (_it = _clients.begin(); _it != _clients.end(); _it++) {
             sd = _it->second->GetSocket();
             if (FD_ISSET(sd, &readfds)) {
-		// int i = 0;
-		// int count = 0;
-                // do {
-                //     valread = recv(sd, _it->second->buffer + i, 1024, 0);
-                //     std::cout << "ERRNO=" << std::strerror(errno) << std::endl;
-                //     std::cout << "{" << _it->second->buffer << "}" << std::endl;
-                //     i += valread;
-                //     std::cout << "loope" << valread << std::endl;
-                //     count++;
-                // }
-                // while (i > 2 && (_it->second->buffer[i - 2] != '\r'));
-                // while (i > 2 && (_it->second->buffer[i - 1] != '\n' && _it->second->buffer[i - 2] != '\r'));
-                    // recv(sd, _it->second->buffer + i, 1024, MSG_DONTWAIT);
                 if ((valread = recv(sd, _it->second->buffer, 1024, 0)) == 0) {
                     close(sd);
                     std::cout << "error?" << std::endl;
