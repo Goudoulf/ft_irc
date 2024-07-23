@@ -2,6 +2,7 @@
 # define CHANNEL_HPP
 
 #include <string>
+#include <list>
 #include "Client.hpp"
 //& = local server, useless on this project. standard channel
 //+ = channel modes not supported -> no one is OP. standard channel
@@ -27,7 +28,9 @@ class Channel
 	private:
 		std::string _name; //beginning with a &#+! length of 50 max char, case insensitive
 							// no spaces or control G (ASCII 7), no ',' or ':', can't be reused
-
+		//container of users, maybe a map <client, bool isOp> ?
+		//channel mode, depending on name prefix
+		//stack of strings to make a message history if needed.
 
 };
 
