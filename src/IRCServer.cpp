@@ -6,7 +6,7 @@
 /*   By: rjacq <rjacq@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 08:21:58 by cassie            #+#    #+#             */
-/*   Updated: 2024/07/22 16:20:08 by rjacq            ###   ########.fr       */
+/*   Updated: 2024/07/23 12:52:24 by rjacq            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ int	IRCServer::run(void)
         if (FD_ISSET(server_fd, &readfds)) {
             if ((new_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen)) < 0)
                 my_exit("accept error", EXIT_FAILURE);
-            // fcntl(new_socket, F_SETFL, fcntl(new_socket, F_GETFL, 0) | O_NONBLOCK);
+            //fcntl(new_socket, F_SETFL, fcntl(new_socket, F_GETFL, 0) | O_NONBLOCK);
             // _clients.insert(std::pair<std::string, Client>("goudoulf", Client("goudoulf","cassie","cassie","localhost", "ok", new_socket)));
             _clients.insert(std::pair<std::string, Client*>("temp", new Client(new_socket)));
             char ip_str[INET_ADDRSTRLEN];
@@ -83,19 +83,25 @@ int	IRCServer::run(void)
             struct hostent *host = gethostbyname(ip_str);
             _clients["temp"]->SetHostname(ip_str);
             std::cout << _clients["temp"]->GetHostname() << std::endl;
-			std::cout.flush();
             (void)host;
         }
         for (_it = _clients.begin(); _it != _clients.end(); _it++) {
             sd = _it->second->GetSocket();
             if (FD_ISSET(sd, &readfds)) {
-                if ((valread = recv(sd, _it->second->buffer, 1024, 0)) == 0) {
+				/*int i = 0;
+				int count = 0;*/
+				/*while ((valread = recv(sd, _it->second->buffer + i, 1024, MSG_DONTWAIT)) != 0 && count < 2) {
+					std::cout << "{" << _it->second->buffer << "}" << std::endl;
+					i += valread;
+					std::cout << "loop" << std::endl;
+					count++;
+				}*/
+                if ((valread = recv(sd, _it->second->buffer, 1024, MSG_DONTWAIT)) == 0) {
                     close(sd);
                     _it->second->SetSocket(0);
                 }
                 else {
-                    std::cout << "buffer =" << _it->second->buffer;
-					std::cout.flush();
+                    std::cout << "buffer[" << std::endl << _it->second->buffer << std::endl << "]" << std::endl;
                     _it->second->SetBuffer(_it->second->buffer);
                     if (_it->first == "temp")
                     {
@@ -110,10 +116,12 @@ int	IRCServer::run(void)
                         int pos;
                         for (int i = 0; buffer[i] != '\0' && buffer[i] != '\r' && buffer[i] != '\n'; i++)
                             pos = i;
-                        std::string test(":" + _it->second->GetNickname() + "!" + _it->second->GetUsername() + "@" + _it->second->GetHostname() + " " + std::string(buffer).erase(pos + 1, -1) + "\r\n");
+                        std::string test(":" + _it->second->GetNickname() + "!" + _it->second->GetUsername() + "@" + _it->second->GetHostname() + " " + std::string(_it->second->buffer).erase(pos + 1, -1) + "\r\n");
+						std::cout << "send = " << test << std::endl;
+						std::cout << "nick = " << _it->second->GetNickname() << std::endl;
                         send(sd, test.c_str(), test.length(), 0);
                     }
-                    _it->second->buffer[valread] = '\0';
+                    //_it->second->buffer[valread] = '\0';
                 }
                 bzero(_it->second->buffer, 1024);
             }

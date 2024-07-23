@@ -52,7 +52,7 @@ void	Client::finduser(char * buffer)
 
 		p = strtok(NULL , " \n");
 	}
-	std::cout << "user =" << _username << std::endl;
+	std::cout << "user=" << _username << std::endl;
 }
 
 void	Client::SetClient()
