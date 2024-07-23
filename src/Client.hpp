@@ -35,7 +35,7 @@ class Client
 		std::string _server;   // server to which it's connected
 		char		*_buffer;
 		int			_socket;
-		bool		_isOP;
+		bool		_isOP; //un client n'est pas OP general, il est OP dans un channel en particulier
 };
 
 #endif
