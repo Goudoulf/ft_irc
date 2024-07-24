@@ -11,6 +11,8 @@ Client::Client(const int &socket): _socket(socket)
 	buffer = new char[1024];
 	_nickname = "default";
 	_hostname = "default";
+	_realname = "realname";
+	_server = "unknown";
 }
 
 Client::~Client()
@@ -21,18 +23,18 @@ void	Client::findnick(const char *buffer)
 	char *temp = new char[1024];
 	char *p;
 	temp = strcpy(temp, buffer);
-	p = strtok(temp, "  \n");
+	p = strtok(temp, "  \r\n");
 	while (p != NULL)
 	{
 		if (strcmp(p, "NICK") == 0)
 		{
-			p = strtok(NULL , " \n");
+			p = strtok(NULL , " \r\n");
 			// std::cout << "p=" << p << std::endl;
 			_nickname = p;
 			break ;
 		}
 
-		p = strtok(NULL , " \n");
+		p = strtok(NULL , " \r\n");
 	}
 	std::cout << "nick=" << _nickname << std::endl;
 }
@@ -42,25 +44,23 @@ void	Client::finduser(const char * buffer)
 	char *temp = new char[1024];
 	char *p;
 	temp = strcpy(temp, buffer);
-	p = strtok(temp, " \n");
+	p = strtok(temp, " \r\n");
 	while (p != NULL)
 	{
 		if (strcmp(p, "USER") == 0)
 		{
-			p = strtok(NULL , " \n");
+			p = strtok(NULL , " \r\n");
 			_username = p;
 			break ;
 		}
 
-		p = strtok(NULL , " \n");
+		p = strtok(NULL , " \r\n");
 	}
 	std::cout << "user=" << _username << std::endl;
 }
 
 void	Client::SetClient()
 {
-	_realname = "realname";
-	_server = "unknown";
 }
 
 void	Client::SetNickname(std::string nickname)

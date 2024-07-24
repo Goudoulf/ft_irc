@@ -14,6 +14,7 @@
 #include <cerrno>
 #include <cstring>
 #include <iostream>
+#include <netinet/in.h>
 #include <string>
 #include <strings.h>
 #include <sys/socket.h>
@@ -24,13 +25,14 @@
 
 void my_exit(std::string error, int code)
 {
-    std::cerr << error;
+    std::cerr << error << std::endl;
     exit(code);
 }
 
 IRCServer::IRCServer(std::string port, std::string password)
 {
     char *end;
+    memset(&address, 0, sizeof(address));
     _port = static_cast<unsigned short>(std::strtod(port.c_str(), &end)); 
     _password = password;
     timeout.tv_sec = 3;
@@ -67,7 +69,7 @@ int	IRCServer::run(void)
         {
             _it = _clients.end();
             _it--;
-            sd = _it->second->GetSocket();
+            sd = (*_it)->GetSocket();
             if (sd > 0) FD_SET(sd, &readfds);
             if (sd > max_sd) max_sd = sd;
         }
@@ -77,56 +79,66 @@ int	IRCServer::run(void)
         if (FD_ISSET(server_fd, &readfds)) {
             if ((new_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen)) < 0)
                 my_exit("accept error", EXIT_FAILURE);
-            // fcntl(new_socket, F_SETFL, fcntl(new_socket, F_GETFL, 0) | O_NONBLOCK);
-            _clients.insert(std::pair<std::string, Client*>("temp", new Client(new_socket)));
-            char ip_str[INET_ADDRSTRLEN];
-            inet_ntop(AF_INET, &address.sin_addr, ip_str, sizeof(ip_str));
-            struct hostent *host = gethostbyname(ip_str);
-            _clients["temp"]->SetHostname(ip_str);
-            std::cout << _clients["temp"]->GetHostname() << std::endl;
-            (void)host;
+            _clients.push_back(new Client(new_socket));
+            _it = _clients.end();
+            _it--;
+            (*_it)->SetHostname(inet_ntoa(address.sin_addr));
+            std::cout << (*_it)->GetHostname() << std::endl;
         }
         for (_it = _clients.begin(); _it != _clients.end(); _it++) {
-            sd = _it->second->GetSocket();
-            if (FD_ISSET(sd, &readfds)) {
-                if ((valread = recv(sd, _it->second->buffer, 1024, 0)) == 0) {
+            sd = (*_it)->GetSocket();
+            // std::cout << "name ="<< (*_it)->GetNickname()<< " sd="<< sd << std::endl;
+            int set;
+            if ((set = FD_ISSET(sd, &readfds))) {
+                std::cout << "set="<< set << std::endl;
+                if ((valread = recv(sd, (*_it)->buffer, 1024, 0)) == 0) {      
                     close(sd);
                     std::cout << "error?" << std::endl;
-                    _it->second->SetSocket(0);
+                    (*_it)->SetSocket(0);
+                }
+                if (valread == -1) {      
+                    std::cout << "error$" << std::endl;
                 }
                 else {
-                    std::string temp(_it->second->buffer);
-                    std::cout << "buffer[" << std::endl << _it->second->buffer << std::endl << "]" << std::endl;
-                    _it->second->SetBuffer(_it->second->buffer);
+                    std::string temp((*_it)->buffer);
+                    std::cout << "buffer[" << std::endl << (*_it)->buffer << std::endl << "]" << std::endl;
+                    (*_it)->SetBuffer((*_it)->buffer);
                     if (temp.find("USER") != (size_t)-1)
-                    {
-                        _it->second->finduser(temp.c_str());
-                    }
+                        (*_it)->finduser(temp.c_str());
                     if (temp.find("NICK") != (size_t)-1)
-                    {
-                        _it->second->findnick(temp.c_str());
-                    }
-                    if (_it->first == "temp" && _it->second->GetNickname() != "default" && _it->second->GetUsername() != "default" )
-                    {
-                        _it->second->SetClient();
-                        std::string temp2 = _it->second->GetNickname(); 
-                        _clients.insert(std::pair<std::string, Client*>(temp2, _clients.find("temp")->second));
-                        _clients.erase("temp");
-                        _it = _clients.find(temp2);
-                    }
-                    if (strncmp(_it->second->buffer, "JOIN", 4) == 0)
+                        (*_it)->findnick(temp.c_str());
+                    // if ((*_it)->GetNickname() != "default" && (*_it)->GetUsername() != "default" )
+                    // {
+                    //     std::string temp2 = (*_it)->GetNickname(); 
+                    //     _clients.insert(std::pair<std::string, Client*>(temp2, _clients.find("temp")->second));
+                    //     _clients.erase("temp");
+                    //     _it = _clients.find(temp2);
+                    // }
+                    if (strncmp((*_it)->buffer, "JOIN", 4) == 0)
                     {
                         int pos;
-                        for (int i = 4; _it->second->buffer[i] != '\0' && _it->second->buffer[i] != '\r' && _it->second->buffer[i] != '\n'; i++)
+                        for (int i = 4; (*_it)->buffer[i] != '\0' && (*_it)->buffer[i] != '\r' && (*_it)->buffer[i] != '\n'; i++)
                             pos = i;
-                        std::string test(":" + _it->second->GetNickname() + "!" + _it->second->GetUsername() + "@" + _it->second->GetHostname() + " " + std::string(_it->second->buffer).erase(pos + 1, -1) + "\r\n");
-						std::cout << "send = " << test << std::endl;
-						std::cout << "nick = " << _it->second->GetNickname() << std::endl;
+                        std::string test(":" + (*_it)->GetNickname() + "!" + (*_it)->GetUsername() + "@" + (*_it)->GetHostname() + " " + std::string((*_it)->buffer).erase(pos + 1, -1) + "\r\n");
+			std::cout << "send = " << test << std::endl;
+			std::cout << "nick = " << (*_it)->GetNickname() << std::endl;
                         send(sd, test.c_str(), test.length(), 0);
                     }
-                    //_it->second->buffer[valread] = '\0';
+                    if (temp.find("PRIVMSG") != (size_t)-1)
+                    {
+                        std::string test2(":" + (*_it)->GetNickname() + "!" + (*_it)->GetUsername() + "@" 
+                                         + (*_it)->GetHostname() + " " + temp + "\r\n");
+                        for (_it2 = _clients.begin(); _it2 != _clients.end(); _it2++) {
+                                if (_it2 != _it)
+                                {
+                                    std::cout << test2 << std::endl;
+                                    send((*_it2)->GetSocket(), test2.c_str(), test2.length(), 0);
+                                }
+                        }
+                    }
+
                 }
-                bzero(_it->second->buffer, 1024);
+                bzero((*_it)->buffer, 1024);
             }
         }
     }
