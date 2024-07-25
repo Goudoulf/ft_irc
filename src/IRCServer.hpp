@@ -47,6 +47,8 @@ class IRCServer
 		
 		int	run(void);
 		int	join(void);
+		void    accept_connection(fd_set *all_sockets);
+		void    read_data(fd_set *readfds, fd_set *all_sockets, int i);
 		struct timeval timeout;
 
 	private:
@@ -57,7 +59,7 @@ class IRCServer
 		std::vector<Client*> _clients;
 		std::vector<Client*>::iterator _it;
 		std::vector<Client*>::iterator _it2;
-		int server_fd, new_socket, max_sd, sd, activity, valread;
+		int server_fd, max_sd, sd, activity, valread;
 		struct sockaddr_in address;
 		int addrlen;
 		char buffer[1024];
