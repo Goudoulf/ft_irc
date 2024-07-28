@@ -48,7 +48,7 @@ class IRCServer
 		int	run(void);
 		int	join(void);
 		void    accept_connection(fd_set *all_sockets);
-		void    read_data(fd_set *readfds, fd_set *all_sockets, int i);
+		void    read_data(fd_set *all_sockets, int i);
 		struct timeval timeout;
 
 	private:

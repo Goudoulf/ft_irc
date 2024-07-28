@@ -4,13 +4,13 @@
 #include <iostream>
 #include <string>
 
-Client::Client(const int &socket): _socket(socket)
+Client::Client(const int &socket, std::string hostname): _socket(socket)
 {
 	_isOP = false;
 	_buffer = new char[1024];
 	buffer = new char[1024];
 	_nickname = "default";
-	_hostname = "default";
+	_hostname = hostname;
 	_realname = "realname";
 	_server = "unknown";
 }

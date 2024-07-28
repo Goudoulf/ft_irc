@@ -6,7 +6,7 @@
 class Client
 {
 	public:
-		Client(const int &socket);
+		Client(const int &socket, std::string hostname);
 		~Client();
 
 		void		SetClient();
