@@ -26,6 +26,7 @@
 #include <cerrno>
 #include <cstdio>
 #include <stdlib.h>
+#include <vector>
 #define MAX_CLIENTS 30
 
 class IRCServer
@@ -46,15 +47,19 @@ class IRCServer
 		
 		int	run(void);
 		int	join(void);
+		void    accept_connection(fd_set *all_sockets);
+		void    read_data(fd_set *all_sockets, int i);
+		struct timeval timeout;
 
 	private:
 
 		u_int16_t _port;
 		std::string _password;
 		unsigned	short	_client_count;
-		std::map<std::string, Client> _clients;
-		std::map<std::string, Client>::iterator _it;
-		int server_fd, new_socket, max_sd, sd, activity, valread;
+		std::vector<Client*> _clients;
+		std::vector<Client*>::iterator _it;
+		std::vector<Client*>::iterator _it2;
+		int server_fd, max_sd, sd, activity, valread;
 		struct sockaddr_in address;
 		int addrlen;
 		char buffer[1024];

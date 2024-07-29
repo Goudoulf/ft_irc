@@ -1,23 +1,66 @@
 #include "Client.hpp"
-#include "client_checker.h"
+#include <cstddef>
+#include <cstring>
+#include <iostream>
+#include <string>
 
-Client::Client(const int &socket): _socket(socket)
+Client::Client(const int &socket, std::string hostname): _socket(socket)
 {
 	_isOP = false;
+	_buffer = new char[1024];
+	buffer = new char[1024];
+	_nickname = "default";
+	_hostname = hostname;
+	_realname = "realname";
+	_server = "unknown";
 }
 
 Client::~Client()
 {}
 
-void	Client::SetClient(std::string nickname, std::string username, std::string realname, std::string hostname, std::string server)
+void	Client::findnick(const char *buffer)
 {
-	if (nickname.length() > 9)
-		nickname.erase(9, -1);
-	_nickname = nickname;
-	_username = username;
-	_realname = realname;
-	_hostname = hostname;
-	_server = server;
+	char *temp = new char[1024];
+	char *p;
+	temp = strcpy(temp, buffer);
+	p = strtok(temp, "  \r\n");
+	while (p != NULL)
+	{
+		if (strcmp(p, "NICK") == 0)
+		{
+			p = strtok(NULL , " \r\n");
+			// std::cout << "p=" << p << std::endl;
+			_nickname = p;
+			break ;
+		}
+
+		p = strtok(NULL , " \r\n");
+	}
+	std::cout << "nick=" << _nickname << std::endl;
+}
+
+void	Client::finduser(const char * buffer)
+{
+	char *temp = new char[1024];
+	char *p;
+	temp = strcpy(temp, buffer);
+	p = strtok(temp, " \r\n");
+	while (p != NULL)
+	{
+		if (strcmp(p, "USER") == 0)
+		{
+			p = strtok(NULL , " \r\n");
+			_username = p;
+			break ;
+		}
+
+		p = strtok(NULL , " \r\n");
+	}
+	std::cout << "user=" << _username << std::endl;
+}
+
+void	Client::SetClient()
+{
 }
 
 void	Client::SetNickname(std::string nickname)
@@ -25,14 +68,14 @@ void	Client::SetNickname(std::string nickname)
 	_nickname = nickname;
 }
 
-void	Client::SetUsername(std::string username)
-{
-	_username = username;
-}
-
 void	Client::SetHostname(std::string hostname)
 {
 	_hostname = hostname;
+}
+
+void	Client::SetUsername(std::string username)
+{
+	_username = username;
 }
 
 void	Client::SetIsOP()
@@ -46,14 +89,19 @@ void	Client::SetSocket(int i)
 	_socket = i;
 }
 
-void	Client::SetBuffer(char * string)
+void	Client::SetBuffer(const char * string)
 {
-	_buffer = string;
+	_buffer = strcpy(_buffer, string);
 }
 
 std::string	Client::GetNickname() const
 {
 	return _nickname;
+}
+
+std::string	Client::GetHostname() const
+{
+	return _hostname;
 }
 
 std::string	Client::GetUsername() const
@@ -64,11 +112,6 @@ std::string	Client::GetUsername() const
 std::string	Client::GetRealname() const
 {
 	return _realname;
-}
-
-std::string Client::GetHostname() const
-{
-	return _hostname;
 }
 
 int	Client::GetSocket() const
