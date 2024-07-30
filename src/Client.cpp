@@ -4,15 +4,14 @@
 #include <iostream>
 #include <string>
 
-Client::Client(const int &socket, std::string hostname): _socket(socket)
+Client::Client(const int &socket, std::string hostname): _hostname(hostname), _socket(socket)
 {
 	_isOP = false;
 	_buffer = new char[1024];
 	buffer = new char[1024];
 	_nickname = "default";
-	_hostname = hostname;
 	_realname = "realname";
-	_server = "unknown";
+	//_server = "unknown";
 }
 
 Client::~Client()
@@ -57,10 +56,6 @@ void	Client::finduser(const char * buffer)
 		p = strtok(NULL , " \r\n");
 	}
 	std::cout << "user=" << _username << std::endl;
-}
-
-void	Client::SetClient()
-{
 }
 
 void	Client::SetNickname(std::string nickname)

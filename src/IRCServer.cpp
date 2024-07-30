@@ -6,12 +6,13 @@
 /*   By: rjacq <rjacq@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 08:21:58 by cassie            #+#    #+#             */
-/*   Updated: 2024/07/23 12:52:24 by rjacq            ###   ########.fr       */
+/*   Updated: 2024/07/30 16:16:04 by rjacq            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IRCServer.hpp"
 #include "../includes/ircserv.h"
+#include "../includes/cmds.h"
 
 void my_exit(std::string error, int code)
 {
@@ -49,7 +50,8 @@ void    IRCServer::read_data(fd_set *all_sockets, int i)
     for (_it = _clients.begin(); _it != _clients.end(); _it++) {
         if ((sd = (*_it)->GetSocket()) != i)
             continue ;
-        int set;
+        //int set;
+		(void)all_sockets;
         bzero((*_it)->buffer, 1024);
         if ((valread = recv(sd, (*_it)->buffer, 1024, 0)) == 0) {      
             close(sd);
@@ -60,6 +62,7 @@ void    IRCServer::read_data(fd_set *all_sockets, int i)
         }
         else {
             // check command et parsing buffer a refaire proprement
+			
             std::string temp((*_it)->buffer);
             std::cout << "buffer[" << std::endl << (*_it)->buffer << std::endl << "]" << std::endl;
             (*_it)->SetBuffer((*_it)->buffer);
@@ -67,7 +70,23 @@ void    IRCServer::read_data(fd_set *all_sockets, int i)
                 (*_it)->finduser(temp.c_str());
             if (temp.find("NICK") != (size_t)-1)
                 (*_it)->findnick(temp.c_str());
-            if (strncmp((*_it)->buffer, "JOIN", 4) == 0)
+			if (temp.find("USER") != (size_t)-1 && temp.find("USER") != (size_t)-1)
+			{
+				std::string rpl(":127.0.0.1 001 " + (*_it)->GetNickname() + " :Welcome to the local Network " + (*_it)->GetNickname() +"\r\n");
+				std::cout << "Reply = " << rpl << std::endl;
+				send(sd, rpl.c_str(), rpl.length(), 0);
+				rpl = ":127.0.0.1 002 " + (*_it)->GetNickname() + " :Your host is " + (*_it)->GetHostname() + ", running on NetTwerkers_v0.1\r\n";
+				std::cout << "Reply = " << rpl << std::endl;
+				send(sd, rpl.c_str(), rpl.length(), 0);
+				rpl = ":127.0.0.1 003 " + (*_it)->GetNickname() + " :This server was created 07/29/2024\r\n";
+				std::cout << "Reply = " << rpl << std::endl;
+				send(sd, rpl.c_str(), rpl.length(), 0);
+				rpl = ":127.0.0.1 004 " + (*_it)->GetNickname() + " " + (*_it)->GetHostname() + " NetTwerkers_v0.1 - itkol\r\n";
+				std::cout << "Reply = " << rpl << std::endl;
+				send(sd, rpl.c_str(), rpl.length(), 0);
+			}
+			find_cmd(**_it, *this);
+           /*if (strncmp((*_it)->buffer, "JOIN", 4) == 0)
             {
                 int pos;
                 for (int i = 4; (*_it)->buffer[i] != '\0' && (*_it)->buffer[i] != '\r' && (*_it)->buffer[i] != '\n'; i++)
@@ -88,7 +107,7 @@ void    IRCServer::read_data(fd_set *all_sockets, int i)
                         send((*_it2)->GetSocket(), test2.c_str(), test2.length(), 0);
                     }
                 }
-            }
+            }*/
         }
     }
 }
@@ -122,7 +141,7 @@ int	IRCServer::run(void)
             my_exit("select error", EXIT_FAILURE);
         if (activity == 0)
         {
-            std::cout << "Wait.."<< std::endl; // Wait until a socket update
+            //std::cout << "Wait.."<< std::endl; // Wait until a socket update
             continue;
         }
         int i;
@@ -137,4 +156,9 @@ int	IRCServer::run(void)
             read_data(&all_sockets, i);
     }
     return 0;
+}
+
+std::vector<Client*> *IRCServer::getClients()
+{
+	return &_clients;
 }
