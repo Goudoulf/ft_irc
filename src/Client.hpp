@@ -8,6 +8,7 @@ class Client
 	public:
 		Client(const int &socket, std::string hostname);
 		~Client();
+		bool operator <(const Client& toComp) const;
 
 		void		SetClient();
 		void		findnick(const char *buffer);
