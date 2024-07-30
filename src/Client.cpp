@@ -4,64 +4,63 @@
 #include <iostream>
 #include <string>
 
-Client::Client(const int &socket): _socket(socket)
+Client::Client(const int &socket, std::string hostname): _socket(socket)
 {
 	_isOP = false;
 	_buffer = new char[1024];
 	buffer = new char[1024];
+	_nickname = "default";
+	_hostname = hostname;
+	_realname = "realname";
+	_server = "unknown";
 }
 
 Client::~Client()
 {}
 
-void	Client::findnick(char *buffer)
+void	Client::findnick(const char *buffer)
 {
 	char *temp = new char[1024];
 	char *p;
 	temp = strcpy(temp, buffer);
-	p = strtok(temp, "  \n");
+	p = strtok(temp, "  \r\n");
 	while (p != NULL)
 	{
 		if (strcmp(p, "NICK") == 0)
 		{
-			p = strtok(NULL , " \n");
+			p = strtok(NULL , " \r\n");
 			// std::cout << "p=" << p << std::endl;
 			_nickname = p;
 			break ;
 		}
 
-		p = strtok(NULL , " \n");
+		p = strtok(NULL , " \r\n");
 	}
 	std::cout << "nick=" << _nickname << std::endl;
 }
 
-void	Client::finduser(char * buffer)
+void	Client::finduser(const char * buffer)
 {
 	char *temp = new char[1024];
 	char *p;
 	temp = strcpy(temp, buffer);
-	p = strtok(temp, " \n");
+	p = strtok(temp, " \r\n");
 	while (p != NULL)
 	{
 		if (strcmp(p, "USER") == 0)
 		{
-			p = strtok(NULL , " \n");
+			p = strtok(NULL , " \r\n");
 			_username = p;
 			break ;
 		}
 
-		p = strtok(NULL , " \n");
+		p = strtok(NULL , " \r\n");
 	}
-	std::cout << "user =" << _username << std::endl;
+	std::cout << "user=" << _username << std::endl;
 }
 
 void	Client::SetClient()
 {
-	findnick(_buffer);
-	finduser(_buffer);
-	_realname = "realname";
-	_hostname = "localhost";
-	_server = "unknown";
 }
 
 void	Client::SetNickname(std::string nickname)

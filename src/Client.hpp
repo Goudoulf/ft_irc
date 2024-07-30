@@ -6,12 +6,12 @@
 class Client
 {
 	public:
-		Client(const int &socket);
+		Client(const int &socket, std::string hostname);
 		~Client();
 
 		void		SetClient();
-		void		findnick(char *buffer);
-		void		finduser(char *buffer);
+		void		findnick(const char *buffer);
+		void		finduser(const char *buffer);
 		void		SetNickname(std::string nickname);
 		void		SetHostname(std::string nickname);
 		void		SetUsername(std::string username);
