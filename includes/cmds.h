@@ -7,6 +7,10 @@
 #include <iostream>
 #include <string>
 
+class IRCServer;
+class Client;
+
+void	client_connect(Client &client);
 void	find_cmd(Client &client, IRCServer &server);
 void	join(Client &client, IRCServer &server);
 void	nick(Client &client, IRCServer &server);

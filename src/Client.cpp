@@ -11,6 +11,7 @@ Client::Client(const int &socket, std::string hostname): _hostname(hostname), _s
 	buffer = new char[1024];
 	_nickname = "default";
 	_realname = "realname";
+	_isconnected = false;
 	//_server = "unknown";
 }
 
@@ -89,6 +90,11 @@ void	Client::SetBuffer(const char * string)
 	_buffer = strcpy(_buffer, string);
 }
 
+void		Client::SetIsConnected(bool isconnected)
+{
+	_isconnected = isconnected;
+}
+
 std::string	Client::GetNickname() const
 {
 	return _nickname;
@@ -122,4 +128,9 @@ bool	Client::GetIsOP() const
 std::string	Client::GetBuffer()
 {
 	return _buffer;
+}
+
+bool		Client::GetIsConnected()
+{
+	return _isconnected;
 }

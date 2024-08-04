@@ -6,13 +6,12 @@
 /*   By: rjacq <rjacq@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 08:21:58 by cassie            #+#    #+#             */
-/*   Updated: 2024/07/30 16:16:04 by rjacq            ###   ########.fr       */
+/*   Updated: 2024/08/02 17:24:07 by rjacq            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IRCServer.hpp"
 #include "../includes/ircserv.h"
-#include "../includes/cmds.h"
 
 void my_exit(std::string error, int code)
 {
@@ -47,7 +46,9 @@ IRCServer::~IRCServer(void)
 
 void    IRCServer::read_data(fd_set *all_sockets, int i)
 {
-    for (_it = _clients.begin(); _it != _clients.end(); _it++) {
+	(void)all_sockets;
+	(void)i;
+	for (_it = _clients.begin(); _it != _clients.end(); _it++) {
         if ((sd = (*_it)->GetSocket()) != i)
             continue ;
         //int set;
@@ -62,52 +63,10 @@ void    IRCServer::read_data(fd_set *all_sockets, int i)
         }
         else {
             // check command et parsing buffer a refaire proprement
-			
-            std::string temp((*_it)->buffer);
-            std::cout << "buffer[" << std::endl << (*_it)->buffer << std::endl << "]" << std::endl;
-            (*_it)->SetBuffer((*_it)->buffer);
-            if (temp.find("USER") != (size_t)-1)
-                (*_it)->finduser(temp.c_str());
-            if (temp.find("NICK") != (size_t)-1)
-                (*_it)->findnick(temp.c_str());
-			if (temp.find("USER") != (size_t)-1 && temp.find("USER") != (size_t)-1)
-			{
-				std::string rpl(":127.0.0.1 001 " + (*_it)->GetNickname() + " :Welcome to the local Network " + (*_it)->GetNickname() +"\r\n");
-				std::cout << "Reply = " << rpl << std::endl;
-				send(sd, rpl.c_str(), rpl.length(), 0);
-				rpl = ":127.0.0.1 002 " + (*_it)->GetNickname() + " :Your host is " + (*_it)->GetHostname() + ", running on NetTwerkers_v0.1\r\n";
-				std::cout << "Reply = " << rpl << std::endl;
-				send(sd, rpl.c_str(), rpl.length(), 0);
-				rpl = ":127.0.0.1 003 " + (*_it)->GetNickname() + " :This server was created 07/29/2024\r\n";
-				std::cout << "Reply = " << rpl << std::endl;
-				send(sd, rpl.c_str(), rpl.length(), 0);
-				rpl = ":127.0.0.1 004 " + (*_it)->GetNickname() + " " + (*_it)->GetHostname() + " NetTwerkers_v0.1 - itkol\r\n";
-				std::cout << "Reply = " << rpl << std::endl;
-				send(sd, rpl.c_str(), rpl.length(), 0);
-			}
-			find_cmd(**_it, *this);
-           /*if (strncmp((*_it)->buffer, "JOIN", 4) == 0)
-            {
-                int pos;
-                for (int i = 4; (*_it)->buffer[i] != '\0' && (*_it)->buffer[i] != '\r' && (*_it)->buffer[i] != '\n'; i++)
-                    pos = i;
-                std::string test(":" + (*_it)->GetNickname() + "!" + (*_it)->GetUsername() + "@" + (*_it)->GetHostname() + " " + std::string((*_it)->buffer).erase(pos + 1, -1) + "\r\n");
-                std::cout << "send = " << test << std::endl;
-                std::cout << "nick = " << (*_it)->GetNickname() << std::endl;
-                send(sd, test.c_str(), test.length(), 0);
-            }
-            if (temp.find("PRIVMSG") != (size_t)-1)
-            {
-                std::string test2(":" + (*_it)->GetNickname() + "!" + (*_it)->GetUsername() + "@" 
-                                  + (*_it)->GetHostname() + " " + temp + "\r\n");
-                for (_it2 = _clients.begin(); _it2 != _clients.end(); _it2++) {
-                    if (_it2 != _it)
-                    {
-                        std::cout << test2 << std::endl;
-                        send((*_it2)->GetSocket(), test2.c_str(), test2.length(), 0);
-                    }
-                }
-            }*/
+			if ((*_it)->GetIsConnected() == false)
+				client_connect(**_it);
+			else
+				find_cmd(**_it, *this);
         }
     }
 }

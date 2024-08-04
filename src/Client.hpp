@@ -18,6 +18,7 @@ class Client
 		void		SetSocket(int i);
 		void		SetIsOP();
 		void		SetBuffer(const char * string);
+		void		SetIsConnected(bool isconnected);
 		std::string	GetNickname() const;
 		std::string	GetUsername() const;
 		std::string	GetRealname() const;
@@ -25,6 +26,7 @@ class Client
 		int			GetSocket() const;
 		bool		GetIsOP() const;
 		std::string	GetBuffer();
+		bool		GetIsConnected();
 		char		*buffer;
 
 	private:
@@ -32,6 +34,7 @@ class Client
 		std::string	_username; // username on the host ; name you use to login, allows system to identify you
 		std::string	_realname; // name of the host ; just additional information about you
 		std::string	_hostname;
+		bool		_isconnected;
 		//IRCServer	*_server;   // server to which it's connected
 		char		*_buffer;
 		int			_socket;

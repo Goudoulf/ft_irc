@@ -6,7 +6,7 @@
 /*   By: rjacq <rjacq@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 10:26:00 by cassie            #+#    #+#             */
-/*   Updated: 2024/07/30 16:12:14 by rjacq            ###   ########.fr       */
+/*   Updated: 2024/08/02 15:53:53 by rjacq            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 #include <cstdio>
 #include <stdlib.h>
 #include <vector>
+#include "../includes/cmds.h"
 #define MAX_CLIENTS 30
 
 class Client;
