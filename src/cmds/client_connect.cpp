@@ -2,15 +2,16 @@
 
 void	client_connect(Client &client)
 {
-	std::string temp(client.buffer);
+	//std::string temp(client.buffer);
 	int sd = client.GetSocket();
-	std::cout << "buffer[" << std::endl << temp << std::endl << "]" << std::endl;
-	client.SetBuffer(client.buffer);
-	if (temp.find("USER") != (size_t)-1)
-		client.finduser(temp.c_str()); 
-	if (temp.find("NICK") != (size_t)-1)
-		client.findnick(temp.c_str());
-	if (temp.find("USER") != (size_t)-1 && temp.find("USER") != (size_t)-1)
+
+	std::cout << "buffer[" << std::endl << client.GetBufferString() << std::endl << "]" << std::endl;
+	//client.SetBuffer(client.buffer);
+	if (client.GetBufferString().find("USER") != (size_t)-1)
+		client.finduser(client.GetBufferString().c_str()); 
+	if (client.GetBufferString().find("NICK") != (size_t)-1)
+		client.findnick(client.GetBufferString().c_str());
+	if (client.GetBufferString().find("USER") != (size_t)-1 && client.GetBufferString().find("USER") != (size_t)-1)
 	{
 		std::string nickname = client.GetNickname();
 		std::string rpl(":127.0.0.1 001 " + nickname + " :Welcome to the local Network " + nickname +"\r\n");

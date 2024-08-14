@@ -25,9 +25,10 @@ class Client
 		std::string	GetHostname() const;
 		int			GetSocket() const;
 		bool		GetIsOP() const;
-		std::string	GetBuffer();
+		char		*GetBuffer();
+		std::string	GetBufferString();
 		bool		GetIsConnected();
-		char		*buffer;
+		//char		*buffer;
 
 	private:
 		std::string	_nickname; // 9 char and unique ; name which appears for other users

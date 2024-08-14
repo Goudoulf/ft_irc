@@ -2,10 +2,10 @@
 
 void	nick(Client &client, IRCServer &server)
 {
-	std::cout << "________nick command________" << std::endl;
-	size_t index = client.GetBuffer().find("NICK");
-	std::cout << "BUFFER = " << client.GetBuffer() << std::endl;
-	std::string nick = client.GetBuffer().substr(index + 5, -1);
+	std::cout << "_____nick command_____" << std::endl;
+	size_t index = client.GetBufferString().find("NICK");
+	std::cout << "BUFFER = " << client.GetBufferString() << std::endl;
+	std::string nick = client.GetBufferString().substr(index + 5, -1);
 	client.SetNickname(nick.erase(nick.length() - 2, 2));
 	std::cout << "New nick = " << client.GetNickname() << std::endl;
 	std::string rpl(":127.0.0.1 001 " + client.GetNickname() + " :Welcome to the local Network " + client.GetNickname() +"\r\n");

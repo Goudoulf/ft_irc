@@ -8,7 +8,7 @@ Client::Client(const int &socket, std::string hostname): _hostname(hostname), _s
 {
 	_isOP = false;
 	_buffer = new char[1024];
-	buffer = new char[1024];
+	//buffer = new char[1024];
 	_nickname = "default";
 	_realname = "realname";
 	_isconnected = false;
@@ -125,7 +125,12 @@ bool	Client::GetIsOP() const
 	return _isOP;
 }
 
-std::string	Client::GetBuffer()
+char	*Client::GetBuffer()
+{
+	return _buffer;
+}
+
+std::string	Client::GetBufferString()
 {
 	return _buffer;
 }

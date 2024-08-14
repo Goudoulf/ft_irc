@@ -6,7 +6,7 @@
 /*   By: rjacq <rjacq@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 08:21:58 by cassie            #+#    #+#             */
-/*   Updated: 2024/08/02 17:24:07 by rjacq            ###   ########.fr       */
+/*   Updated: 2024/08/15 01:10:02 by rjacq            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ IRCServer::~IRCServer(void)
 {
 }
 
-void    IRCServer::read_data(fd_set *all_sockets, int i)
+/*void    IRCServer::read_data(fd_set *all_sockets, int i)
 {
 	(void)all_sockets;
 	(void)i;
@@ -54,7 +54,33 @@ void    IRCServer::read_data(fd_set *all_sockets, int i)
         //int set;
 		(void)all_sockets;
         bzero((*_it)->buffer, 1024);
-        if ((valread = recv(sd, (*_it)->buffer, 1024, 0)) == 0) {      
+        if ((valread = recv(sd, (*_it)->buffer, 1024, 0)) == 0) {
+            close(sd);
+            std::cout << "recv: socket closed" << std::endl;
+            (*_it)->SetSocket(0);
+            if (valread == -1)  
+                std::cout << "recv: error" << std::endl;
+        }
+        else {
+            // check command et parsing buffer a refaire proprement
+			if ((*_it)->GetIsConnected() == false)
+				client_connect(**_it);
+			else
+				find_cmd(**_it, *this);
+        }
+    }
+}*/
+void    IRCServer::read_data(fd_set *all_sockets, int i)
+{
+	(void)all_sockets;
+	(void)i;
+	for (_it = _clients.begin(); _it != _clients.end(); _it++) {
+        if ((sd = (*_it)->GetSocket()) != i)
+            continue ;
+        //int set;
+		(void)all_sockets;
+        bzero((*_it)->GetBuffer(), 1024);
+        if ((valread = recv(sd, (*_it)->GetBuffer(), 1024, 0)) == 0) {
             close(sd);
             std::cout << "recv: socket closed" << std::endl;
             (*_it)->SetSocket(0);

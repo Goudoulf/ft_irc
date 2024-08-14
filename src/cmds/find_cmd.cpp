@@ -17,8 +17,8 @@ void	map_init(std::map<std::string, void (*)(Client&, IRCServer&)> &map_func)
 
 void	find_cmd(Client &client, IRCServer &server)
 {
-	client.SetBuffer(client.buffer);
-	std::string buf(client.GetBuffer());
+	//client.SetBuffer(client.buffer);
+	std::string buf = client.GetBufferString();
 	std::map<std::string, void (*)(Client&, IRCServer&)> map_func;
 	map_init(map_func);
 	(void)server;

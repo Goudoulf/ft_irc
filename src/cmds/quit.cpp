@@ -2,7 +2,7 @@
 
 void	quit(Client &client, IRCServer &server)
 {
-	std::cout << "quit" << std::endl;
+	std::cout << "_____quit_____" << std::endl;
 	(void)server;
 	(void)client;
 }
