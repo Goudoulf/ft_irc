@@ -1,6 +1,6 @@
 #include "Channel.hpp"
 
-
+// TODO: Add fucntion to add new client to channel
 bool	validName(std::string name)
 {
 	if (name.length() >= 50
@@ -59,6 +59,8 @@ channelMode Channel::getChannelMode()
 	return _mode;
 }
 
+
+// TODO: Finish error handling for invalid name
 const char *Channel::InvalidName::what() const throw()
 {
 	return "TODO";

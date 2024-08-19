@@ -44,117 +44,6 @@ IRCServer::~IRCServer(void)
 {
 }
 
-// void    IRCServer::read_data(fd_set *all_sockets, int i)
-// {
-//     for (_it = _clients.begin(); _it != _clients.end(); _it++) {
-//         if ((sd = (*_it)->GetSocket()) != i)
-//             continue ;
-//         int set;
-//         bzero((*_it)->buffer, 1024);
-//         if ((valread = recv(sd, (*_it)->buffer, 1024, 0)) == 0) {      
-/*void    IRCServer::read_data(fd_set *all_sockets, int i)
-{
-<<<<<<< HEAD
-	(void)all_sockets;
-	(void)i;
-	for (_it = _clients.begin(); _it != _clients.end(); _it++) {
-        if ((sd = (*_it)->GetSocket()) != i)
-            continue ;
-        //int set;
-		(void)all_sockets;
-=======
-    (void)all_sockets;
-    for (_it = _clients.begin(); _it != _clients.end(); _it++) {
-        if ((sd = (*_it)->GetSocket()) != i)
-            continue ;
-        //int set;
->>>>>>> origin/leo
-        bzero((*_it)->buffer, 1024);
-        if ((valread = recv(sd, (*_it)->buffer, 1024, 0)) == 0) {
-            close(sd);
-            std::cout << "recv: socket closed" << std::endl;
-            (*_it)->SetSocket(0);
-            if (valread == -1)  
-                std::cout << "recv: error" << std::endl;
-        }
-        else {
-            // check command et parsing buffer a refaire proprement
-            std::string temp((*_it)->buffer);
-            std::cout << "buffer[" << std::endl << (*_it)->buffer << std::endl << "]" << std::endl;
-            (*_it)->SetBuffer((*_it)->buffer);
-            if (temp.find("USER") != (size_t)-1)
-                (*_it)->finduser(temp.c_str());
-            if (temp.find("NICK") != (size_t)-1)
-                (*_it)->findnick(temp.c_str());
-            if (temp.find("JOIN") != (size_t)-1)
-            {
-                int pos;
-                for (int i = 4; (*_it)->buffer[i] != '\0' && (*_it)->buffer[i] != '\r' && (*_it)->buffer[i] != '\n'; i++)
-                    pos = i;
-                std::cout << "GET:" << std::string((*_it)->buffer) << "." << std::endl; 
-                std::string test(":" + (*_it)->GetNickname() + "!" + (*_it)->GetUsername() + "@" + (*_it)->GetHostname() + " " + std::string((*_it)->buffer).erase(pos + 1, -1) + "\r\n");
-                std::cout << "send = " << test << std::endl;
-                std::cout << "nick = " << (*_it)->GetNickname() << std::endl;
-                send(sd, test.c_str(), test.length(), 0);
-            }
-            if (temp.find("PRIVMSG") != (size_t)-1)
-            {
-                std::string test2(":" + (*_it)->GetNickname() + "!" + (*_it)->GetUsername() + "@" 
-                                  + (*_it)->GetHostname() + " " + temp + "\r\n");
-                for (_it2 = _clients.begin(); _it2 != _clients.end(); _it2++) {
-                    if (_it2 != _it)
-                    {
-                        std::cout << test2 << std::endl;
-                        send((*_it2)->GetSocket(), test2.c_str(), test2.length(), 0);
-                    }
-                }
-            }
-			if ((*_it)->GetIsConnected() == false)
-				client_connect(**_it);
-			else
-				find_cmd(**_it, *this);
-        }
-    }
-}*/
-void    IRCServer::read_data(fd_set *all_sockets, int i)
-{
-	(void)all_sockets;
-	(void)i;
-	for (_it = _clients.begin(); _it != _clients.end(); _it++) {
-        if ((sd = (*_it)->GetSocket()) != i)
-            continue ;
-        //int set;
-		(void)all_sockets;
-        bzero((*_it)->GetBuffer(), 1024);
-        if ((valread = recv(sd, (*_it)->GetBuffer(), 1024, 0)) == 0) {
-            close(sd);
-            std::cout << "recv: socket closed" << std::endl;
-            (*_it)->SetSocket(0);
-            if (valread == -1)  
-                std::cout << "recv: error" << std::endl;
-        }
-        else {
-            // check command et parsing buffer a refaire proprement
-			if ((*_it)->GetIsConnected() == false)
-				client_connect(**_it);
-			else
-				find_cmd(**_it, *this);
-        }
-    }
-}
-
-void    IRCServer::accept_connection(fd_set *all_sockets)
-{
-    int     new_socket;
-        new_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen);
-        if (new_socket < 0)
-            my_exit("accept error", EXIT_FAILURE);
-        FD_SET(new_socket, all_sockets);
-        if (new_socket > max_sd)
-            max_sd = new_socket;
-        _clients.push_back(new Client(new_socket, inet_ntoa(address.sin_addr)));
-}
-
 int	IRCServer::run(void)
 {
     fd_set readfds;
@@ -187,6 +76,46 @@ int	IRCServer::run(void)
             read_data(&all_sockets, i);
     }
     return 0;
+}
+
+void    IRCServer::read_data(fd_set *all_sockets, int i)
+{
+	(void)all_sockets;
+	(void)i;
+	for (_it = _clients.begin(); _it != _clients.end(); _it++) {
+        if ((sd = (*_it)->GetSocket()) != i)
+            continue ;
+        //int set;
+		(void)all_sockets;
+        bzero((*_it)->GetBuffer(), 1024);
+        // FIX: Undefined disconnect
+        if ((valread = recv(sd, (*_it)->GetBuffer(), 1024, 0)) == 0) {
+            close(sd);
+            std::cout << "recv: socket closed" << std::endl;
+            (*_it)->SetSocket(0);
+            if (valread == -1)  
+                std::cout << "recv: error" << std::endl;
+        }
+        else {
+            // check command et parsing buffer a refaire proprement
+			if ((*_it)->GetIsConnected() == false)
+				client_connect(**_it);
+			else
+				find_cmd(**_it, *this);
+        }
+    }
+}
+
+void    IRCServer::accept_connection(fd_set *all_sockets)
+{
+    int     new_socket;
+        new_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen);
+        if (new_socket < 0)
+            my_exit("accept error", EXIT_FAILURE);
+        FD_SET(new_socket, all_sockets);
+        if (new_socket > max_sd)
+            max_sd = new_socket;
+        _clients.push_back(new Client(new_socket, inet_ntoa(address.sin_addr)));
 }
 
 std::vector<Client*> *IRCServer::getClients()

@@ -18,7 +18,9 @@ void	join(Client &client, IRCServer &server)
 		std::string test(":" + client.GetNickname() + "!" + client.GetUsername() + "@" + client.GetHostname() + " " + buf + "\r\n");
 		std::cout << buf << std::endl;
 		std::cout << test << std::endl;
-		//send to all client on the channel (must be modified cause actually send to all client)
+		// TODO: Create class Channel and add client to it
+
+		//TODO: send to all client on the channel (must be modified cause actually send to all client)
 		for (std::vector<Client*>::iterator _it = server.getClients()->begin(); _it != server.getClients()->end(); _it++) {
 			send((*_it)->GetSocket(), test.c_str(), test.length(), 0);
 		}
