@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cassie <cassie@student.42lyon.fr>          +#+  +:+       +#+        */
+/*   By: rjacq <rjacq@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 10:26:00 by cassie            #+#    #+#             */
-/*   Updated: 2024/07/15 08:39:33 by cassie           ###   ########.fr       */
+/*   Updated: 2024/08/02 15:53:53 by rjacq            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,10 @@
 #include <cstdio>
 #include <stdlib.h>
 #include <vector>
+#include "../includes/cmds.h"
 #define MAX_CLIENTS 30
+
+class Client;
 
 class IRCServer
 {
@@ -44,6 +47,8 @@ class IRCServer
 			public:
 				virtual const char* what() const throw();
 		};
+
+		std::vector<Client*> *getClients();
 		
 		int	run(void);
 		int	join(void);

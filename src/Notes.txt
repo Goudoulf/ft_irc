@@ -1,0 +1,36 @@
+AUTHENTICATE : used for SASL authentication 
+
+/*Commands USER*/
+
+/JOIN #<channel> : permet de rejoindre ou creer un channel
+
+/NICK <nickname> : permet de definir ou redefinir le nickname du client
+
+/PASS <password> : permet de definir un mdp de connection
+
+/PRIVMSG <target(channel, nickname)> <message> : permet d'envoyer un message prive a un utilisateur ou a un channel
+
+/NOTICES <target(channel, nickname)> <message> : 
+
+/QUIT <reason> : permet de quitter le serveur
+
+/PING
+
+/PONG
+
+
+
+/KICK #<channel> <user> (reason / default message): permet de forcer la suppression d'un utilisateur dans un channel donne
+
+/TOPIC #<channel> (topic) : permet de changer ou de voir le topic du channel donne 
+
+/PART #<channel> (reason) : permet de partir d'un channel
+
+/INVITE <nickname> #<channel>: permet d'inviter un utilisateur dans un channel donne
+
+/MODE #<channel> +<mode> (args): permet de changer le mode du channel
+				 +i : sur invitation seulement
+				 +t : restreint /TOPIC aux OP
+				 +k : demande aux utilisateur de specifier une cle de channel pour rejoindre (/JOIN #chan key)
+				 +o : defini la target en OP
+				 +l : limite le nombre d'utilisateur dans le channel
