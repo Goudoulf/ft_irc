@@ -9,6 +9,7 @@ class Client
 	public:
 		Client(const int &socket, std::string hostname);
 		~Client();
+		bool operator <(const Client& toComp) const;
 
 		void		SetClient();
 		void		findnick(const char *buffer);
@@ -40,7 +41,7 @@ class Client
 		//IRCServer	*_server;   // server to which it's connected
 		char		*_buffer;
 		int			_socket;
-		bool		_isOP;
+		bool		_isOP; //un client n'est pas OP general, il est OP dans un channel en particulier
 };
 
 #endif

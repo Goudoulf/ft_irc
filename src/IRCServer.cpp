@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rjacq <rjacq@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 08:21:58 by cassie            #+#    #+#             */
 /*   Updated: 2024/08/15 01:10:02 by rjacq            ###   ########.fr       */
@@ -54,6 +54,7 @@ IRCServer::~IRCServer(void)
 //         if ((valread = recv(sd, (*_it)->buffer, 1024, 0)) == 0) {      
 /*void    IRCServer::read_data(fd_set *all_sockets, int i)
 {
+<<<<<<< HEAD
 	(void)all_sockets;
 	(void)i;
 	for (_it = _clients.begin(); _it != _clients.end(); _it++) {
@@ -61,6 +62,13 @@ IRCServer::~IRCServer(void)
             continue ;
         //int set;
 		(void)all_sockets;
+=======
+    (void)all_sockets;
+    for (_it = _clients.begin(); _it != _clients.end(); _it++) {
+        if ((sd = (*_it)->GetSocket()) != i)
+            continue ;
+        //int set;
+>>>>>>> origin/leo
         bzero((*_it)->buffer, 1024);
         if ((valread = recv(sd, (*_it)->buffer, 1024, 0)) == 0) {
             close(sd);
@@ -78,11 +86,12 @@ IRCServer::~IRCServer(void)
                 (*_it)->finduser(temp.c_str());
             if (temp.find("NICK") != (size_t)-1)
                 (*_it)->findnick(temp.c_str());
-            if (strncmp((*_it)->buffer, "JOIN", 4) == 0)
+            if (temp.find("JOIN") != (size_t)-1)
             {
                 int pos;
                 for (int i = 4; (*_it)->buffer[i] != '\0' && (*_it)->buffer[i] != '\r' && (*_it)->buffer[i] != '\n'; i++)
                     pos = i;
+                std::cout << "GET:" << std::string((*_it)->buffer) << "." << std::endl; 
                 std::string test(":" + (*_it)->GetNickname() + "!" + (*_it)->GetUsername() + "@" + (*_it)->GetHostname() + " " + std::string((*_it)->buffer).erase(pos + 1, -1) + "\r\n");
                 std::cout << "send = " << test << std::endl;
                 std::cout << "nick = " << (*_it)->GetNickname() << std::endl;
@@ -163,7 +172,7 @@ int	IRCServer::run(void)
             my_exit("select error", EXIT_FAILURE);
         if (activity == 0)
         {
-            std::cout << "Wait.."<< std::endl; // Wait until a socket update
+            //std::cout << "Wait.."<< std::endl; // Wait until a socket update
             continue;
         }
         int i;

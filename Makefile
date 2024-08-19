@@ -12,7 +12,9 @@
 
 NAME = ircserv
 
-SRCS_FILE = main.cpp IRCServer.cpp Client.cpp client_checker.cpp cmds/find_cmd.cpp cmds/join.cpp cmds/nick.cpp cmds/pass.cpp cmds/privmsg.cpp cmds/quit.cpp cmds/client_connect.cpp
+SRCS_FILE = main.cpp IRCServer.cpp Client.cpp client_checker.cpp \
+			cmds/find_cmd.cpp cmds/join.cpp cmds/nick.cpp cmds/pass.cpp\
+			cmds/privmsg.cpp cmds/quit.cpp cmds/client_connect.cpp Channel.cpp
 
 DIR_SRC := src/
 DIR_OBJ := .object/

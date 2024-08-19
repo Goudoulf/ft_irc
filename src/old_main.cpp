@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   old_main.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cassie <cassie@student.42lyon.fr>          +#+  +:+       +#+        */
+/*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 07:10:56 by cassie            #+#    #+#             */
-/*   Updated: 2024/07/09 13:07:34 by cassie           ###   ########.fr       */
+/*   Updated: 2024/07/17 09:05:52 by lvallini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 #include <cerrno>
 #include <cstdio>
 #include <stdlib.h>
+#include <iostream>
+#include <string>
 
 #define PORT 6667
 #define MAX_CLIENTS 30
@@ -92,6 +94,7 @@ int main() {
                     client_socket[i] = 0;
                 } else {
                     buffer[valread] = '\0';
+               
                     send(sd, buffer, strlen(buffer), 0);
                 }
             }
