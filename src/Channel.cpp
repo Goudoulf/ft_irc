@@ -42,7 +42,7 @@ Channel::Channel(const std::string &name, const Client &creator)
 		throw InvalidName();
 	_name = name;
 	_mode = selectMode(name);
-	_users.insert(std::make_pair(creator, true));
+	//_users.insert(std::make_pair(creator, true));
 }
 
 Channel::~Channel()
@@ -59,9 +59,3 @@ channelMode Channel::getChannelMode()
 	return _mode;
 }
 
-
-// TODO: Finish error handling for invalid name
-const char *Channel::InvalidName::what() const throw()
-{
-	return "TODO";
-}

@@ -29,7 +29,7 @@ class Channel
 		
 		class InvalidName: public std::exception {
 			public:
-				virtual const char* what() const throw();
+				virtual const char* what() const throw() {return "TODO";}
 		};
 
 
@@ -37,7 +37,9 @@ class Channel
 		std::string _name; //beginning with a &#+! length of 50 max char, case insensitive
 							// no spaces or control G (ASCII 7), no ',' or ':', can't be reused
 		//container of users, maybe a map <client, bool isOp> ?
-		std::map<Client, bool> _users;
+		std::vector<Client> _users;
+		std::vector<Client> _operators;
+		std::string	topic;
 		channelMode _mode;//channel mode, depending on name prefix
 		//stack of strings to make a message history if needed.
 
