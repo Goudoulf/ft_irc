@@ -34,3 +34,24 @@ AUTHENTICATE : used for SASL authentication
 				 +k : demande aux utilisateur de specifier une cle de channel pour rejoindre (/JOIN #chan key)
 				 +o : defini la target en OP
 				 +l : limite le nombre d'utilisateur dans le channel
+
+Reply from server format:
+
+	:<prefix> <command> <target> :<reply>
+
+	prefix:
+		indicate the origin of a message
+		ex: server or a client
+
+	command:
+		The command will be a three-digit code
+
+	target:
+		target of reply
+
+	reply:
+		content of reply
+
+prefix client
+
+	:<Nickname>!<Username>@<Hostname>

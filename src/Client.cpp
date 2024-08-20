@@ -6,7 +6,6 @@
 
 Client::Client(const int &socket, std::string hostname): _hostname(hostname), _socket(socket)
 {
-	_isOP = false;
 	_buffer = new char[1024];
 	//buffer = new char[1024];
 	_nickname = "default";
@@ -64,6 +63,11 @@ void	Client::finduser(const char * buffer)
 	std::cout << "user=" << _username << std::endl;
 }
 
+void		Client::SetPrefix()
+{
+	_prefix = _nickname + "!" + _username + "@" + _hostname;	
+}
+
 void	Client::SetClient()
 {
 }
@@ -81,12 +85,6 @@ void	Client::SetHostname(std::string hostname)
 void	Client::SetUsername(std::string username)
 {
 	_username = username;
-}
-
-void	Client::SetIsOP()
-{
-	_isOP = true;
-	_nickname.insert(0, "@");
 }
 
 void	Client::SetSocket(int i)
@@ -129,14 +127,14 @@ int	Client::GetSocket() const
 	return _socket;
 }
 
-bool	Client::GetIsOP() const
-{
-	return _isOP;
-}
-
 char	*Client::GetBuffer()
 {
 	return _buffer;
+}
+
+std::string	Client::GetPrefix() const
+{
+	return _prefix;
 }
 
 std::string	Client::GetBufferString()

@@ -86,7 +86,6 @@ void    IRCServer::read_data(fd_set *all_sockets, int i)
         if ((sd = (*_it)->GetSocket()) != i)
             continue ;
         //int set;
-		(void)all_sockets;
         bzero((*_it)->GetBuffer(), 1024);
         // FIX: Undefined disconnect
         if ((valread = recv(sd, (*_it)->GetBuffer(), 1024, 0)) == 0) {

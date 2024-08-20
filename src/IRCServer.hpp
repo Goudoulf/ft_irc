@@ -54,6 +54,7 @@ class IRCServer
 		int	join(void);
 		void    accept_connection(fd_set *all_sockets);
 		void    read_data(fd_set *all_sockets, int i);
+		void	reply(std::string prefix, std::string command, std::string target, std::string message);
 		struct timeval timeout;
 
 	private:
