@@ -42,7 +42,8 @@ Channel::Channel(const std::string &name, const Client &creator)
 		throw InvalidName();
 	_name = name;
 	_mode = selectMode(name);
-	//_users.insert(std::make_pair(creator, true));
+	_operators.push_back(creator);
+	_users.push_back(creator);
 }
 
 Channel::~Channel()
@@ -59,3 +60,22 @@ channelMode Channel::getChannelMode()
 	return _mode;
 }
 
+bool	Channel::InChannel(std::string client)
+{
+	std::vector<Client>::iterator it;
+	for (it = _users.begin(); it != _users.end(); it++) {
+		if (it->GetUsername() == client)
+			return (true);
+	}
+	return (false);
+}
+
+bool	Channel::IsOp(std::string client)
+{
+	std::vector<Client>::iterator it;
+	for (it = _operators.begin(); it != _operators.end(); it++) {
+		if (it->GetUsername() == client)
+			return (true);
+	}
+	return (false);
+}
