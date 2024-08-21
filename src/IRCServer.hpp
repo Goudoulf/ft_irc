@@ -15,6 +15,7 @@
 
 #include <map>
 #include "Client.hpp"
+#include "Channel.hpp"
 #include <string>
 #include <unistd.h>
 #include <arpa/inet.h>
@@ -31,6 +32,7 @@
 #define MAX_CLIENTS 30
 
 class Client;
+class Channel;
 
 class IRCServer
 {
@@ -54,7 +56,8 @@ class IRCServer
 		int	join(void);
 		void    accept_connection(fd_set *all_sockets);
 		void    read_data(fd_set *all_sockets, int i);
-		void	reply(std::string prefix, std::string command, std::string target, std::string message);
+		Channel	*create_channel(std::string channel, Client &client);
+		Channel	*find_channel(std::string channel);
 		struct timeval timeout;
 
 	private:
@@ -63,6 +66,7 @@ class IRCServer
 		std::string _password;
 		unsigned	short	_client_count;
 		std::vector<Client*> _clients;
+		std::vector<Channel*> _channels;
 		std::vector<Client*>::iterator _it;
 		std::vector<Client*>::iterator _it2;
 		int server_fd, max_sd, sd, activity, valread;

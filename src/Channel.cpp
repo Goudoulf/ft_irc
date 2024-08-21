@@ -60,6 +60,21 @@ channelMode Channel::getChannelMode()
 	return _mode;
 }
 
+std::string Channel::getUsers()
+{
+	std::string temp;
+	std::vector<Client>::iterator it;
+	for (it = _users.begin(); it != _users.end(); it++) {
+		if (IsOp(it->GetUsername()) == true)
+			temp = temp + "@" + it->GetNickname();
+		else
+			temp = temp + it->GetNickname();
+		if (it->GetUsername() != _users.back().GetUsername())
+			temp = temp + " ";
+	}
+	return temp;
+}
+
 bool	Channel::InChannel(std::string client)
 {
 	std::vector<Client>::iterator it;
@@ -78,4 +93,14 @@ bool	Channel::IsOp(std::string client)
 			return (true);
 	}
 	return (false);
+}
+
+std::string		Channel::getTopic()
+{
+	return _topic;
+}
+
+void	Channel::add_client(Client &client)
+{
+	_users.push_back(client);	
 }

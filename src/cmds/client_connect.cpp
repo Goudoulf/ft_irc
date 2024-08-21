@@ -3,7 +3,7 @@
 void	client_connect(Client &client)
 {
 	//std::string temp(client.buffer);
-	int sd = client.GetSocket();
+	// int sd = client.GetSocket();
 
 	std::cout << "buffer[" << std::endl << client.GetBufferString() << std::endl << "]" << std::endl;
 	//client.SetBuffer(client.buffer);

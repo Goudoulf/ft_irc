@@ -12,6 +12,7 @@
 
 #include "IRCServer.hpp"
 #include "../includes/ircserv.h"
+#include "Client.hpp"
 
 void my_exit(std::string error, int code)
 {
@@ -97,10 +98,10 @@ void    IRCServer::read_data(fd_set *all_sockets, int i)
         }
         else {
             // check command et parsing buffer a refaire proprement
-			if ((*_it)->GetIsConnected() == false)
-				client_connect(**_it);
-			else
-				find_cmd(**_it, *this);
+            if ((*_it)->GetIsConnected() == false)
+                client_connect(**_it);
+            else
+                find_cmd(**_it, *this);
         }
     }
 }
@@ -120,4 +121,19 @@ void    IRCServer::accept_connection(fd_set *all_sockets)
 std::vector<Client*> *IRCServer::getClients()
 {
 	return &_clients;
+}
+Channel *IRCServer::create_channel(std::string channel, Client &client)
+{
+    _channels.push_back(new Channel(channel, client));
+    return (_channels.back());
+}
+
+Channel	*IRCServer::find_channel(std::string channel)
+{
+    std::vector<Channel*>::iterator it;
+    for (it = _channels.begin(); it != _channels.end(); it++) {
+        if ((*it)->getChannelName() == channel)
+            return (*it);
+    }
+    return (NULL);
 }

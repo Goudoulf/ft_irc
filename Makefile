@@ -14,7 +14,8 @@ NAME = ircserv
 
 SRCS_FILE = main.cpp IRCServer.cpp Client.cpp client_checker.cpp \
 			cmds/find_cmd.cpp cmds/join.cpp cmds/nick.cpp cmds/pass.cpp\
-			cmds/privmsg.cpp cmds/quit.cpp cmds/client_connect.cpp Channel.cpp
+			cmds/privmsg.cpp cmds/quit.cpp cmds/client_connect.cpp Channel.cpp\
+			cmds/reply.cpp
 
 DIR_SRC := src/
 DIR_OBJ := .object/

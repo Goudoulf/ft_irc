@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include "Client.hpp"
+#include <vector>
 //& = local server, useless on this project. standard channel
 //+ = channel modes not supported -> no one is OP. standard channel
 //! = user creating the channel gets channel creator status -> operator. safe channel
@@ -18,6 +19,7 @@
 // ceases to exist when last user leaves (and no other member recently leaving because of network split -> useless).
 enum channelMode {local, noMode, safe, standard, error}; //{&, +, !, #}
 
+class Client;
 //channel delay = not being able to recreate a channel remotely for a defined time.
 class Channel
 {
@@ -25,7 +27,12 @@ class Channel
 		Channel(const std::string &name, const Client &creator);
 		~Channel();
 		std::string getChannelName();
+		std::string getUsers();
 		channelMode getChannelMode();
+		bool	InChannel(std::string client);
+		bool	IsOp(std::string client);
+		void	add_client(Client &client);
+		std::string	getTopic();
 		
 		class InvalidName: public std::exception {
 			public:
@@ -39,7 +46,8 @@ class Channel
 		//container of users, maybe a map <client, bool isOp> ?
 		std::vector<Client> _users;
 		std::vector<Client> _operators;
-		std::string	topic;
+		std::string			_topic;
+		std::string			_password;
 		channelMode _mode;//channel mode, depending on name prefix
 		//stack of strings to make a message history if needed.
 
