@@ -15,18 +15,11 @@ void	client_connect(Client &client)
 	{
 		client.SetPrefix();
 		std::string nickname = client.GetNickname();
-		std::string rpl(":127.0.0.1 001 " + nickname + " :Welcome to the local Network " + nickname +"\r\n");
-		std::cout << "Reply = " << rpl << std::endl;
-		send(sd, rpl.c_str(), rpl.length(), 0);
-		rpl = ":127.0.0.1 002 " + nickname + " :Your host is " + client.GetHostname() + ", running on NetTwerkers_v0.1\r\n";
-		std::cout << "Reply = " << rpl << std::endl;
-		send(sd, rpl.c_str(), rpl.length(), 0);
-		rpl = ":127.0.0.1 003 " + nickname + " :This server was created 07/29/2024\r\n";
-		std::cout << "Reply = " << rpl << std::endl;
-		send(sd, rpl.c_str(), rpl.length(), 0);
-		rpl = ":127.0.0.1 004 " + nickname + " " + client.GetHostname() + " NetTwerkers_v0.1 - itkol\r\n";
-		std::cout << "Reply = " << rpl << std::endl;
-		send(sd, rpl.c_str(), rpl.length(), 0);
+		std::string rpl(":127.0.0.1 001 " + nickname + ":Welcome to the local Network " + nickname +"\r\n");
+		reply_server("001", client, ":Welcome to the local Network " + nickname);
+		reply_server("002", client, ":Your host is " + client.GetHostname() + ", running on NetTwerkers_v0.1");
+		reply_server("003", client, ":This server was created 07/29/2024");
+		reply_server("004", client, ":NetTwerkers_v0.1 - itkol");
 		client.SetIsConnected(true);
 	}
 }
