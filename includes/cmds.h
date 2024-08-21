@@ -10,6 +10,7 @@
 class IRCServer;
 class Client;
 
+void	reply_server(std::string command,  Client &client, std::string message);
 void	client_connect(Client &client);
 void	find_cmd(Client &client, IRCServer &server);
 void	join(Client &client, IRCServer &server);
