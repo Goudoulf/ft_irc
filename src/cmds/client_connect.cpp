@@ -13,6 +13,7 @@ void	client_connect(Client &client)
 		client.findnick(client.GetBufferString().c_str());
 	if (client.GetBufferString().find("USER") != (size_t)-1 && client.GetBufferString().find("USER") != (size_t)-1)
 	{
+		client.SetPrefix();
 		std::string nickname = client.GetNickname();
 		std::string rpl(":127.0.0.1 001 " + nickname + " :Welcome to the local Network " + nickname +"\r\n");
 		std::cout << "Reply = " << rpl << std::endl;
