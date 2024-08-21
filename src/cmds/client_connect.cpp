@@ -11,7 +11,7 @@ void	client_connect(Client &client)
 		client.finduser(client.GetBufferString().c_str()); 
 	if (client.GetBufferString().find("NICK") != (size_t)-1)
 		client.findnick(client.GetBufferString().c_str());
-	if (client.GetBufferString().find("USER") != (size_t)-1 && client.GetBufferString().find("USER") != (size_t)-1)
+	if (client.GetBufferString().find("USER") != (size_t)-1 && client.GetBufferString().find("NICK") != (size_t)-1)
 	{
 		client.SetPrefix();
 		std::string nickname = client.GetNickname();
