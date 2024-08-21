@@ -22,7 +22,10 @@ void	reply_server(std::string command,  Client &client, std::string message)
 	send(sd, rpl.c_str(), rpl.length(), 0);
 }
 
-void	message_server(std::string prefix, std::string command, std::string target, std::string message)
+void	message_server(std::string target, std::string command, Client &client, std::string message)
 {
-
+	int sd = client.GetSocket();
+	std::string rpl(client.GetPrefix() + " " + command + " " + target + " " + message +"\r\n");
+	std::cout << "Message = " << rpl << std::endl;
+	send(sd, rpl.c_str(), rpl.length(), 0);
 }
