@@ -48,17 +48,6 @@
 //    JOIN &foo fubar                 ; Command to join channel &foo using
 //                                    key "fubar".
 
-std::vector<std::string> split(const std::string& input, char delimiter)
-{
-    std::vector<std::string> tokens;
-    std::string token;
-    std::istringstream tokenStream(input);
-    while (std::getline(tokenStream, token, delimiter)) {
-        tokens.push_back(token);
-    }
-    return tokens;
-}
-
 void	joinChannel(std::string channel, std::string key, Client &client, IRCServer &server)
 {
 	(void)key;
