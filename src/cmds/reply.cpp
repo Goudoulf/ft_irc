@@ -26,6 +26,6 @@ void	message_server(std::string target, std::string command, Client &client, std
 {
 	int sd = client.GetSocket();
 	std::string rpl(":" + client.GetPrefix() + " " + command + " " + target + " " + message +"\r\n");
-	std::cout << "Message = " << rpl << std::endl;
+	std::cout << "Message to " << client.GetNickname() << " = " << rpl << std::endl;
 	send(sd, rpl.c_str(), rpl.length(), 0);
 }
