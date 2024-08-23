@@ -10,7 +10,7 @@
 class IRCServer;
 class Client;
 
-void	message_server(std::string target, std::string command, Client &client, std::string message);
+void	message_server(std::string target, std::string command, Client &client, std::string message, int sd);
 void	reply_server(std::string command,  Client &client, std::string message);
 void	client_connect(Client &client);
 void	find_cmd(Client &client, IRCServer &server);

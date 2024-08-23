@@ -30,7 +30,7 @@ void	join(Client &client, IRCServer &server)
 		//TODO: send to all client on the channel (must be modified cause actually send to all client)
 		for (std::vector<Client*>::iterator _it = server.getClients()->begin(); _it != server.getClients()->end(); _it++) {
 			if (channel->InChannel((*_it)->GetUsername()))
-				message_server("", "JOIN", **_it, channel->getChannelName());
+				message_server("", "JOIN", client, channel->getChannelName(), (*_it)->GetSocket());
 				//send((*_it)->GetSocket(), test.c_str(), test.length(), 0);
 		}
 		//if topic is set -> RPL_TOPIC
