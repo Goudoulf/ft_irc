@@ -21,7 +21,6 @@ void	find_cmd(Client &client, IRCServer &server)
 	std::string buf = client.GetBufferString();
 	std::map<std::string, void (*)(Client&, IRCServer&)> map_func;
 	map_init(map_func);
-	(void)server;
  
 	for (std::map<std::string, void (*)(Client&, IRCServer&)>::iterator it = map_func.begin(); it != map_func.end(); it++)
 		if (buf.compare(0, it->first.length(), it->first) == 0)

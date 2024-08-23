@@ -1,60 +1,116 @@
 #include "../../includes/cmds.h"
 #include "../Channel.hpp"
+#include <sstream>
+#include <vector>
+#include <string>
+
+// Join message
+//
+//       Command: JOIN
+//    Parameters: ( <channel> *( "," <channel> ) [ <key> *( "," <key> ) ] )
+//                / "0"
+//
+//    The JOIN command is used by a user to request to start listening to
+//    the specific channel.  Servers MUST be able to parse arguments in the
+//    form of a list of target, but SHOULD NOT use lists when sending JOIN
+//    messages to clients.
+//
+//    Once a user has joined a channel, he receives information about
+//    all commands his server receives affecting the channel.  This
+//    includes JOIN, MODE, KICK, PART, QUIT and of course PRIVMSG/NOTICE.
+//    This allows channel members to keep track of the other channel
+//    members, as well as channel modes.
+//
+//    If a JOIN is successful, the user receives a JOIN message as
+//    confirmation and is then sent the channel's topic (using RPL_TOPIC) and
+//    the list of users who are on the channel (using RPL_NAMREPLY), which
+//    MUST include the user joining.
+//
+//    Note that this message accepts a special argument ("0"), which is
+//    a special request to leave all channels the user is currently a member
+//    of.  The server will process this message as if the user had sent
+//    a PART command (See Section 3.2.2) for each channel he is a member
+//    of.
+//
+//    Numeric Replies:
+//
+//            ERR_NEEDMOREPARAMS              ERR_BANNEDFROMCHAN
+//            ERR_INVITEONLYCHAN              ERR_BADCHANNELKEY
+//            ERR_CHANNELISFULL               ERR_BADCHANMASK
+//            ERR_NOSUCHCHANNEL               ERR_TOOMANYCHANNELS
+//            ERR_TOOMANYTARGETS              ERR_UNAVAILRESOURCE
+//            RPL_TOPIC
+//
+//    Examples:
+//
+//    JOIN #foobar                    ; Command to join channel #foobar.
+//
+//    JOIN &foo fubar                 ; Command to join channel &foo using
+//                                    key "fubar".
+
+std::vector<std::string> split(const std::string& input, char delimiter)
+{
+    std::vector<std::string> tokens;
+    std::string token;
+    std::istringstream tokenStream(input);
+    while (std::getline(tokenStream, token, delimiter)) {
+        tokens.push_back(token);
+    }
+    return tokens;
+}
+
+void	joinChannel(std::string channel, std::string key, Client &client, IRCServer &server)
+{
+	(void)key;
+	std::cout << "_____join_____" << std::endl;
+	Channel *chan;
+	if (!(chan = server.find_channel(channel)))
+		chan = server.create_channel(channel, client);
+	if (chan->InChannel(client.GetUsername()) == false)
+		chan->add_client(client);
+	for (std::vector<Client*>::iterator _it = server.getClients()->begin(); _it != server.getClients()->end(); _it++) {
+		if (chan->InChannel((*_it)->GetUsername()))
+			message_server("", "JOIN", client, chan->getChannelName(), (*_it)->GetSocket());
+	}
+	//if topic is set -> RPL_TOPIC
+	if (!chan->getTopic().empty())
+		reply_server("332", client, " " + chan->getChannelName() + " :" + chan->getTopic());
+	//RPL_NAMREPLY
+
+	reply_server("353", client, "= " + channel + " :" + chan->getUsers());
+
+	//RPL_ENDOFNAMES
+
+	reply_server("366", client, channel + " :End of NAMES list");
+
+}
+
+void parseJoinCommand(const std::vector<std::string>& tokens, Client &client, IRCServer &server)
+{
+    // Split channels
+    std::vector<std::string> channels = split(tokens[1], ',');
+
+    // Split keys if provided
+    std::vector<std::string> keys;
+    if (tokens.size() > 2) {
+        keys = split(tokens[2], ',');
+    }
+
+    // Process each channel and its corresponding key
+    for (size_t i = 0; i < channels.size(); ++i) {
+        std::string channel = channels[i];
+        std::string key = (i < keys.size()) ? keys[i] : "";
+
+        // Handle the join operation for each channel and key
+        joinChannel(channel, key, client, server);
+    }
+}
 
 void	join(Client &client, IRCServer &server)
 {
-	Channel *channel = NULL;
-	std::cout << "_____join_____" << std::endl;
-	std::string buf = client.GetBufferString();
-	std::string chan_name (buf.substr(5, buf.find_first_of(" \r\n\0", 5) - 5));
-	std::cout << buf << std::endl;
-	if (client.GetBuffer()[5] != '#')
-	{
-		std::string rpl(client.GetNickname() + " " + chan_name + " :No such channel\r\n");
-		std::cout << rpl << std::endl;
-		send(client.GetSocket(), rpl.c_str(), rpl.length(), 0);
-	}
-	else
-	{
-		//create channel if doesn't exist
-		if (!(channel = server.find_channel(chan_name)))
-			channel = server.create_channel(chan_name, client);
-		std::string test(":" + client.GetNickname() + "!" + client.GetUsername() + "@" + client.GetHostname() + " " + buf + "\r\n");
-		std::cout << buf << std::endl;
-		std::cout << "TEST =" << test << std::endl;
-		// TODO: Create class Channel and add client to it
-
-		if (channel->InChannel(client.GetUsername()) == false)
-			channel->add_client(client);
-
-		//TODO: send to all client on the channel (must be modified cause actually send to all client)
-		for (std::vector<Client*>::iterator _it = server.getClients()->begin(); _it != server.getClients()->end(); _it++) {
-			if (channel->InChannel((*_it)->GetUsername()))
-				message_server("", "JOIN", client, channel->getChannelName(), (*_it)->GetSocket());
-				//send((*_it)->GetSocket(), test.c_str(), test.length(), 0);
-		}
-		//if topic is set -> RPL_TOPIC
-		// if (!channel->getTopic().empty())
-		// {
-			// std::string rpl(":127.0.0.1 332 " + client.GetNickname() + chan_name + " :A timey-wimey channel\r\n");
-			// send(client.GetSocket(), rpl.c_str(), rpl.length(), 0);
-		reply_server("332", client, " " + channel->getChannelName() + " :" + channel->getTopic());
-		//}
-		//RPL_NAMREPLY
-		reply_server("353", client, "= " + chan_name + " :" + channel->getUsers());
-		// std::string rpl = ":127.0.0.1 353 " + client.GetNickname() + " = " + chan_name + " :@ray cassie\r\n";
-		// send(client.GetSocket(), rpl.c_str(), rpl.length(), 0);
-		
-		//RPL_ENDOFNAMES
-
-		reply_server("366", client, chan_name + " :End of NAMES list");
-
-		//std::string rpl = ":127.0.0.1 366 " + "goudoulf" + " #tutu :End of NAMES list\r\n";
-		// rpl = ":127.0.0.1 366 " + client.GetNickname() + chan_name + " :End of NAMES list\r\n";
-		// send(client.GetSocket(), rpl.c_str(), rpl.length(), 0);
-		// std::cout << "len =" << rpl.length() << std::endl;
-		// std::cout << rpl << std::endl;
-
-		//RPL_NAMEREPLY and RPL_ENDOFNAMES maybe not send on the right channel (actually send on the main chat not the channel)
-	}
+	std::string buf = client.GetBuffer();
+	buf = buf.substr(0, buf.find_first_of(" \r\n\0", 5));
+	std::vector<std::string> tokens = tokenize(buf);	
+	parseJoinCommand(tokens, client, server);
 }
+
