@@ -31,6 +31,7 @@ class Channel
 		channelMode getChannelMode();
 		bool	InChannel(std::string client);
 		bool	IsOp(std::string client);
+		bool	keyIsValid(std::string &key);
 		void	add_client(Client &client);
 		std::string	getTopic();
 		

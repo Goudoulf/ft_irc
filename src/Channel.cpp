@@ -45,6 +45,7 @@ Channel::Channel(const std::string &name, const Client &creator, const std::stri
 	_mode = selectMode(name);
 	_operators.push_back(creator);
 	_users.push_back(creator);
+	_password = key;
 }
 
 Channel::~Channel()
@@ -74,6 +75,13 @@ std::string Channel::getUsers()
 			temp = temp + " ";
 	}
 	return temp;
+}
+
+bool	Channel::keyIsValid(std::string &key)
+{
+	if (key == _password)
+		return true;
+	return false;
 }
 
 bool	Channel::InChannel(std::string client)
