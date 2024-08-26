@@ -113,3 +113,15 @@ void	Channel::add_client(Client &client)
 {
 	_users.push_back(client);	
 }
+
+void	Channel::remove_client(Client &client)
+{
+	for (std::vector<Client>::iterator it = _operators.begin(); it != _operators.end(); it++) {
+		if (it->GetUsername() == client.GetUsername())
+			_operators.erase(it);
+	}
+	for (std::vector<Client>::iterator it = _users.begin(); it != _users.end(); it++) {
+		if (it->GetUsername() == client.GetUsername())
+			_users.erase(it);
+	}
+}
