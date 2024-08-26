@@ -55,3 +55,6 @@ Reply from server format:
 prefix client
 
 	:<Nickname>!<Username>@<Hostname>
+
+ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890
+31 16 7 10 29 32

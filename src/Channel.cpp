@@ -37,12 +37,31 @@ channelMode	selectMode(std::string name)
 	return (error);
 }
 
+std::string	createChannelId(time_t timestamp)
+{
+	std::string base36("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");
+	std::string res;
+
+	for (int i = 5; i > 0; i--)
+	{
+		res = base36.at(timestamp % 36) + res;
+		timestamp /= 36;
+	}
+	return (res);
+}
+
 Channel::Channel(const std::string &name, const Client &creator, const std::string &key)
 {
 	if (!validName(name))
 		throw InvalidName();
 	_name = name;
 	_mode = selectMode(name);
+	if (_mode == safe)
+	{
+		time_t timestamp = time(NULL);
+		std::cout << "time: " << timestamp << std::endl;
+		std::cout << "channelID: " << createChannelId(timestamp) << std::endl;
+	}
 	_operators.push_back(creator);
 	_users.push_back(creator);
 	_password = key;

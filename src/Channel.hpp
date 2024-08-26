@@ -5,6 +5,7 @@
 #include <map>
 #include "Client.hpp"
 #include <vector>
+#include <ctime>
 //& = local server, useless on this project. standard channel
 //+ = channel modes not supported -> no one is OP. standard channel
 //! = user creating the channel gets channel creator status -> operator. safe channel
@@ -49,6 +50,7 @@ class Channel
 		std::string _name; //beginning with a &#+! length of 50 max char, case insensitive
 							// no spaces or control G (ASCII 7), no ',' or ':', can't be reused
 		//container of users, maybe a map <client, bool isOp> ?
+		
 		std::vector<Client> _users;
 		std::vector<Client> _operators;
 		std::string			_topic;
