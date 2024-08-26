@@ -1,4 +1,5 @@
 #include "Channel.hpp"
+#include <string>
 
 // TODO: Add fucntion to add new client to channel
 bool	validName(std::string name)
@@ -36,7 +37,7 @@ channelMode	selectMode(std::string name)
 	return (error);
 }
 
-Channel::Channel(const std::string &name, const Client &creator)
+Channel::Channel(const std::string &name, const Client &creator, const std::string &key)
 {
 	if (!validName(name))
 		throw InvalidName();

@@ -56,7 +56,7 @@ class IRCServer
 		int	join(void);
 		void    accept_connection(fd_set *all_sockets);
 		void    read_data(fd_set *all_sockets, int i);
-		Channel	*create_channel(std::string channel, Client &client);
+		Channel	*create_channel(std::string channel, Client &client, std::string key);
 		Channel	*find_channel(std::string channel);
 		struct timeval timeout;
 

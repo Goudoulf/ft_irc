@@ -54,7 +54,7 @@ void	joinChannel(std::string channel, std::string key, Client &client, IRCServer
 	std::cout << "_____join_____" << std::endl;
 	Channel *chan;
 	if (!(chan = server.find_channel(channel)))
-		chan = server.create_channel(channel, client);
+		chan = server.create_channel(channel, client, key);
 	if (chan->InChannel(client.GetUsername()) == false)
 		chan->add_client(client);
 	for (std::vector<Client*>::iterator _it = server.getClients()->begin(); _it != server.getClients()->end(); _it++) {

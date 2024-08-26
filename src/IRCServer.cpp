@@ -122,9 +122,9 @@ std::vector<Client*> *IRCServer::getClients()
 {
 	return &_clients;
 }
-Channel *IRCServer::create_channel(std::string channel, Client &client)
+Channel *IRCServer::create_channel(std::string channel, Client &client, std::string key)
 {
-    _channels.push_back(new Channel(channel, client));
+    _channels.push_back(new Channel(channel, client, key));
     return (_channels.back());
 }
 

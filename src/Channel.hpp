@@ -24,7 +24,7 @@ class Client;
 class Channel
 {
 	public:
-		Channel(const std::string &name, const Client &creator);
+		Channel(const std::string &name, const Client &creator, const std::string &key);
 		~Channel();
 		std::string getChannelName();
 		std::string getUsers();
@@ -36,7 +36,11 @@ class Channel
 		
 		class InvalidName: public std::exception {
 			public:
-				virtual const char* what() const throw() {return "TODO";}
+				virtual const char* what() const throw() {return "Channel creation : Invalid name";}
+		};
+		class InvalidKey: public std::exception {
+			public:
+				virtual const char* what() const throw() {return "Channel creation : Invalid key";}
 		};
 
 
