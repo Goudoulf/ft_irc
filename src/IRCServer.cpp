@@ -13,16 +13,20 @@
 #include "IRCServer.hpp"
 #include "../includes/ircserv.h"
 #include "Client.hpp"
+#include "../includes/debug.h"
+#include <cmath>
 
 void my_exit(std::string error, int code)
 {
-    std::cerr << error << std::endl;
+    // std::cerr << error << std::endl;
+    log(ERROR, error);
     exit(code);
 }
 
 IRCServer::IRCServer(std::string port, std::string password)
 {
     char *end;
+    log(DEBUG, "IRC Server is setting up socket");
     memset(&address, 0, sizeof(address));
     _port = static_cast<unsigned short>(std::strtod(port.c_str(), &end)); 
     _password = password;
@@ -53,6 +57,7 @@ int	IRCServer::run(void)
     FD_ZERO(&all_sockets);
     FD_SET(server_fd, &all_sockets);
     max_sd = server_fd;
+    log(INFO, "IRC Server loop is starting");
     while (true) {
         readfds = all_sockets;
         timeout.tv_sec = 0;
@@ -62,15 +67,16 @@ int	IRCServer::run(void)
             my_exit("select error", EXIT_FAILURE);
         if (activity == 0)
         {
-            //std::cout << "Wait.."<< std::endl; // Wait until a socket update
+            //log(INFO, "Server waiting for socket update..");
             continue;
         }
+        log(INFO, "Server new socket activity");
         int i;
         for (i = 0; i <= max_sd; i++) {
             if (FD_ISSET(i, &readfds) == 1) // check if any fd i have data waiting 
                 break;
         }
-        std::cout << "Ready" << std::endl;
+        log(DEBUG, "Server Ready");
         if (i == server_fd)
             accept_connection(&all_sockets);
         else
@@ -83,6 +89,7 @@ void    IRCServer::read_data(fd_set *all_sockets, int i)
 {
 	(void)all_sockets;
 	(void)i;
+        log(INFO, "Server reading data");
 	for (_it = _clients.begin(); _it != _clients.end(); _it++) {
         if ((sd = (*_it)->GetSocket()) != i)
             continue ;
@@ -91,10 +98,10 @@ void    IRCServer::read_data(fd_set *all_sockets, int i)
         // FIX: Undefined disconnect
         if ((valread = recv(sd, (*_it)->GetBuffer(), 1024, 0)) == 0) {
             close(sd);
-            std::cout << "recv: socket closed" << std::endl;
+            log(WARN, "recv: socket closed");
             (*_it)->SetSocket(0);
             if (valread == -1)  
-                std::cout << "recv: error" << std::endl;
+                log(ERROR, "recv: error");
         }
         else {
             // check command et parsing buffer a refaire proprement
@@ -109,18 +116,19 @@ void    IRCServer::read_data(fd_set *all_sockets, int i)
 void    IRCServer::accept_connection(fd_set *all_sockets)
 {
     int     new_socket;
-        new_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen);
-        if (new_socket < 0)
-            my_exit("accept error", EXIT_FAILURE);
-        FD_SET(new_socket, all_sockets);
-        if (new_socket > max_sd)
-            max_sd = new_socket;
-        _clients.push_back(new Client(new_socket, inet_ntoa(address.sin_addr)));
+    log(INFO, "Server accepting new connection");
+    new_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen);
+    if (new_socket < 0)
+        my_exit("accept error", EXIT_FAILURE);
+    FD_SET(new_socket, all_sockets);
+    if (new_socket > max_sd)
+        max_sd = new_socket;
+    _clients.push_back(new Client(new_socket, inet_ntoa(address.sin_addr)));
 }
 
 std::vector<Client*> *IRCServer::getClients()
 {
-	return &_clients;
+    return &_clients;
 }
 Channel *IRCServer::create_channel(std::string channel, Client &client, std::string key)
 {

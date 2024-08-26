@@ -3,6 +3,7 @@
 #include <cstring>
 #include <iostream>
 #include <string>
+#include "../includes/debug.h"
 
 Client::Client(const int &socket, std::string hostname): _hostname(hostname), _socket(socket)
 {
@@ -40,7 +41,7 @@ void	Client::findnick(const char *buffer)
 
 		p = strtok(NULL , " \r\n");
 	}
-	std::cout << "nick=" << _nickname << std::endl;
+	log(DEBUG, "New user nick = " + _nickname);
 }
 
 void	Client::finduser(const char * buffer)
@@ -60,7 +61,7 @@ void	Client::finduser(const char * buffer)
 
 		p = strtok(NULL , " \r\n");
 	}
-	std::cout << "user=" << _username << std::endl;
+	log(DEBUG, "New user username = " + _username);
 }
 
 void		Client::SetPrefix()

@@ -1,11 +1,13 @@
 #include "../../includes/cmds.h"
+#include "../../includes/debug.h"
 
 void	client_connect(Client &client)
 {
 	//std::string temp(client.buffer);
 	// int sd = client.GetSocket();
 
-	std::cout << "buffer[" << std::endl << client.GetBufferString() << std::endl << "]" << std::endl;
+	std::string buf = "buffer[\n" + client.GetBufferString() + "]";
+	log(DEBUG,buf); 
 	//client.SetBuffer(client.buffer);
 	if (client.GetBufferString().find("USER") != (size_t)-1)
 		client.finduser(client.GetBufferString().c_str()); 

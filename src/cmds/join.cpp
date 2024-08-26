@@ -3,6 +3,7 @@
 #include <sstream>
 #include <vector>
 #include <string>
+#include "../../includes/debug.h"
 
 // Join message
 //
@@ -50,8 +51,7 @@
 
 void	joinChannel(std::string channel, std::string key, Client &client, IRCServer &server)
 {
-	(void)key;
-	std::cout << "_____join_____" << std::endl;
+	log(CMD, client.GetNickname() + ":_____join_____");
 	Channel *chan;
 	if (!(chan = server.find_channel(channel)))
 		chan = server.create_channel(channel, client, key);
