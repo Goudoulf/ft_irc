@@ -10,7 +10,7 @@ void	map_init(std::map<std::string, void (*)(Client&, IRCServer&)> &map_func)
 	map_func.insert(std::make_pair("QUIT ", &quit));
 	// map_func.insert(std::make_pair("KICK", &kick));
 	// map_func.insert(std::make_pair("TOPIC", &topic));
-	// map_func.insert(std::make_pair("PART", &part));
+	map_func.insert(std::make_pair("PART", &part));
 	// map_func.insert(std::make_pair("INVITE", &invite));
 	// map_func.insert(std::make_pair("MODE", &mode));
 }

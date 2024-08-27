@@ -47,7 +47,7 @@
 //    JOIN #foobar                    ; Command to join channel #foobar.
 //
 //    JOIN &foo fubar                 ; Command to join channel &foo using
-//                                    key "fubar".
+//                                    key "fubar".chan->getChannelName()chan->getChannelName()
 
 void	joinChannel(std::string channel, std::string key, Client &client, IRCServer &server)
 {
