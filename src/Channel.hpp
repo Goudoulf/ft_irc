@@ -56,6 +56,7 @@ class Channel
 		std::vector<Client> _operators;
 		std::string			_topic;
 		std::string			_password;
+		bool				_isEmpty;
 		channelMode _mode;//channel mode, depending on name prefix
 		//stack of strings to make a message history if needed.
 

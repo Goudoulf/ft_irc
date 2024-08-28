@@ -65,6 +65,7 @@ Channel::Channel(const std::string &name, const Client &creator, const std::stri
 	_operators.push_back(creator);
 	_users.push_back(creator);
 	_password = key;
+	_isEmpty = false;
 }
 
 Channel::~Channel()
@@ -135,12 +136,18 @@ void	Channel::add_client(Client &client)
 
 void	Channel::remove_client(Client &client)
 {
-	for (std::vector<Client>::iterator it = _operators.begin(); it != _operators.end(); it++) {
+	for (std::vector<Client>::iterator it = _operators.begin(); it != _operators.end();) {
 		if (it->GetUsername() == client.GetUsername())
-			_operators.erase(it);
+			it = _operators.erase(it);
+		else
+			++it;
 	}
-	for (std::vector<Client>::iterator it = _users.begin(); it != _users.end(); it++) {
+	for (std::vector<Client>::iterator it = _users.begin(); it != _users.end();) {
 		if (it->GetUsername() == client.GetUsername())
-			_users.erase(it);
+			 it = _users.erase(it);
+		else
+			++it;
 	}
+	if (_users.empty() && _operators.empty())
+		_isEmpty = true;
 }
