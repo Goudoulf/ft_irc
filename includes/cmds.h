@@ -21,6 +21,7 @@ void	nick(Client &client, IRCServer &server);
 void	privmsg(Client &client, IRCServer &server);
 void	pass(Client &client, IRCServer &server);
 void	quit(Client &client, IRCServer &server);
+void	ping(Client &client, IRCServer &server);
 void	kick();
 void	topic();
 void	part();
