@@ -99,7 +99,7 @@ void	join(Client &client, IRCServer &server)
 {
 	std::string buf = client.GetBuffer();
 	buf = buf.substr(0, buf.find_first_of(" \r\n\0", 5));
-	std::vector<std::string> tokens = tokenize(buf);	
+	std::vector<std::string> tokens = tokenize(buf);
 	parseJoinCommand(tokens, client, server);
 }
 

@@ -13,7 +13,7 @@ void	map_init(std::map<std::string, void (*)(Client&, IRCServer&)> &map_func)
 	// map_func.insert(std::make_pair("TOPIC", &topic));
 	map_func.insert(std::make_pair("PART", &part));
 	// map_func.insert(std::make_pair("INVITE", &invite));
-	// map_func.insert(std::make_pair("MODE", &mode));
+	map_func.insert(std::make_pair("MODE", &mode));
 }
 
 void	find_cmd(Client &client, IRCServer &server)

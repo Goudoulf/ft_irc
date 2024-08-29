@@ -26,7 +26,7 @@ void	part(Client &client, IRCServer &server);
 void	kick();
 void	topic();
 void	invite();
-void	mode();
+void	mode(Client &client, IRCServer &server);
 
 
 #endif
