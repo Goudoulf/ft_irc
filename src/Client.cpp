@@ -147,3 +147,8 @@ bool		Client::GetIsConnected()
 {
 	return _isconnected;
 }
+
+Client		*Client::GetClient()
+{
+	return this;
+}

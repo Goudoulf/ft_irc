@@ -15,6 +15,8 @@
 #include "Client.hpp"
 #include "../includes/debug.h"
 #include <cmath>
+#include <sys/select.h>
+#include <unistd.h>
 
 void my_exit(std::string error, int code)
 {
@@ -43,6 +45,7 @@ IRCServer::IRCServer(std::string port, std::string password)
     if (listen(server_fd, 10) < 0)
         my_exit("listen error", EXIT_FAILURE);
     addrlen = sizeof(address);
+    _fds.push_back(server_fd);
 }
 
 IRCServer::~IRCServer(void)
@@ -51,8 +54,6 @@ IRCServer::~IRCServer(void)
 
 int	IRCServer::run(void)
 {
-    fd_set readfds;
-    fd_set all_sockets;
     FD_ZERO(&readfds);
     FD_ZERO(&all_sockets);
     FD_SET(server_fd, &all_sockets);
@@ -71,10 +72,13 @@ int	IRCServer::run(void)
             continue;
         }
         log(INFO, "Server new socket activity");
-        int i;
-        for (i = 0; i <= max_sd; i++) {
-            if (FD_ISSET(i, &readfds) == 1) // check if any fd i have data waiting 
+        int i = 0;
+	for (std::vector<int>::iterator it = _fds.begin(); it != _fds.end(); it++) {
+            if (FD_ISSET(*it, &readfds) == 1) // check if any fd i have data waiting 
+            {
+                i = (*it);
                 break;
+            }    
         }
         log(DEBUG, "Server Ready");
         if (i == server_fd)
@@ -90,9 +94,14 @@ void    IRCServer::read_data(fd_set *all_sockets, int i)
 	(void)all_sockets;
 	(void)i;
         log(INFO, "Server reading data");
-	for (_it = _clients.begin(); _it != _clients.end(); _it++) {
-        if ((sd = (*_it)->GetSocket()) != i)
-            continue ;
+	for (std::vector<Client*>::iterator it = _clients.begin(); it != _clients.end(); _it++) {
+            if ((sd = (*it)->GetSocket()) != i)
+                continue ;
+            else
+        {
+                _it = it;
+                break;
+        }
         //int set;
         bzero((*_it)->GetBuffer(), 1024);
         // FIX: Undefined disconnect
@@ -124,12 +133,19 @@ void    IRCServer::accept_connection(fd_set *all_sockets)
     if (new_socket > max_sd)
         max_sd = new_socket;
     _clients.push_back(new Client(new_socket, inet_ntoa(address.sin_addr)));
+    _fds.push_back(new_socket);
 }
 
 std::vector<Client*> *IRCServer::getClients()
 {
     return &_clients;
 }
+
+std::vector<Channel*> *IRCServer::getChannels()
+{
+    return &_channels;
+}
+
 Channel *IRCServer::create_channel(std::string channel, Client &client, std::string key)
 {
     _channels.push_back(new Channel(channel, client, key));
@@ -144,4 +160,20 @@ Channel	*IRCServer::find_channel(std::string channel)
             return (*it);
     }
     return (NULL);
+}
+
+void	IRCServer::remove_client(Client &client)
+{
+	for (std::vector<Client*>::iterator it = _clients.begin(); it != _clients.end();) {
+		if ((*it)->GetUsername() == client.GetUsername())
+                {
+                        FD_CLR((*it)->GetSocket(), &all_sockets);
+                        close((*it)->GetSocket());
+                        delete (((*it)->GetClient()));
+			_it = _clients.erase(it);
+                        return;
+                }
+		else
+			++it;
+	}
 }

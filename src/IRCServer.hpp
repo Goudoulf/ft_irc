@@ -51,6 +51,7 @@ class IRCServer
 		};
 
 		std::vector<Client*> *getClients();
+		std::vector<Channel*> *getChannels();
 		
 		int	run(void);
 		int	join(void);
@@ -58,15 +59,19 @@ class IRCServer
 		void    read_data(fd_set *all_sockets, int i);
 		Channel	*create_channel(std::string channel, Client &client, std::string key);
 		Channel	*find_channel(std::string channel);
+		void	remove_client(Client &client);
 		struct timeval timeout;
 
 	private:
 
+    fd_set readfds;
+    fd_set all_sockets;
 		u_int16_t _port;
 		std::string _password;
 		unsigned	short	_client_count;
 		std::vector<Client*> _clients;
 		std::vector<Channel*> _channels;
+		std::vector<int> _fds;
 		std::vector<Client*>::iterator _it;
 		std::vector<Client*>::iterator _it2;
 		int server_fd, max_sd, sd, activity, valread;

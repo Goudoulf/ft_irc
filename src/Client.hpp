@@ -25,6 +25,7 @@ class Client
 		std::string	GetUsername() const;
 		std::string	GetRealname() const;
 		std::string	GetHostname() const;
+		Client		*GetClient();
 		int			GetSocket() const;
 		std::string	GetPrefix() const;
 		char		*GetBuffer();
