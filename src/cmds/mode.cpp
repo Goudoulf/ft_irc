@@ -83,7 +83,7 @@ std::vector<std::string>::iterator nextArgs(std::vector<std::string>::iterator &
 void	mode(Client &client, IRCServer &server)
 {
 	std::string buf = client.GetBuffer();
-	std::cout << buf << std::endl;
+	std::cout << "mode="<<buf << std::endl;
 	buf = buf.substr(0, buf.find_first_of("\r\n\0", 5));
 	std::vector<std::string> tokens = tokenize(buf);
 	std::map<std::string, void (*)(bool, std::vector<std::string>, Client&, IRCServer&)> mapFunc;

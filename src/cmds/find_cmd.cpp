@@ -19,9 +19,10 @@ void	map_init(std::map<std::string, void (*)(Client&, IRCServer&)> &map_func)
 
 void	find_cmd(Client &client, IRCServer &server)
 {
-	//client.SetBuffer(client.buffer);
 	log(INFO, "find cmd"); 
 	std::string buf = client.GetBufferString();
+	std::string bufe = "buffer[\n" + client.GetBufferString() + "]";
+	log(DEBUG,bufe); 
 	std::map<std::string, void (*)(Client&, IRCServer&)> map_func;
 	map_init(map_func);
 	for (std::map<std::string, void (*)(Client&, IRCServer&)>::iterator it = map_func.begin(); it != map_func.end(); it++)
