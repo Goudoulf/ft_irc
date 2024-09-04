@@ -1,4 +1,5 @@
 #include "../../includes/cmds.h"
+#include "../../includes/debug.h"
 
 void	map_init(std::map<std::string, void (*)(Client&, IRCServer&)> &map_func)
 {
@@ -19,6 +20,7 @@ void	map_init(std::map<std::string, void (*)(Client&, IRCServer&)> &map_func)
 void	find_cmd(Client &client, IRCServer &server)
 {
 	//client.SetBuffer(client.buffer);
+	log(INFO, "find cmd"); 
 	std::string buf = client.GetBufferString();
 	std::map<std::string, void (*)(Client&, IRCServer&)> map_func;
 	map_init(map_func);

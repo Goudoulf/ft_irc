@@ -6,6 +6,7 @@ void	client_connect(Client &client)
 	//std::string temp(client.buffer);
 	// int sd = client.GetSocket();
 
+	log(INFO, "client connect"); 
 	std::string buf = "buffer[\n" + client.GetBufferString() + "]";
 	log(DEBUG,buf); 
 	//client.SetBuffer(client.buffer);

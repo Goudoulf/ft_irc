@@ -15,6 +15,7 @@
 #include "Client.hpp"
 #include "../includes/debug.h"
 #include <cmath>
+#include <sstream>
 #include <sys/select.h>
 #include <unistd.h>
 
@@ -71,12 +72,20 @@ int	IRCServer::run(void)
             //log(INFO, "Server waiting for socket update..");
             continue;
         }
+        std::stringstream ss;
+        ss << max_sd;
+        std::string stu = ss.str();
+        log(DEBUG, "max sd=" + stu);
         log(INFO, "Server new socket activity");
         int i = 0;
 	for (std::vector<int>::iterator it = _fds.begin(); it != _fds.end(); it++) {
             if (FD_ISSET(*it, &readfds) == 1) // check if any fd i have data waiting 
             {
                 i = (*it);
+                std::stringstream ss;
+                ss << i;
+                std::string st = ss.str();
+                log(INFO, "i=" + st);
                 break;
             }    
         }
@@ -94,7 +103,7 @@ void    IRCServer::read_data(fd_set *all_sockets, int i)
 	(void)all_sockets;
 	(void)i;
         log(INFO, "Server reading data");
-	for (std::vector<Client*>::iterator it = _clients.begin(); it != _clients.end(); _it++) {
+	for (std::vector<Client*>::iterator it = _clients.begin(); it != _clients.end(); it++) {
             if ((sd = (*it)->GetSocket()) != i)
                 continue ;
             else
@@ -102,7 +111,9 @@ void    IRCServer::read_data(fd_set *all_sockets, int i)
                 _it = it;
                 break;
         }
+    }
         //int set;
+        log(INFO, "Clear buffer");
         bzero((*_it)->GetBuffer(), 1024);
         // FIX: Undefined disconnect
         if ((valread = recv(sd, (*_it)->GetBuffer(), 1024, 0)) == 0) {
@@ -119,7 +130,6 @@ void    IRCServer::read_data(fd_set *all_sockets, int i)
             else
                 find_cmd(**_it, *this);
         }
-    }
 }
 
 void    IRCServer::accept_connection(fd_set *all_sockets)
