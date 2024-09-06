@@ -29,3 +29,73 @@ void	find_cmd(Client &client, IRCServer &server)
 		if (buf.compare(0, it->first.length(), it->first) == 0)
 			it->second(client, server);
 }
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <unordered_map>
+
+void processIncomingMessage(int client_fd, const std::string& message) {
+    // Trim whitespace from the message
+    std::string trimmedMessage = message;
+    trimmedMessage.erase(0, trimmedMessage.find_first_not_of(" \r\n"));
+    trimmedMessage.erase(trimmedMessage.find_last_not_of(" \r\n") + 1);
+
+    // Check if the message is empty after trimming
+    if (trimmedMessage.empty()) {
+        return;
+    }
+
+    std::istringstream iss(trimmedMessage);
+    std::string prefix, command, params;
+
+    // Parse prefix if present
+    if (trimmedMessage[0] == ':') {
+        iss >> prefix;  // Read until the first space
+        prefix = prefix.substr(1);  // Remove the leading ':'
+    }
+
+    // Parse command
+    iss >> command;
+    if (command.empty()) {
+        std::cerr << "Received an invalid IRC message with no command." << std::endl;
+        return;
+    }
+
+    // Parse parameters and trailing data
+    std::unordered_map<std::string, std::string> parsedParams;
+    std::string param;
+    bool trailingStarted = false;
+
+    while (iss >> param) {
+        if (param[0] == ':') {
+            // If we encounter a ':', this marks the start of the trailing parameter
+            trailingStarted = true;
+            std::string trailing;
+            std::getline(iss, trailing);
+            parsedParams["trailing"] = param.substr(1) + trailing;  // Combine ':' and the rest
+            break;
+        } else if (!trailingStarted) {
+            // Handle normal parameters
+            if (command == "NICK") {
+                parsedParams["nickname"] = param;
+            } else if (command == "USER") {
+                if (parsedParams.find("username") == parsedParams.end()) {
+                    parsedParams["username"] = param;
+                } else if (parsedParams.find("hostname") == parsedParams.end()) {
+                    parsedParams["hostname"] = param;
+                } else if (parsedParams.find("servername") == parsedParams.end()) {
+                    parsedParams["servername"] = param;
+                } else {
+                    parsedParams["realname"] = param;
+                }
+            }
+            // Add more parameter handling for other commands...
+        }
+    }
+
+    // Ensure server name is included in the parameters (custom field)
+    parsedParams["servername"] = "irc.example.com";  // Replace with your server's name
+
+    // Call the command dispatcher to handle the command
+    dispatchCommand(client_fd, command, parsedParams);
+}
