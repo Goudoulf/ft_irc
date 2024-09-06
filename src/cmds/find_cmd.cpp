@@ -41,7 +41,6 @@ void processIncomingMessage(int client_fd, const std::string& message) {
     trimmedMessage.erase(0, trimmedMessage.find_first_not_of(" \r\n"));
     trimmedMessage.erase(trimmedMessage.find_last_not_of(" \r\n") + 1);
 
-    // Check if the message is empty after trimming
     if (trimmedMessage.empty()) {
         return;
     }
@@ -49,20 +48,15 @@ void processIncomingMessage(int client_fd, const std::string& message) {
     std::istringstream iss(trimmedMessage);
     std::string prefix, command, params;
 
-    // Parse prefix if present
     if (trimmedMessage[0] == ':') {
-        iss >> prefix;  // Read until the first space
-        prefix = prefix.substr(1);  // Remove the leading ':'
+        iss >> prefix;  
+        prefix = prefix.substr(1);
     }
-
-    // Parse command
     iss >> command;
     if (command.empty()) {
-        std::cerr << "Received an invalid IRC message with no command." << std::endl;
+        log(ERROR, "Received an invalid IRC message with no command.");
         return;
     }
-
-    // Parse parameters and trailing data
     std::unordered_map<std::string, std::string> parsedParams;
     std::string param;
     bool trailingStarted = false;
