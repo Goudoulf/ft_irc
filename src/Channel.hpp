@@ -35,6 +35,7 @@ class Channel
 		bool	keyIsValid(std::string &key);
 		void	add_client(Client &client);
 		void	remove_client(Client &client);
+		void	setTopic(std::string topic);
 		std::string	getTopic();
 		
 		class InvalidName: public std::exception {

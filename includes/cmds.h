@@ -24,7 +24,7 @@ void	quit(Client &client, IRCServer &server);
 void	ping(Client &client, IRCServer &server);
 void	part(Client &client, IRCServer &server);
 void	kick();
-void	topic();
+void	topic(Client &client, IRCServer &server);
 void	invite();
 void	mode(Client &client, IRCServer &server);
 

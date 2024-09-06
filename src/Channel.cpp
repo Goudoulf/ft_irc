@@ -124,6 +124,11 @@ bool	Channel::IsOp(std::string client)
 	return (false);
 }
 
+void	Channel::setTopic(std::string topic)
+{
+	_topic = topic;
+}
+
 std::string		Channel::getTopic()
 {
 	return _topic;
