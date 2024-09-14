@@ -15,6 +15,8 @@
 
 #include <string>
 #include "IRCServer.hpp"
+#include <unordered_map>
+#include <string>
 
 class Client
 {
@@ -54,6 +56,7 @@ class Client
 		//IRCServer	*_server;   // server to which it's connected
 		char		*_buffer;
 		int			_socket;
+		std::unordered_map<int, std::string> _clientPartialBuffers;
 };
 
 #endif

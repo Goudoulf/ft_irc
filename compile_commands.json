@@ -1,0 +1,322 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-g",
+      "-c",
+      "-o",
+      ".object/src/main.o",
+      "src/main.cpp"
+    ],
+    "directory": "/home/goudoulf/Documents/projets/ft_irc",
+    "file": "/home/goudoulf/Documents/projets/ft_irc/src/main.cpp",
+    "output": "/home/goudoulf/Documents/projets/ft_irc/.object/src/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-g",
+      "-c",
+      "-o",
+      ".object/src/IRCServer.o",
+      "src/IRCServer.cpp"
+    ],
+    "directory": "/home/goudoulf/Documents/projets/ft_irc",
+    "file": "/home/goudoulf/Documents/projets/ft_irc/src/IRCServer.cpp",
+    "output": "/home/goudoulf/Documents/projets/ft_irc/.object/src/IRCServer.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-g",
+      "-c",
+      "-o",
+      ".object/src/Client.o",
+      "src/Client.cpp"
+    ],
+    "directory": "/home/goudoulf/Documents/projets/ft_irc",
+    "file": "/home/goudoulf/Documents/projets/ft_irc/src/Client.cpp",
+    "output": "/home/goudoulf/Documents/projets/ft_irc/.object/src/Client.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-g",
+      "-c",
+      "-o",
+      ".object/src/client_checker.o",
+      "src/client_checker.cpp"
+    ],
+    "directory": "/home/goudoulf/Documents/projets/ft_irc",
+    "file": "/home/goudoulf/Documents/projets/ft_irc/src/client_checker.cpp",
+    "output": "/home/goudoulf/Documents/projets/ft_irc/.object/src/client_checker.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-g",
+      "-c",
+      "-o",
+      ".object/src/cmds/find_cmd.o",
+      "src/cmds/find_cmd.cpp"
+    ],
+    "directory": "/home/goudoulf/Documents/projets/ft_irc",
+    "file": "/home/goudoulf/Documents/projets/ft_irc/src/cmds/find_cmd.cpp",
+    "output": "/home/goudoulf/Documents/projets/ft_irc/.object/src/cmds/find_cmd.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-g",
+      "-c",
+      "-o",
+      ".object/src/cmds/join.o",
+      "src/cmds/join.cpp"
+    ],
+    "directory": "/home/goudoulf/Documents/projets/ft_irc",
+    "file": "/home/goudoulf/Documents/projets/ft_irc/src/cmds/join.cpp",
+    "output": "/home/goudoulf/Documents/projets/ft_irc/.object/src/cmds/join.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-g",
+      "-c",
+      "-o",
+      ".object/src/cmds/nick.o",
+      "src/cmds/nick.cpp"
+    ],
+    "directory": "/home/goudoulf/Documents/projets/ft_irc",
+    "file": "/home/goudoulf/Documents/projets/ft_irc/src/cmds/nick.cpp",
+    "output": "/home/goudoulf/Documents/projets/ft_irc/.object/src/cmds/nick.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-g",
+      "-c",
+      "-o",
+      ".object/src/cmds/pass.o",
+      "src/cmds/pass.cpp"
+    ],
+    "directory": "/home/goudoulf/Documents/projets/ft_irc",
+    "file": "/home/goudoulf/Documents/projets/ft_irc/src/cmds/pass.cpp",
+    "output": "/home/goudoulf/Documents/projets/ft_irc/.object/src/cmds/pass.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-g",
+      "-c",
+      "-o",
+      ".object/src/cmds/ping.o",
+      "src/cmds/ping.cpp"
+    ],
+    "directory": "/home/goudoulf/Documents/projets/ft_irc",
+    "file": "/home/goudoulf/Documents/projets/ft_irc/src/cmds/ping.cpp",
+    "output": "/home/goudoulf/Documents/projets/ft_irc/.object/src/cmds/ping.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-g",
+      "-c",
+      "-o",
+      ".object/src/cmds/privmsg.o",
+      "src/cmds/privmsg.cpp"
+    ],
+    "directory": "/home/goudoulf/Documents/projets/ft_irc",
+    "file": "/home/goudoulf/Documents/projets/ft_irc/src/cmds/privmsg.cpp",
+    "output": "/home/goudoulf/Documents/projets/ft_irc/.object/src/cmds/privmsg.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-g",
+      "-c",
+      "-o",
+      ".object/src/cmds/quit.o",
+      "src/cmds/quit.cpp"
+    ],
+    "directory": "/home/goudoulf/Documents/projets/ft_irc",
+    "file": "/home/goudoulf/Documents/projets/ft_irc/src/cmds/quit.cpp",
+    "output": "/home/goudoulf/Documents/projets/ft_irc/.object/src/cmds/quit.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-g",
+      "-c",
+      "-o",
+      ".object/src/cmds/mode.o",
+      "src/cmds/mode.cpp"
+    ],
+    "directory": "/home/goudoulf/Documents/projets/ft_irc",
+    "file": "/home/goudoulf/Documents/projets/ft_irc/src/cmds/mode.cpp",
+    "output": "/home/goudoulf/Documents/projets/ft_irc/.object/src/cmds/mode.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-g",
+      "-c",
+      "-o",
+      ".object/src/cmds/client_connect.o",
+      "src/cmds/client_connect.cpp"
+    ],
+    "directory": "/home/goudoulf/Documents/projets/ft_irc",
+    "file": "/home/goudoulf/Documents/projets/ft_irc/src/cmds/client_connect.cpp",
+    "output": "/home/goudoulf/Documents/projets/ft_irc/.object/src/cmds/client_connect.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-g",
+      "-c",
+      "-o",
+      ".object/src/Channel.o",
+      "src/Channel.cpp"
+    ],
+    "directory": "/home/goudoulf/Documents/projets/ft_irc",
+    "file": "/home/goudoulf/Documents/projets/ft_irc/src/Channel.cpp",
+    "output": "/home/goudoulf/Documents/projets/ft_irc/.object/src/Channel.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-g",
+      "-c",
+      "-o",
+      ".object/src/cmds/reply.o",
+      "src/cmds/reply.cpp"
+    ],
+    "directory": "/home/goudoulf/Documents/projets/ft_irc",
+    "file": "/home/goudoulf/Documents/projets/ft_irc/src/cmds/reply.cpp",
+    "output": "/home/goudoulf/Documents/projets/ft_irc/.object/src/cmds/reply.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-g",
+      "-c",
+      "-o",
+      ".object/src/cmds/tokenize.o",
+      "src/cmds/tokenize.cpp"
+    ],
+    "directory": "/home/goudoulf/Documents/projets/ft_irc",
+    "file": "/home/goudoulf/Documents/projets/ft_irc/src/cmds/tokenize.cpp",
+    "output": "/home/goudoulf/Documents/projets/ft_irc/.object/src/cmds/tokenize.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-g",
+      "-c",
+      "-o",
+      ".object/src/cmds/split.o",
+      "src/cmds/split.cpp"
+    ],
+    "directory": "/home/goudoulf/Documents/projets/ft_irc",
+    "file": "/home/goudoulf/Documents/projets/ft_irc/src/cmds/split.cpp",
+    "output": "/home/goudoulf/Documents/projets/ft_irc/.object/src/cmds/split.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-g",
+      "-c",
+      "-o",
+      ".object/src/debug/debug.o",
+      "src/debug/debug.cpp"
+    ],
+    "directory": "/home/goudoulf/Documents/projets/ft_irc",
+    "file": "/home/goudoulf/Documents/projets/ft_irc/src/debug/debug.cpp",
+    "output": "/home/goudoulf/Documents/projets/ft_irc/.object/src/debug/debug.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-g",
+      "-c",
+      "-o",
+      ".object/src/cmds/part.o",
+      "src/cmds/part.cpp"
+    ],
+    "directory": "/home/goudoulf/Documents/projets/ft_irc",
+    "file": "/home/goudoulf/Documents/projets/ft_irc/src/cmds/part.cpp",
+    "output": "/home/goudoulf/Documents/projets/ft_irc/.object/src/cmds/part.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-g",
+      "-c",
+      "-o",
+      ".object/src/cmds/topic.o",
+      "src/cmds/topic.cpp"
+    ],
+    "directory": "/home/goudoulf/Documents/projets/ft_irc",
+    "file": "/home/goudoulf/Documents/projets/ft_irc/src/cmds/topic.cpp",
+    "output": "/home/goudoulf/Documents/projets/ft_irc/.object/src/cmds/topic.o"
+  }
+]
