@@ -4,7 +4,7 @@
 #include "../Channel.hpp"
 #include "../../includes/debug.h"
 
-void topic(Client &client, IRCServer &server)
+void topic(IRCServer &server, int fd, std::vector<std::string>& params)
 {
 	std::string buff(client.GetBufferString());
 	std::string target(buff.substr(6, buff.find_first_of(" \r", 6) - 6));

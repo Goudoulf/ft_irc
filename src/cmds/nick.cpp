@@ -1,6 +1,6 @@
 #include "../../includes/cmds.h"
 
-void	nick(Client &client, IRCServer &server)
+void	nick(IRCServer &server, int fd, std::vector<std::string>& params)
 {
 	std::cout << "_____nick command_____" << std::endl;
 	size_t index = client.GetBufferString().find("NICK");

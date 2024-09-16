@@ -67,7 +67,7 @@ void parseQuitCommand(const std::vector<std::string>& tokens, Client &client, IR
 	}
 }
 
-void	quit(Client &client, IRCServer &server)
+void	quit(IRCServer &server, int fd, std::vector<std::string>& params)
 {
 	log(CMD, client.GetNickname() + ":_____quit_____");
 	std::string buf = client.GetBuffer();

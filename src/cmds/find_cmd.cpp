@@ -8,27 +8,26 @@
 const size_t MAX_BUFFER_SIZE = 512;
 std::unordered_map<int, std::string> clientPartialBuffers;
 
-void dispatchCommand(int client_fd, const std::string& command, const std::unordered_map<std::string, std::string>& params)
+void dispatchCommand(IRCServer& server, int client_fd, const std::string& command, const std::vector<std::string>& params)
 {
-    std::unordered_map<std::string, void(*)(int, const std::vector<std::string>&)> commandHandlers = {
-		{"JOIN ", join},
-		{"NICK ", nick},
-		{"NOTICES ", privmsg},
-		{"PRIVMSG ", privmsg},
-		{"PASS ", pass},
-		{"QUIT ", quit},
-		{"PING ", ping},
-		{"TOPIC ", topic},
+    std::unordered_map<std::string, void(*)(IRCServer&, int, const std::vector<std::string>&)> commandHandlers = {
+		{"JOIN ", &join},
+		{"NICK ", &nick},
+		{"NOTICES ", &privmsg},
+		{"PRIVMSG ", &privmsg},
+		{"PASS ", &pass},
+		{"QUIT ", &quit},
+		{"PING ", &ping},
+		{"TOPIC ", &topic},
 		// {"KICK ", &kick},
 		//{"TOPIC ", &topic},
-		{"PART ", part},
+		{"PART ", &part},
 		// {"INVITE ", &invite},
-		{"MODE ", mode},
+		{"MODE ", &mode},
 	};
-	std::unordered_map<std::string, void(*)(int, const std::vector<std::string>&)>::iterator it = commandHandlers.find(command);
-	if (it != commandHandlers.end()) {
-        // Call the handler function
-        it->second(client_fd, params);
+	std::unordered_map<std::string, void(*)(IRCServer& ,int, const std::vector<std::string>&)>::iterator it = commandHandlers.find(command);
+    if (it != commandHandlers.end()) {
+	it->second(server, client_fd, params);
     } else {
         // Handle unknown command
         std::cerr << "Unknown IRC command: " << command << std::endl;
@@ -36,21 +35,7 @@ void dispatchCommand(int client_fd, const std::string& command, const std::unord
     }
 }
 
-void	find_cmd(Client &client, IRCServer &server)
-{
-	log(INFO, "find cmd"); 
-	std::string buf = client.GetBufferString();
-	std::string bufe = "buffer[\n" + client.GetBufferString() + "]";
-	log(DEBUG,bufe); 
-	std::map<std::string, void (*)(Client&, IRCServer&)> map_func;
-	map_init(map_func);
-	for (std::map<std::string, void (*)(Client&, IRCServer&)>::iterator it = map_func.begin(); it != map_func.end(); it++)
-		if (buf.compare(0, it->first.length(), it->first) == 0)
-			it->second(client, server);
-}
-
-
-void processMessage(int client_fd, const std::string& message) {
+void processMessage(IRCServer& server,int client_fd, const std::string& message) {
     std::string trimmedMessage = message;
     std::istringstream iss(trimmedMessage);
     std::string prefix, command, params;
@@ -83,7 +68,7 @@ void processMessage(int client_fd, const std::string& message) {
 		} 
 		parsedParams.push_back(param);
 	}
-    dispatchCommand(client_fd, command, parsedParams);
+    dispatchCommand(server, client_fd, command, parsedParams);
 }
 
 std::vector<std::string> splitBuffer(const std::string& buffer, std::string& remainingPartial) {
@@ -107,7 +92,7 @@ std::vector<std::string> splitBuffer(const std::string& buffer, std::string& rem
     return lines;
 }
 
-void processBuffer(int client_fd, const std::string& buffer) {
+void processBuffer(IRCServer& server, int client_fd, const std::string& buffer) {
     std::string& clientPartial = clientPartialBuffers[client_fd];
 
     std::string completeBuffer = clientPartial + buffer;
@@ -123,5 +108,5 @@ void processBuffer(int client_fd, const std::string& buffer) {
 
     clientPartialBuffers[client_fd] = remainingPartial;
 	for (std::vector<std::string>::iterator it = messages.begin(); it != messages.end(); it++)
-        processMessage(client_fd, *it);
+        processMessage(server, client_fd, *it);
 }

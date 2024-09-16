@@ -3,7 +3,7 @@
 #include "../../includes/cmds.h"
 #include "../../includes/debug.h"
 
-void	ping(Client &client, IRCServer &server)
+void	ping(IRCServer &server, int fd, std::vector<std::string>& params)
 {
 	log(CMD, client.GetNickname() + ":_____ping_____");
 	std::string buf = client.GetBuffer();

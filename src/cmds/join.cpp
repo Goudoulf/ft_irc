@@ -95,7 +95,7 @@ void parseJoinCommand(const std::vector<std::string>& tokens, Client &client, IR
     }
 }
 
-void	join(Client &client, IRCServer &server)
+void	join(IRCServer &server, int fd, std::vector<std::string>& params)
 {
 	std::string buf = client.GetBuffer();
 	buf = buf.substr(0, buf.find_first_of(" \r\n\0", 5));

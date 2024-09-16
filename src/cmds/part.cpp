@@ -94,7 +94,7 @@ void parsePartCommand(const std::vector<std::string>& tokens, Client &client, IR
 	}
 }
 
-void	part(Client &client, IRCServer &server)
+void	part(IRCServer &server, int fd, std::vector<std::string>& params)
 {
 	std::string buf = client.GetBuffer();
 	std::cout << buf << std::endl;

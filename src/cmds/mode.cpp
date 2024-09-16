@@ -80,7 +80,7 @@ std::vector<std::string>::iterator nextArgs(std::vector<std::string>::iterator &
 	return (result);
 }
 
-void	mode(Client &client, IRCServer &server)
+void	mode(IRCServer &server, int fd, const std::vector<std::string>& params)
 {
 	std::string buf = client.GetBuffer();
 	std::cout << "mode="<<buf << std::endl;

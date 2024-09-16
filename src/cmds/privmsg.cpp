@@ -1,7 +1,8 @@
 #include "../../includes/cmds.h"
 #include "../../includes/debug.h"
+#include <vector>
 
-void	privmsg(Client &client, IRCServer &server)
+void	privmsg(IRCServer &server, int fd, std::vector<std::string>& param)
 {
 	log(CMD, client.GetNickname() + ":_____privmsg_____");
 	std::string msg(":" + client.GetNickname() + "!" + client.GetUsername() + "@" 
