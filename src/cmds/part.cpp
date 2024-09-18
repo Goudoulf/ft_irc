@@ -38,33 +38,23 @@
    //                                 "#playzone" with the message "I
    //                                 lost".
 
-void	partChannel(std::string channel, std::string message, Client &client, IRCServer &server)
+void	partChannel(std::string channel, std::string message, int fd, IRCServer &server)
 {
-	log(CMD, client.GetNickname() + ":_____part_____");
+        Client* client = (server.getClients()->find(fd))->second;
+	log(CMD, client->GetNickname() + ":_____part_____");
 	Channel *chan;
 	if (!(chan = server.find_channel(channel)))
 		log(ERROR, "No channel");
 		// error no channel
-	for (std::vector<Client*>::iterator _it = server.getClients()->begin(); _it != server.getClients()->end(); _it++) {
-		if (chan->InChannel((*_it)->GetUsername()))
-			message_server(chan->getChannelName(), "PART", client, message, (*_it)->GetSocket());
+	for (std::map<int, Client*>::iterator it = server.getClients()->begin(); it != server.getClients()->end(); it++) {
+		if (chan->InChannel(it->second->GetUsername()))
+			message_server(chan->getChannelName(), "PART", *client, message, it->second->GetSocket());
 	}
-	if (chan->InChannel(client.GetUsername()) == true)
-		chan->remove_client(client);
-	//if topic is set -> RPL_TOPIC
-	// if (!chan->getTopic().empty())
-	// 	reply_server("332", client, " " + chan->getChannelName() + " :" + chan->getTopic());
-	// //RPL_NAMREPLY
-	//
-	// reply_server("353", client, "= " + channel + " :" + chan->getUsers());
-	//
-	// //RPL_ENDOFNAMES
-	//
-	// reply_server("366", client, channel + " :End of NAMES list");
-
+	if (chan->InChannel(client->GetUsername()) == true)
+		chan->remove_client(*client);
 }
 
-void parsePartCommand(const std::vector<std::string>& tokens, Client &client, IRCServer &server)
+void parsePartCommand(const std::vector<std::string>& tokens, int fd, IRCServer &server)
 {
 	// SVplit channels
 	std::vector<std::string> channels = split(tokens[1], ',');
@@ -90,15 +80,11 @@ void parsePartCommand(const std::vector<std::string>& tokens, Client &client, IR
 		std::string channel = channels[i];
 
 		// Handle the join operation for each channel and key
-		partChannel(channel, message, client, server);
+		partChannel(channel, message, fd, server);
 	}
 }
 
 void	part(IRCServer &server, int fd, std::vector<std::string>& params)
 {
-	std::string buf = client.GetBuffer();
-	std::cout << buf << std::endl;
-	buf = buf.substr(0, buf.find_first_of("\r\n\0", 5));
-	std::vector<std::string> tokens = tokenize(buf);
-	parsePartCommand(tokens, client, server);
+	parsePartCommand(params, fd, server);
 }

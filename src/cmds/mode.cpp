@@ -80,15 +80,12 @@ std::vector<std::string>::iterator nextArgs(std::vector<std::string>::iterator &
 	return (result);
 }
 
-void	mode(IRCServer &server, int fd, const std::vector<std::string>& params)
+void	mode(IRCServer &server, int fd, std::vector<std::string>& params)
 {
-	std::string buf = client.GetBuffer();
-	std::cout << "mode="<<buf << std::endl;
-	buf = buf.substr(0, buf.find_first_of("\r\n\0", 5));
-	std::vector<std::string> tokens = tokenize(buf);
+    Client* client = (server.getClients()->find(fd))->second;
 	std::map<std::string, void (*)(bool, std::vector<std::string>, Client&, IRCServer&)> mapFunc;
 	mapModeInit(mapFunc);
-	for (std::vector<std::string>::iterator it = tokens.begin() + 1; it != tokens.end(); it++)
+	for (std::vector<std::string>::iterator it = params.begin() + 1; it != params.end(); it++)
 	{
 		if (it->compare(0, 1, "+") == 0 || it->compare(0, 1, "-") == 0)
 		{
@@ -98,8 +95,8 @@ void	mode(IRCServer &server, int fd, const std::vector<std::string>& params)
 				{
 					if (it->compare(i, 1, it2->first) == 0)
 					{
-						std::vector<std::string> args(it, nextArgs(it, tokens));
-						it2->second(it->compare(0, 1, "+") == 0, args, client, server);
+						std::vector<std::string> args(it, nextArgs(it, params));
+						it2->second(it->compare(0, 1, "+") == 0, args, *client, server);
 					}
 				}
 			}

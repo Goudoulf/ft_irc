@@ -51,26 +51,28 @@
 
 void	joinChannel(std::string channel, std::string key, int fd, IRCServer &server)
 {
-	log(CMD, client.GetNickname() + ":_____join_____");
+
+        Client* client = (server.getClients()->find(fd))->second;
+	log(CMD, client->GetNickname() + ":_____join_____");
 	Channel *chan;
 	if (!(chan = server.find_channel(channel)))
-		chan = server.create_channel(channel, client, key);
-	if (chan->InChannel(client.GetUsername()) == false && chan->keyIsValid(key))
-		chan->add_client(client);
-	for (std::vector<Client*>::iterator _it = server.getClients()->begin(); _it != server.getClients()->end(); _it++) {
-		if (chan->InChannel((*_it)->GetUsername()))
-			message_server("", "JOIN", client, chan->getChannelName(), (*_it)->GetSocket());
+		chan = server.create_channel(channel, *client, key);
+	if (chan->InChannel(client->GetUsername()) == false && chan->keyIsValid(key))
+		chan->add_client(*client);
+	for (std::map<int, Client*>::iterator it = server.getClients()->begin(); it != server.getClients()->end(); it++) {
+		if (chan->InChannel(it->second->GetUsername()))
+			message_server("", "JOIN", *client, chan->getChannelName(), it->first);
 	}
 	//if topic is set -> RPL_TOPIC
 	if (!chan->getTopic().empty())
-		reply_server("332", client, " " + chan->getChannelName() + " :" + chan->getTopic());
+		reply_server("332", *client, " " + chan->getChannelName() + " :" + chan->getTopic());
 	//RPL_NAMREPLY
 
-	reply_server("353", client, "= " + channel + " :" + chan->getUsers());
+	reply_server("353", *client, "= " + channel + " :" + chan->getUsers());
 
 	//RPL_ENDOFNAMES
 
-	reply_server("366", client, channel + " :End of NAMES list");
+	reply_server("366", *client, channel + " :End of NAMES list");
 
 }
 
