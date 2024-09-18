@@ -14,9 +14,11 @@
 #include "../includes/ircserv.h"
 #include "Client.hpp"
 #include "../includes/debug.h"
+#include "../includes/cmds.h"
 #include <cmath>
 #include <sys/select.h>
 #include <unistd.h>
+#include <utility>
 
 void my_exit(std::string error, int code)
 {
@@ -45,14 +47,14 @@ IRCServer::IRCServer(std::string port, std::string password)
     if (listen(server_fd, 10) < 0)
         my_exit("listen error", EXIT_FAILURE);
     addrlen = sizeof(address);
-    _fds.push_back(server_fd);
+    _clients.insert(std::pair<int, Client*>(server_fd, NULL));
 }
 
 IRCServer::~IRCServer(void)
 {
 }
 
-int	IRCServer::run(void)
+int     IRCServer::run(void)
 {
     FD_ZERO(&readfds);
     FD_ZERO(&all_sockets);
@@ -73,10 +75,10 @@ int	IRCServer::run(void)
         }
         log(INFO, "Server new socket activity");
         int i = 0;
-	for (std::vector<int>::iterator it = _fds.begin(); it != _fds.end(); it++) {
-            if (FD_ISSET(*it, &readfds) == 1) // check if any fd i have data waiting 
+	for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); it++) {
+            if (FD_ISSET(it->first, &readfds) == 1) // check if any fd i have data waiting 
             {
-                i = (*it);
+                i = (it->first);
                 break;
             }    
         }
@@ -84,28 +86,18 @@ int	IRCServer::run(void)
         if (i == server_fd)
             accept_connection(&all_sockets);
         else
-            read_data(&all_sockets, i);
+            read_data(i);
     }
     return 0;
 }
 
-void    IRCServer::read_data(fd_set *all_sockets, int i)
+void    IRCServer::read_data(int i)
 {
-	(void)all_sockets;
-	(void)i;
-        log(INFO, "Server reading data");
-	for (std::vector<Client*>::iterator it = _clients.begin(); it != _clients.end(); it++) {
-            if ((sd = (*it)->GetSocket()) != i)
-                continue ;
-            else
-            {
-                _it = it;
-                break;
-            }
-        }
+        Client* client = (_clients.find(i))->second;
         log(INFO, "Clear buffer");
-        bzero((*_it)->GetBuffer(), 1024);
-        if ((valread = recv(sd, (*_it)->GetBuffer(), 1024, 0)) == 0) {
+        bzero(client->GetBuffer(), 1024);
+        log(INFO, "Server reading data");
+        if ((valread = recv(i, client->GetBuffer(), 1024, 0)) == 0) {
             close(sd);
             log(WARN, "recv: socket closed");
             (*_it)->SetSocket(0);
@@ -114,10 +106,10 @@ void    IRCServer::read_data(fd_set *all_sockets, int i)
         }
         else {
             // check command et parsing buffer a refaire proprement
-            if ((*_it)->GetIsConnected() == false)
+            if (client->GetIsConnected() == false)
                 client_connect(**_it);
             else
-                find_cmd(**_it, *this);
+                processBuffer(*this, client->GetSocket(), client->GetBuffer());
         }
 }
 
@@ -131,11 +123,11 @@ void    IRCServer::accept_connection(fd_set *all_sockets)
     FD_SET(new_socket, all_sockets);
     if (new_socket > max_sd)
         max_sd = new_socket;
-    _clients.push_back(new Client(new_socket, inet_ntoa(address.sin_addr)));
+    _clients.insert(std::pair<int, Client*>(new_socket, new Client(new_socket, inet_ntoa(address.sin_addr))));
     _fds.push_back(new_socket);
 }
 
-std::vector<Client*> *IRCServer::getClients()
+std::map<int, Client*> *IRCServer::getClients()
 {
     return &_clients;
 }
@@ -163,13 +155,13 @@ Channel	*IRCServer::find_channel(std::string channel)
 
 void	IRCServer::remove_client(Client &client)
 {
-	for (std::vector<Client*>::iterator it = _clients.begin(); it != _clients.end();) {
-		if ((*it)->GetUsername() == client.GetUsername())
+	for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end();) {
+		if (it->second->GetUsername() == client.GetUsername())
                 {
-                        FD_CLR((*it)->GetSocket(), &all_sockets);
-                        close((*it)->GetSocket());
-                        delete (((*it)->GetClient()));
-			_it = _clients.erase(it);
+                        FD_CLR(it->first, &all_sockets);
+                        close(it->first);
+                        delete ((it->second->GetClient()));
+			it = _clients.erase(it);
                         return;
                 }
 		else

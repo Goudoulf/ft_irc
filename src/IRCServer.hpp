@@ -50,13 +50,13 @@ class IRCServer
 				virtual const char* what() const throw();
 		};
 
-		std::vector<Client*> *getClients();
+		std::map<int, Client*> *getClients();
 		std::vector<Channel*> *getChannels();
 		
 		int	run(void);
 		int	join(void);
 		void    accept_connection(fd_set *all_sockets);
-		void    read_data(fd_set *all_sockets, int i);
+		void    read_data(int i);
 		Channel	*create_channel(std::string channel, Client &client, std::string key);
 		Channel	*find_channel(std::string channel);
 		void	remove_client(Client &client);
@@ -69,7 +69,6 @@ class IRCServer
 		u_int16_t _port;
 		std::string _password;
 		unsigned	short	_client_count;
-		std::vector<Client*> _clients;
 		std::vector<Channel*> _channels;
 		std::vector<int> _fds;
 		std::vector<Client*>::iterator _it;
@@ -78,7 +77,7 @@ class IRCServer
 		struct sockaddr_in address;
 		int addrlen;
 		char buffer[1024];
-		//std::map<std::string, Channel> _channel;
+		std::map<int, Client*> _clients;
 
 		IRCServer(void);
 		IRCServer(IRCServer&);

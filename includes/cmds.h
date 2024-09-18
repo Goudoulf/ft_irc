@@ -10,6 +10,7 @@
 class IRCServer;
 class Client;
 
+void processBuffer(IRCServer& server, int client_fd, const std::string& buffer);
 void	message_server(std::string target, std::string command, Client &client, std::string message, int sd);
 void	reply_server(std::string command,  Client &client, std::string message);
 std::vector<std::string> tokenize(const std::string& input, char delimiter = ' ');

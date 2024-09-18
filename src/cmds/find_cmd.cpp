@@ -3,14 +3,15 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <unordered_map>
+#include <map>
 
 const size_t MAX_BUFFER_SIZE = 512;
+
 std::unordered_map<int, std::string> clientPartialBuffers;
 
 void dispatchCommand(IRCServer& server, int client_fd, const std::string& command, const std::vector<std::string>& params)
 {
-    std::unordered_map<std::string, void(*)(IRCServer&, int, const std::vector<std::string>&)> commandHandlers = {
+    std::map<std::string, void(*)(IRCServer&, int, const std::vector<std::string>&)> commandHandlers = {
 		{"JOIN ", &join},
 		{"NICK ", &nick},
 		{"NOTICES ", &privmsg},
@@ -25,7 +26,7 @@ void dispatchCommand(IRCServer& server, int client_fd, const std::string& comman
 		// {"INVITE ", &invite},
 		{"MODE ", &mode},
 	};
-	std::unordered_map<std::string, void(*)(IRCServer& ,int, const std::vector<std::string>&)>::iterator it = commandHandlers.find(command);
+	std::map<std::string, void(*)(IRCServer& ,int, const std::vector<std::string>&)>::iterator it = commandHandlers.find(command);
     if (it != commandHandlers.end()) {
 	it->second(server, client_fd, params);
     } else {

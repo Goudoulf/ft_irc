@@ -49,7 +49,7 @@
 //    JOIN &foo fubar                 ; Command to join channel &foo using
 //                                    key "fubar".chan->getChannelName()chan->getChannelName()
 
-void	joinChannel(std::string channel, std::string key, Client &client, IRCServer &server)
+void	joinChannel(std::string channel, std::string key, int fd, IRCServer &server)
 {
 	log(CMD, client.GetNickname() + ":_____join_____");
 	Channel *chan;
@@ -74,7 +74,7 @@ void	joinChannel(std::string channel, std::string key, Client &client, IRCServer
 
 }
 
-void parseJoinCommand(const std::vector<std::string>& tokens, Client &client, IRCServer &server)
+void parseJoinCommand(const std::vector<std::string>& tokens, int fd, IRCServer &server)
 {
     // Split channels
     std::vector<std::string> channels = split(tokens[1], ',');
@@ -91,15 +91,12 @@ void parseJoinCommand(const std::vector<std::string>& tokens, Client &client, IR
         std::string key = (i < keys.size()) ? keys[i] : "";
 
         // Handle the join operation for each channel and key
-        joinChannel(channel, key, client, server);
+        joinChannel(channel, key, fd, server);
     }
 }
 
 void	join(IRCServer &server, int fd, std::vector<std::string>& params)
 {
-	std::string buf = client.GetBuffer();
-	buf = buf.substr(0, buf.find_first_of(" \r\n\0", 5));
-	std::vector<std::string> tokens = tokenize(buf);
-	parseJoinCommand(tokens, client, server);
+	parseJoinCommand(params, fd, server);
 }
 
