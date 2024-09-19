@@ -7,26 +7,41 @@
 
 const size_t MAX_BUFFER_SIZE = 512;
 
-std::unordered_map<int, std::string> clientPartialBuffers;
+std::map<int, std::string> clientPartialBuffers;
+ // commandHandlers.insert(std::pair<std::string,void(*)(IRCServer&, int, const std::vector<std::string>&)>("JOIN ", &join));
+ //    commandHandlers.insert(std::pair<std::string,void(*)(IRCServer&, int, const std::vector<std::string>&)>("NICK ", &nick));
+ //    commandHandlers.insert(std::pair<std::string,void(*)(IRCServer&, int, const std::vector<std::string>&)>("NOTICES ", &privmsg));
+ //    commandHandlers.insert(std::pair<std::string,void(*)(IRCServer&, int, const std::vector<std::string>&)>("PRIVMSG ", &privmsg));
+ //    commandHandlers.insert(std::pair<std::string,void(*)(IRCServer&, int, const std::vector<std::string>&)>("PASS ", &pass));
+ //    commandHandlers.insert(std::pair<std::string,void(*)(IRCServer&, int, const std::vector<std::string>&)>("QUIT ", &quit));
+ //    commandHandlers.insert(std::pair<std::string,void(*)(IRCServer&, int, const std::vector<std::string>&)>("PING ", &ping));
+ //    commandHandlers.insert(std::pair<std::string,void(*)(IRCServer&, int, const std::vector<std::string>&)>("TOPIC ", &topic));
+ //    // {"KICK ", &kick},
+ //    //{"TOPIC ", &topic},
+ //    commandHandlers.insert(std::pair<std::string,void(*)(IRCServer&, int, const std::vector<std::string>&)>("PART ", &part));
+ //    // {"INVITE ", &invite},
+ //    commandHandlers.insert(std::pair<std::string,void(*)(IRCServer&, int, const std::vector<std::string>&)>("MODE ", mode));
 
-void dispatchCommand(IRCServer& server, int client_fd, const std::string& command, const std::vector<std::string>& params)
+void dispatchCommand(IRCServer& server, int client_fd, const std::string& command, std::vector<std::string>& params)
 {
-    std::map<std::string, void(*)(IRCServer&, int, const std::vector<std::string>&)> commandHandlers = {
-		{"JOIN ", &join},
-		{"NICK ", &nick},
-		{"NOTICES ", &privmsg},
-		{"PRIVMSG ", &privmsg},
-		{"PASS ", &pass},
-		{"QUIT ", &quit},
-		{"PING ", &ping},
-		{"TOPIC ", &topic},
+    (void)params;
+    std::map<std::string, void(*)(IRCServer&, int, std::vector<std::string>&)> commandHandlers = {
+		{"JOIN", join},
+		{"NICK", nick},
+		{"NOTICES", privmsg},
+		{"PRIVMSG", privmsg},
+		{"PASS", pass},
+		{"QUIT", quit},
+		{"PING", ping},
+		{"TOPIC", topic},
 		// {"KICK ", &kick},
 		//{"TOPIC ", &topic},
-		{"PART ", &part},
+		{"PART", part},
 		// {"INVITE ", &invite},
-		{"MODE ", &mode},
+		{"MODE", mode},
 	};
-	std::map<std::string, void(*)(IRCServer& ,int, const std::vector<std::string>&)>::iterator it = commandHandlers.find(command);
+    std::map<std::string, void(*)(IRCServer& ,int, std::vector<std::string>&)>::iterator it = commandHandlers.find(command);
+    log(INFO, "cmd =" + command + "|");
     if (it != commandHandlers.end()) {
 	it->second(server, client_fd, params);
     } else {

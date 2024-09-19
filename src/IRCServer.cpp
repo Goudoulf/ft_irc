@@ -107,7 +107,7 @@ void    IRCServer::read_data(int i)
         else {
             // check command et parsing buffer a refaire proprement
             if (client->GetIsConnected() == false)
-                client_connect(**_it);
+                client_connect(*client);
             else
                 processBuffer(*this, client->GetSocket(), client->GetBuffer());
         }
@@ -156,7 +156,7 @@ Channel	*IRCServer::find_channel(std::string channel)
 void	IRCServer::remove_client(Client &client)
 {
 	for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end();) {
-		if (it->second->GetUsername() == client.GetUsername())
+		if (it->second && it->second->GetUsername() == client.GetUsername())
                 {
                         FD_CLR(it->first, &all_sockets);
                         close(it->first);

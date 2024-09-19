@@ -60,7 +60,7 @@ void	joinChannel(std::string channel, std::string key, int fd, IRCServer &server
 	if (chan->InChannel(client->GetUsername()) == false && chan->keyIsValid(key))
 		chan->add_client(*client);
 	for (std::map<int, Client*>::iterator it = server.getClients()->begin(); it != server.getClients()->end(); it++) {
-		if (chan->InChannel(it->second->GetUsername()))
+		if (it->second != NULL && chan->InChannel(it->second->GetUsername()))
 			message_server("", "JOIN", *client, chan->getChannelName(), it->first);
 	}
 	//if topic is set -> RPL_TOPIC
@@ -79,12 +79,12 @@ void	joinChannel(std::string channel, std::string key, int fd, IRCServer &server
 void parseJoinCommand(const std::vector<std::string>& tokens, int fd, IRCServer &server)
 {
     // Split channels
-    std::vector<std::string> channels = split(tokens[1], ',');
+    std::vector<std::string> channels = split(tokens[0], ',');
 
     // Split keys if provided
     std::vector<std::string> keys;
     if (tokens.size() > 2) {
-        keys = split(tokens[2], ',');
+        keys = split(tokens[1], ',');
     }
 
     // Process each channel and its corresponding key
@@ -99,6 +99,7 @@ void parseJoinCommand(const std::vector<std::string>& tokens, int fd, IRCServer 
 
 void	join(IRCServer &server, int fd, std::vector<std::string>& params)
 {
+	log(INFO, params[0]);
 	parseJoinCommand(params, fd, server);
 }
 

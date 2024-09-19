@@ -44,10 +44,10 @@ void	partChannel(std::string channel, std::string message, int fd, IRCServer &se
 	log(CMD, client->GetNickname() + ":_____part_____");
 	Channel *chan;
 	if (!(chan = server.find_channel(channel)))
-		log(ERROR, "No channel");
+		log(ERROR, "No channel :" + channel + "|");
 		// error no channel
 	for (std::map<int, Client*>::iterator it = server.getClients()->begin(); it != server.getClients()->end(); it++) {
-		if (chan->InChannel(it->second->GetUsername()))
+		if (it->second && chan->InChannel(it->second->GetUsername()))
 			message_server(chan->getChannelName(), "PART", *client, message, it->second->GetSocket());
 	}
 	if (chan->InChannel(client->GetUsername()) == true)
@@ -57,30 +57,17 @@ void	partChannel(std::string channel, std::string message, int fd, IRCServer &se
 void parsePartCommand(const std::vector<std::string>& tokens, int fd, IRCServer &server)
 {
 	// SVplit channels
-	std::vector<std::string> channels = split(tokens[1], ',');
-	std::string message;
+	std::vector<std::string> channels = split(tokens[0], ',');
 
 	// Split keys if provided
 	std::cout << tokens.size() << std::endl;
-	if (tokens.size() > 2)
-	{
-		unsigned long i = 2;
-		while (i < tokens.size())
-		{
-			if( i + 1 == tokens.size())
-				message = message + tokens[i];
-			else
-				message = message + tokens[i] + " ";
-			i++;
-		}
-	}
 
 	// Process each channel and its corresponding key
 	for (size_t i = 0; i < channels.size(); ++i) {
 		std::string channel = channels[i];
 
 		// Handle the join operation for each channel and key
-		partChannel(channel, message, fd, server);
+		partChannel(channel, tokens[1], fd, server);
 	}
 }
 

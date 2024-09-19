@@ -22,7 +22,7 @@ void	quitServer(std::string channel, std::string message, Client &client, IRCSer
 		log(ERROR, "No channel");
 		// error no channel
 	for (std::map<int, Client*>::iterator it = server.getClients()->begin(); it != server.getClients()->end(); it++) {
-		if (chan->InChannel(it->second->GetUsername()))
+		if (it->second && chan->InChannel(it->second->GetUsername()))
 			message_server("", "QUIT", client, message, it->second->GetSocket());
 	}
 	if (chan->InChannel(client.GetUsername()) == true)
@@ -63,7 +63,7 @@ void parseQuitCommand(const std::vector<std::string>& tokens, Client &client, IR
 	
 	for (std::vector<Channel*>::iterator _it = server.getChannels()->begin(); _it != server.getChannels()->end(); _it++) {
 		if ((*_it)->InChannel(client.GetUsername()))
-			quitServer((*_it)->getChannelName() , message, client, server);
+			quitServer((*_it)->getChannelName() , tokens[0], client, server);
 	}
 }
 
