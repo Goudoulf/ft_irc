@@ -106,9 +106,9 @@ void    IRCServer::read_data(int i)
         }
         else {
             // check command et parsing buffer a refaire proprement
-            if (client->GetIsConnected() == false)
-                client_connect(*client);
-            else
+            // if (client->GetIsConnected() == false)
+            //     client_connect(*client);
+            // else
                 processBuffer(*this, client->GetSocket(), client->GetBuffer());
         }
 }

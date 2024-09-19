@@ -23,6 +23,7 @@ void	privmsg(IRCServer &server, int fd, std::vector<std::string>& params);
 void	pass(IRCServer &server, int fd, std::vector<std::string>& params);
 void	quit(IRCServer &server, int fd, std::vector<std::string>& params);
 void	ping(IRCServer &server, int fd, std::vector<std::string>& params);
+void	user(IRCServer &server, int fd, std::vector<std::string>& params);
 void	part(IRCServer &server, int fd, std::vector<std::string>& params);
 void	kick();
 void	topic(IRCServer &server, int fd, std::vector<std::string>& params);

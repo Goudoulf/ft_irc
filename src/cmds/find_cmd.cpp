@@ -31,6 +31,7 @@ void dispatchCommand(IRCServer& server, int client_fd, const std::string& comman
 		{"NOTICES", privmsg},
 		{"PRIVMSG", privmsg},
 		{"PASS", pass},
+		{"USER", user},
 		{"QUIT", quit},
 		{"PING", ping},
 		{"TOPIC", topic},
@@ -123,6 +124,6 @@ void processBuffer(IRCServer& server, int client_fd, const std::string& buffer) 
     std::vector<std::string> messages = splitBuffer(completeBuffer, remainingPartial);
 
     clientPartialBuffers[client_fd] = remainingPartial;
-	for (std::vector<std::string>::iterator it = messages.begin(); it != messages.end(); it++)
-        processMessage(server, client_fd, *it);
+    for (std::vector<std::string>::iterator it = messages.begin(); it != messages.end(); it++)
+	processMessage(server, client_fd, *it);
 }
