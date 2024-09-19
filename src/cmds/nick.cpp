@@ -7,6 +7,4 @@ void	nick(IRCServer &server, int fd, std::vector<std::string>& params)
 	client->SetNickname(params[0]);
 	//set prefix
 	std::cout << "New nick = " << client->GetNickname() << std::endl;
-	std::string rpl(":127.0.0.1 001 " + client->GetNickname() + " :Welcome to the local Network " + client->GetNickname() +"\r\n");
-	send(fd, rpl.c_str(), rpl.length(), 0);
 }

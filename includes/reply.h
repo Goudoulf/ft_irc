@@ -4,6 +4,7 @@
 #define DATETIME "31/07/2024"
 #include <string>
 #include <map>
+#include "../includes/cmds.h"
 enum IRCReplies {
 	RPL_WELCOME = 001,
 	RPL_YOURHOST = 002,
@@ -149,5 +150,5 @@ enum IRCErrors {
   // More errors...
 };
 
-void sendIRCReply(int fd, std::string code, std::map<std::string, std::string>& params); 
+void sendIRCReply(Client& client, std::string code, std::map<std::string, std::string>& params); 
 #endif

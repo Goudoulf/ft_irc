@@ -7,7 +7,7 @@ void	user(IRCServer &server, int fd, std::vector<std::string>& params)
 	std::cout << "_____user command_____" << std::endl;
 	client->SetUsername(params[0]);
 	//set prefix
-	std::cout << "New user = " << client->GetUsername() << std::endl;
+	std::cout << "New user =" << client->GetUsername() << "|" << std::endl;
 	if (client->GetUsername().size() != 0 && client->GetNickname().size() != 0)
 	{
 		client->SetPrefix();

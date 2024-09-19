@@ -14,6 +14,7 @@
 #include <map>
 #include <string>
 #include <sys/socket.h>
+#include "../includes/cmds.h"
 
 typedef struct s_reply
 {
@@ -158,7 +159,7 @@ typedef struct s_reply
 	};
 }t_Reply;
 
-void sendIRCReply(int fd, std::string code, std::map<std::string, std::string>& params) {
+void sendIRCReply(Client& client, std::string code, std::map<std::string, std::string>& params) {
     t_Reply reply;
    std::map<std::string, std::string>::iterator it = reply.ReplyTemplates.find(code);
     if (it != reply.ReplyTemplates.end()) {
@@ -172,8 +173,8 @@ void sendIRCReply(int fd, std::string code, std::map<std::string, std::string>& 
                 message.replace(pos, placeholder.length(), it->second);
             }
         }
-	std::string rep = ":127.0.0.1 " + code + " " + message;
-	send(fd, rep.c_str(), rep.size(), 0);
+	std::string rep = ":127.0.0.1 " + code + " " + client.GetNickname() + " " + message + "\n\r";
+	send(client.GetSocket(), rep.c_str(), rep.size(), 0);
 
     } else {
         // Handle unknown reply code

@@ -12,6 +12,7 @@ std::map<int, std::string> clientPartialBuffers;
 
 void dispatchCommand(IRCServer& server, int client_fd, const std::string& command, std::vector<std::string>& params)
 {
+    Client* client = (server.getClients()->find(client_fd))->second;
     std::map<std::string, void(*)(IRCServer&, int, std::vector<std::string>&)> commandHandlers = {
 		{"JOIN", join},
 		{"NICK", nick},
@@ -36,7 +37,7 @@ void dispatchCommand(IRCServer& server, int client_fd, const std::string& comman
         // Handle unknown command
         log(ERROR, "Unknown IRC command: " + command);
 	std::map<std::string, std::string> par {{"command", command}};
-        sendIRCReply(client_fd, "421", par);
+        sendIRCReply(*client, "421", par);
     }
 }
 
