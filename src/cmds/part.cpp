@@ -47,8 +47,8 @@ void	partChannel(std::string channel, std::string message, int fd, IRCServer &se
 		log(ERROR, "No channel :" + channel + "|");
 		// error no channel
 	for (std::map<int, Client*>::iterator it = server.getClients()->begin(); it != server.getClients()->end(); it++) {
-		if (it->second && chan->InChannel(it->second->GetUsername()))
-			message_server(chan->getChannelName(), "PART", *client, message, it->second->GetSocket());
+		if (it->second != NULL && chan->InChannel(it->second->GetUsername()))
+			message_server(chan->getChannelName(), "PART", *client , ":" + message, it->first);
 	}
 	if (chan->InChannel(client->GetUsername()) == true)
 		chan->remove_client(*client);

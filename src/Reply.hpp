@@ -14,7 +14,7 @@
 #define REPLY_HPP
 
 #include <string>
-#include <unordered_map>
+#include <map>
 
 class Reply
 {
@@ -22,14 +22,14 @@ class Reply
 			
 			Reply();
 			~Reply();
-			void sendIRCReply(std::string code, const std::unordered_map<std::string, std::string>& params);
+			void sendIRCReply(std::string code, const std::map<std::string, std::string>& params);
 		
 	private:
 		
 		Reply(Reply& copy);
 		Reply& operator=(Reply& copy);
-		std::unordered_map<std::string, std::string> _ReplyTemplates;
-		std::unordered_map<std::string, std::string> _ErrorTemplates;
+		std::map<std::string, std::string> _ReplyTemplates;
+		std::map<std::string, std::string> _ErrorTemplates;
 };
 
 #endif

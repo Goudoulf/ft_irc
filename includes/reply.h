@@ -2,8 +2,8 @@
 #define REPLY_H
 
 #define DATETIME "31/07/2024"
-#include <unordered_map>
 #include <string>
+#include <map>
 enum IRCReplies {
 	RPL_WELCOME = 001,
 	RPL_YOURHOST = 002,
@@ -149,4 +149,5 @@ enum IRCErrors {
   // More errors...
 };
 
+void sendIRCReply(int fd, std::string code, std::map<std::string, std::string>& params); 
 #endif

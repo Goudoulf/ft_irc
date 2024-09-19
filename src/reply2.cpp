@@ -10,13 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Reply.hpp"
 #include <iostream>
+#include <map>
+#include <string>
+#include <sys/socket.h>
 
-
-Reply::Reply()
+typedef struct s_reply
 {
-	_ReplyTemplates = {
+	std::map<std::string, std::string> ReplyTemplates = {
 		{"001", "Welcome to the Internet Relay Network, {nickname}!"},
 		{"002", "Your host is {servername}, running version {version}"},
 		{"003", "This server was created {date}"},
@@ -100,10 +101,7 @@ Reply::Reply()
 		{"257", ":{admin info line 1}"},
 		{"258", ":{admin info line 2}"},
 		{"259", ":{admin info line 3}"},
-		{"263", ":Please wait a while and try again."}
-	};
-
-	_ErrorTemplates = {
+		{"263", ":Please wait a while and try again."},
 		{"401", "{nickname} :No such nick/channel"},
 		{"402", "{server name} :No such server"},
 		{"403", "{channel name} :No such channel"},
@@ -158,30 +156,28 @@ Reply::Reply()
 		{"501", ":Unknown MODE flag"},
 		{"502", ":Cannot change mode for other users"},
 	};
-}
+}t_Reply;
 
-void Reply::sendIRCReply(std::string code, const std::unordered_map<std::string, std::string>& params) {
-   std::unordered_map<std::string, std::string>::iterator it = _ReplyTemplates.find(code);
-    if (it != _ReplyTemplates.end()) {
+void sendIRCReply(int fd, std::string code, std::map<std::string, std::string>& params) {
+    t_Reply reply;
+   std::map<std::string, std::string>::iterator it = reply.ReplyTemplates.find(code);
+    if (it != reply.ReplyTemplates.end()) {
         std::string message = it->second;
         
         // Replace placeholders with actual parameter values
-        for (const auto& [key, value] : params) {
-            std::string placeholder = "{" + key + "}";
+        for (std::map<std::string, std::string>::iterator it = params.begin(); it != params.end(); it++) {
+            std::string placeholder = "{" + it->first + "}";
             size_t pos;
             while ((pos = message.find(placeholder)) != std::string::npos) {
-                message.replace(pos, placeholder.length(), value);
+                message.replace(pos, placeholder.length(), it->second);
             }
         }
+	std::string rep = ":127.0.0.1 " + code + " " + message;
+	send(fd, rep.c_str(), rep.size(), 0);
 
-        // Send message to the client
     } else {
         // Handle unknown reply code
         std::cout << "Unknown IRC code: " << code << std::endl;
     }
 }
 
-Reply::~Reply()
-{
-
-}
