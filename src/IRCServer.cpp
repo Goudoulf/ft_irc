@@ -36,7 +36,6 @@ IRCServer::IRCServer(std::string port, std::string password)
     char *end;
     log(DEBUG, "IRC Server is setting up socket");
     memset(&address, 0, sizeof(address));
-    memset(&timeout, 0, sizeof(timeout));
     int test = 1;
     _port = static_cast<unsigned short>(std::strtod(port.c_str(), &end)); 
     _port_string = port;
@@ -76,6 +75,8 @@ int     IRCServer::run(void)
     FD_ZERO(&all_sockets);
     FD_SET(server_fd, &all_sockets);
     max_sd = server_fd;
+    std::cout << "Maxsd=" << max_sd << std::endl;
+    std::cout << "size=" << _clients.size() << std::endl;
     log(INFO, "IRC Server loop is starting");
     while (true) {
         readfds = all_sockets;

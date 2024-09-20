@@ -1,4 +1,5 @@
 #include "../../includes/cmds.h"
+#include "../../includes/reply.h"
 #include "../Channel.hpp"
 #include <sstream>
 #include <vector>
@@ -57,8 +58,17 @@ void	joinChannel(std::string channel, std::string key, int fd, IRCServer &server
 	Channel *chan;
 	if (!(chan = server.find_channel(channel)))
 		chan = server.create_channel(channel, *client, key);
-	if (chan->InChannel(client->GetUsername()) == false && chan->keyIsValid(key))
+	if (chan->InChannel(client->GetUsername()) == false)
+	{
+		if (!chan->keyIsValid(key))
+		{
+			log(ERROR, "Wrong Channel Key");
+			std::map<std::string, std::string> par {{"channel", channel}};
+			sendIRCReply(*client, "475", par);
+			return ;
+		}
 		chan->add_client(*client);
+	}
 	for (std::map<int, Client*>::iterator it = server.getClients()->begin(); it != server.getClients()->end(); it++) {
 		if (it->second != NULL && chan->InChannel(it->second->GetUsername()))
 			message_server("", "JOIN", *client, chan->getChannelName(), it->first);
@@ -83,7 +93,7 @@ void parseJoinCommand(const std::vector<std::string>& tokens, int fd, IRCServer 
 
     // Split keys if provided
     std::vector<std::string> keys;
-    if (tokens.size() > 2) {
+    if (tokens.size() > 1) {
         keys = split(tokens[1], ',');
     }
 

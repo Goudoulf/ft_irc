@@ -27,6 +27,7 @@ void dispatchCommand(IRCServer& server, int client_fd, const std::string& comman
 		{"PART", part},
 		// {"INVITE ", &invite},
 		{"MODE", mode},
+		{"CAP", cap},
 	};
     std::map<std::string, void(*)(IRCServer& ,int, std::vector<std::string>&)>::iterator it = commandHandlers.find(command);
     log(INFO, "cmd =" + command + "|");
@@ -98,6 +99,7 @@ std::vector<std::string> splitBuffer(const std::string& buffer, std::string& rem
 }
 
 void processBuffer(IRCServer& server, int client_fd, const std::string& buffer) {
+    log(DEBUG, "{" + buffer + "}");
     std::string& clientPartial = clientPartialBuffers[client_fd];
 
     std::string completeBuffer = clientPartial + buffer;

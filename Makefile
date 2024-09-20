@@ -16,7 +16,7 @@ SRCS_FILE = main.cpp IRCServer.cpp Client.cpp client_checker.cpp \
 			cmds/find_cmd.cpp cmds/join.cpp cmds/nick.cpp cmds/pass.cpp cmds/ping.cpp\
 			cmds/privmsg.cpp cmds/quit.cpp cmds/mode.cpp cmds/client_connect.cpp Channel.cpp\
 			cmds/reply.cpp cmds/tokenize.cpp cmds/split.cpp debug/debug.cpp cmds/part.cpp\
-			cmds/topic.cpp cmds/user.cpp reply2.cpp
+			cmds/topic.cpp cmds/user.cpp reply2.cpp cmds/cap.cpp
 
 DIR_SRC := src/
 DIR_OBJ := .object/

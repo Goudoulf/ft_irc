@@ -29,6 +29,7 @@ void	kick();
 void	topic(IRCServer &server, int fd, std::vector<std::string>& params);
 void	invite();
 void	mode(IRCServer &server, int fd, std::vector<std::string>& params);
+void	cap(IRCServer &server, int fd, std::vector<std::string>& params);
 
 
 #endif
