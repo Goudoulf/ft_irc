@@ -1,7 +1,6 @@
 #include "../../includes/cmds.h"
 #include "../../includes/debug.h"
 #include "../../includes/reply.h"
-#include <iostream>
 #include <sstream>
 #include <string>
 #include <map>

@@ -16,9 +16,13 @@
 #include "../includes/debug.h"
 #include "../includes/cmds.h"
 #include <cmath>
+#include <cstring>
 #include <sys/select.h>
 #include <unistd.h>
 #include <utility>
+#include <errno.h>
+
+extern bool stop;
 
 void my_exit(std::string error, int code)
 {
@@ -32,26 +36,38 @@ IRCServer::IRCServer(std::string port, std::string password)
     char *end;
     log(DEBUG, "IRC Server is setting up socket");
     memset(&address, 0, sizeof(address));
+    memset(&timeout, 0, sizeof(timeout));
+    int test = 1;
     _port = static_cast<unsigned short>(std::strtod(port.c_str(), &end)); 
+    _port_string = port;
     _password = password;
    
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
         my_exit("socket failed", EXIT_FAILURE);
-    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &timeout, sizeof(timeout)))
+    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &test, sizeof(test)))
         my_exit("setsockopt", EXIT_FAILURE);
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(_port);
     if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
+    {
+        log(ERROR, strerror(errno));
         my_exit("bind failed", EXIT_FAILURE);
+    }
     if (listen(server_fd, 10) < 0)
         my_exit("listen error", EXIT_FAILURE);
     addrlen = sizeof(address);
     _clients.insert(std::pair<int, Client*>(server_fd, NULL));
+    _creation_date = set_time();
 }
 
 IRCServer::~IRCServer(void)
 {
+}
+
+void		IRCServer::stopServer()
+{
+        return;
 }
 
 int     IRCServer::run(void)
@@ -71,6 +87,11 @@ int     IRCServer::run(void)
         if (activity == 0)
         {
             //log(INFO, "Server waiting for socket update..");
+            if (stop == true)
+            {
+                close(server_fd);
+                return 0;
+            }
             continue;
         }
         log(INFO, "Server new socket activity");
@@ -123,7 +144,7 @@ void    IRCServer::accept_connection(fd_set *all_sockets)
     FD_SET(new_socket, all_sockets);
     if (new_socket > max_sd)
         max_sd = new_socket;
-    _clients.insert(std::pair<int, Client*>(new_socket, new Client(new_socket, inet_ntoa(address.sin_addr))));
+    _clients.insert(std::pair<int, Client*>(new_socket, new Client(new_socket, inet_ntoa(address.sin_addr), getIRCServer())));
     _fds.push_back(new_socket);
 }
 
@@ -135,6 +156,21 @@ std::map<int, Client*> *IRCServer::getClients()
 std::vector<Channel*> *IRCServer::getChannels()
 {
     return &_channels;
+}
+
+std::string	IRCServer::getCreationDate()
+{
+    return _creation_date;
+}
+
+IRCServer*	IRCServer::getIRCServer()
+{
+    return  this;
+}
+
+std::string	IRCServer::getPort()
+{
+    return _port_string;
 }
 
 Channel *IRCServer::create_channel(std::string channel, Client &client, std::string key)
@@ -167,4 +203,15 @@ void	IRCServer::remove_client(Client &client)
 		else
 			++it;
 	}
+}
+
+
+std::string	IRCServer::set_time()
+{
+    time_t timestamp = time( NULL );
+    struct tm * pTime = localtime( & timestamp );
+
+    char buffer[80];
+    strftime( buffer, 80, "%d/%m/%Y %H:%M:%S", pTime );
+    return (buffer);
 }

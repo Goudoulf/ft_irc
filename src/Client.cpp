@@ -4,15 +4,16 @@
 #include <iostream>
 #include <string>
 #include "../includes/debug.h"
+#include "IRCServer.hpp"
 
-Client::Client(const int &socket, std::string hostname): _hostname(hostname), _socket(socket)
+Client::Client(const int &socket, std::string hostname, IRCServer* server): _hostname(hostname), _socket(socket)
 {
 	_buffer = new char[1024];
 	//buffer = new char[1024];
 	_nickname = "default";
 	_realname = "realname";
 	_isconnected = false;
-	//_server = "unknown";
+	_server = server;
 }
 
 Client::~Client()
@@ -121,6 +122,11 @@ std::string	Client::GetUsername() const
 std::string	Client::GetRealname() const
 {
 	return _realname;
+}
+
+IRCServer*	Client::getServer()const
+{
+	return _server;
 }
 
 int	Client::GetSocket() const

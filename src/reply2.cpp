@@ -14,7 +14,9 @@
 #include <map>
 #include <string>
 #include <sys/socket.h>
+#include <utility>
 #include "../includes/cmds.h"
+#include "IRCServer.hpp"
 
 typedef struct s_reply
 {
@@ -159,8 +161,21 @@ typedef struct s_reply
 	};
 }t_Reply;
 
+std::map<std::string, std::string> insert_default_value(Client &client, std::map<std::string, std::string>& params)
+{
+    params.insert(std::pair<std::string, std::string>({"servername", "NetTwerkers"}));
+    params.insert(std::pair<std::string, std::string>({"version", "v0.1"}));
+    params.insert(std::pair<std::string, std::string>({"user modes", "itkol"}));
+    params.insert(std::pair<std::string, std::string>({"channel modes", "itkol"}));
+    params.insert(std::pair<std::string, std::string>({"port", client.getServer()->getPort()}));
+    params.insert(std::pair<std::string, std::string>({"date", client.getServer()->getCreationDate()}));
+    return (params);
+}
+
+
 void sendIRCReply(Client& client, std::string code, std::map<std::string, std::string>& params) {
     t_Reply reply;
+    params = insert_default_value(client, params);
    std::map<std::string, std::string>::iterator it = reply.ReplyTemplates.find(code);
     if (it != reply.ReplyTemplates.end()) {
         std::string message = it->second;

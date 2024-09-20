@@ -13,7 +13,25 @@
 #include "IRCServer.hpp"
 #include "../includes/debug.h"
 #include <cstring>
+#include <signal.h>
 #include <iostream>
+
+bool    stop = false;
+
+static void	sigquit_handler(int sig)
+{
+    (void)sig;
+    stop = true;
+}
+
+void	signal_handling(void)
+{
+	struct sigaction	act;
+
+	memset(&act, 0, sizeof(act));
+	act.sa_handler = &sigquit_handler;
+	sigaction(SIGQUIT, &act, NULL);
+}
 
 int main(int argc, char **argv)
 {
@@ -27,7 +45,8 @@ int main(int argc, char **argv)
     else
         currentLogLevel = INFO;
     log(INFO, "IRC Server launching");
-    IRCServer server(argv[1], "test");
-    server.run();
+    signal_handling();
+    IRCServer *server= new IRCServer(argv[1], "test");
+    server->run();
     return (0);
 }

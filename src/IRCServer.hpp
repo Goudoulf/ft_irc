@@ -52,6 +52,10 @@ class IRCServer
 
 		std::map<int, Client*> *getClients();
 		std::vector<Channel*> *getChannels();
+		std::string	getCreationDate();
+		std::string	getPort();
+		IRCServer*	getIRCServer();
+		void		stopServer();
 		
 		int	run(void);
 		int	join(void);
@@ -60,6 +64,7 @@ class IRCServer
 		Channel	*create_channel(std::string channel, Client &client, std::string key);
 		Channel	*find_channel(std::string channel);
 		void	remove_client(Client &client);
+		std::string	set_time();
 		struct timeval timeout;
 
 	private:
@@ -67,12 +72,14 @@ class IRCServer
     fd_set readfds;
     fd_set all_sockets;
 		u_int16_t _port;
+		std::string	_port_string;
 		std::string _password;
 		unsigned	short	_client_count;
 		std::vector<Channel*> _channels;
 		std::vector<int> _fds;
 		std::vector<Client*>::iterator _it;
 		std::vector<Client*>::iterator _it2;
+		std::string	_creation_date;
 		int server_fd, max_sd, sd, activity, valread;
 		struct sockaddr_in address;
 		int addrlen;

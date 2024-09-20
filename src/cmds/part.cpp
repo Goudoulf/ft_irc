@@ -1,6 +1,7 @@
 //TODO: Create part command
 
 #include "../../includes/cmds.h"
+#include "../../includes/reply.h"
 #include "../Channel.hpp"
 #include <sstream>
 #include <vector>
@@ -44,8 +45,24 @@ void	partChannel(std::string channel, std::string message, int fd, IRCServer &se
 	log(CMD, client->GetNickname() + ":_____part_____");
 	Channel *chan;
 	if (!(chan = server.find_channel(channel)))
-		log(ERROR, "No channel :" + channel + "|");
+	{
 		// error no channel
+		log(ERROR, "No channel :" + channel + "|");
+		std::map<std::string, std::string> param {{"channel name", channel}};
+		sendIRCReply(*client, "403", param );
+		return ;
+
+	}
+	if (!chan->InChannel(client->GetUsername()))
+	{
+		// error no channel
+		log(ERROR, client->GetUsername() + "not on channel " + channel);
+		std::map<std::string, std::string> param {{"channel", channel}};
+		sendIRCReply(*client, "442", param );
+		return ;
+
+	}
+
 	for (std::map<int, Client*>::iterator it = server.getClients()->begin(); it != server.getClients()->end(); it++) {
 		if (it->second != NULL && chan->InChannel(it->second->GetUsername()))
 			message_server(chan->getChannelName(), "PART", *client , ":" + message, it->first);

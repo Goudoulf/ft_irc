@@ -18,10 +18,12 @@
 #include <map>
 #include <string>
 
+class IRCServer;
+
 class Client
 {
 	public:
-		Client(const int &socket, std::string hostname);
+		Client(const int &socket, std::string hostname, IRCServer* server);
 		~Client();
 		bool operator <(const Client& toComp) const;
 
@@ -39,6 +41,7 @@ class Client
 		std::string	GetUsername() const;
 		std::string	GetRealname() const;
 		std::string	GetHostname() const;
+		IRCServer*	getServer()const;
 		Client		*GetClient();
 		int			GetSocket() const;
 		std::string	GetPrefix() const;
@@ -53,10 +56,10 @@ class Client
 		std::string	_hostname;
 		std::string _prefix;
 		bool		_isconnected;
-		//IRCServer	*_server;   // server to which it's connected
 		char		*_buffer;
 		int			_socket;
 		std::map<int, std::string> _clientPartialBuffers;
+		IRCServer*	_server;
 };
 
 #endif
