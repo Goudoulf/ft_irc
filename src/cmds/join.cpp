@@ -69,6 +69,7 @@ void	joinChannel(std::string channel, std::string key, int fd, IRCServer &server
 		}
 		chan->add_client(*client);
 	}
+	// add client send function
 	for (std::map<int, Client*>::iterator it = server.getClients()->begin(); it != server.getClients()->end(); it++) {
 		if (it->second != NULL && chan->InChannel(it->second->GetUsername()))
 			message_server("", "JOIN", *client, chan->getChannelName(), it->first);
