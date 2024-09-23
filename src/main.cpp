@@ -33,20 +33,43 @@ void	signal_handling(void)
 	sigaction(SIGQUIT, &act, NULL);
 }
 
+bool isValidPassword(const std::string& password) {
+    if (password.length() < 1 || password.length() > 23) {
+        return false;
+    }
+
+    for (char c : password) {
+        unsigned char uc = static_cast<unsigned char>(c);
+
+        if (!((uc >= 0x01 && uc <= 0x05) ||
+              (uc >= 0x07 && uc <= 0x08) ||
+              (uc == 0x0C) ||
+              (uc >= 0x0E && uc <= 0x1F) ||
+              (uc >= 0x21 && uc <= 0x7F))) {
+            return false;
+        }
+    }
+
+    return true; // All checks passed
+}
+
 int main(int argc, char **argv)
 {
-    // if (argc != 2)
-    // {
-    //     std::cout << "Wrond number of arguments" << std::endl;
-    //     return (-1);
-    // }
+    if (argc < 2 || argc > 3)
+    {
+        std::cout << "Wrond number of arguments" << std::endl;
+        return (-1);
+    }
     if (argc > 2 && std::strcmp(argv[2], "--debug") == 0)
         currentLogLevel = DEBUG;
     else
         currentLogLevel = INFO;
     log(INFO, "IRC Server launching");
     signal_handling();
-    IRCServer *server= new IRCServer(argv[1], "test");
-    server->run();
+    if (isValidPassword(argv[2]))
+    {
+	IRCServer *server= new IRCServer(argv[1], argv[2]);
+	server->run();
+    }
     return (0);
 }

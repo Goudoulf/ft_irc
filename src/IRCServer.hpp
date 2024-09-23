@@ -54,6 +54,7 @@ class IRCServer
 		std::vector<Channel*> *getChannels();
 		std::string	getCreationDate();
 		std::string	getPort();
+		std::string	getPassword();
 		IRCServer*	getIRCServer();
 		void		stopServer();
 		

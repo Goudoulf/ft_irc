@@ -75,8 +75,8 @@ int     IRCServer::run(void)
     FD_ZERO(&all_sockets);
     FD_SET(server_fd, &all_sockets);
     max_sd = server_fd;
-    std::cout << "Maxsd=" << max_sd << std::endl;
-    std::cout << "size=" << _clients.size() << std::endl;
+    // std::cout << "Maxsd=" << max_sd << std::endl;
+    // std::cout << "size=" << _clients.size() << std::endl;
     log(INFO, "IRC Server loop is starting");
     while (true) {
         readfds = all_sockets;
@@ -147,6 +147,11 @@ void    IRCServer::accept_connection(fd_set *all_sockets)
         max_sd = new_socket;
     _clients.insert(std::pair<int, Client*>(new_socket, new Client(new_socket, inet_ntoa(address.sin_addr), getIRCServer())));
     _fds.push_back(new_socket);
+}
+
+std::string	IRCServer::getPassword()
+{
+    return _password;
 }
 
 std::map<int, Client*> *IRCServer::getClients()
