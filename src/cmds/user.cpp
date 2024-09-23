@@ -21,6 +21,5 @@ void	user(IRCServer &server, int fd, std::vector<std::string>& params)
 		// reply_server("002", *client, ":Your host is " + client->GetHostname() + ", running on NetTwerkers_v0.1");
 		// reply_server("003", *client, ":This server was created 07/29/2024");
 		// reply_server("004", *client, ":NetTwerkers_v0.1 - itkol");
-		client->SetIsConnected(true);
 	}
 }

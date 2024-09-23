@@ -55,12 +55,12 @@ bool isValidPassword(const std::string& password) {
 
 int main(int argc, char **argv)
 {
-    if (argc < 2 || argc > 3)
+    if (argc < 2 || argc > 4)
     {
         std::cout << "Wrond number of arguments" << std::endl;
         return (-1);
     }
-    if (argc > 2 && std::strcmp(argv[2], "--debug") == 0)
+    if (argc > 3 && std::strcmp(argv[3], "--debug") == 0)
         currentLogLevel = DEBUG;
     else
         currentLogLevel = INFO;
