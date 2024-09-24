@@ -175,7 +175,7 @@ std::map<std::string, std::string> insert_default_value(Client &client, std::map
 
 void sendIRCReply(Client& client, std::string code, std::map<std::string, std::string>& params) {
     t_Reply reply;
-    params = insert_default_value(client, params)
+    params = insert_default_value(client, params);
    std::map<std::string, std::string>::iterator it = reply.ReplyTemplates.find(code);
     if (it != reply.ReplyTemplates.end()) {
         std::string message = it->second;

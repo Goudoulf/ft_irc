@@ -75,8 +75,6 @@ int     IRCServer::run(void)
     FD_ZERO(&all_sockets);
     FD_SET(server_fd, &all_sockets);
     max_sd = server_fd;
-    // std::cout << "Maxsd=" << max_sd << std::endl;
-    // std::cout << "size=" << _clients.size() << std::endl;
     log(INFO, "IRC Server loop is starting");
     while (true) {
         readfds = all_sockets;
@@ -126,13 +124,8 @@ void    IRCServer::read_data(int i)
             if (valread == -1)  
                 log(ERROR, "recv: error");
         }
-        else {
-            // check command et parsing buffer a refaire proprement
-            // if (client->GetIsConnected() == false)
-            //     client_connect(*client);
-            // else
-                processBuffer(*this, client->GetSocket(), client->GetBuffer());
-        }
+        else
+            processBuffer(*this, client->GetSocket(), client->GetBuffer());
 }
 
 void    IRCServer::accept_connection(fd_set *all_sockets)

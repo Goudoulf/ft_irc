@@ -4,28 +4,17 @@
 #include "NickCommand.hpp"
 
 class CommandBuilder {
-    std::string commandType;
-    std::map<std::string, std::string> params;
 
 public:
-    CommandBuilder& setCommandType(const std::string& type) {
-        commandType = type;
-        return *this;
-    }
 
-    CommandBuilder& addParam(const std::string& key, const std::string& value) {
-        params[key] = value;
-        return *this;
-    }
-
-    Command* build() {
-        if (commandType == "NICK")
+    Command* build(const std::string& command) {
+        if (command == "NICK")
         {
-            return new NickCommand(params["nickname"]);
+            return new NickCommand();
         }
-        else if (commandType == "JOIN")
+        else if (command == "JOIN")
         {
-            return new JoinCommand(params["channel"]);
+            return new JoinCommand();
         }
         
         return 0;  // Unknown command

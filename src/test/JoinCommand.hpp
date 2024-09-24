@@ -3,11 +3,9 @@
 #include <iostream>
 
 class JoinCommand : public Command {
-    std::string channel;
-public:
-    JoinCommand(const std::string& chan) : channel(chan) {}
 
-    void handle(int client_fd) const override {
-        std::cout << "Client " << client_fd << " joins channel: " << channel << std::endl;
-    }
+public:
+
+    JoinCommand() {}
+    void execute(int client_fd, const std::vector<std::string>& params);
 };
