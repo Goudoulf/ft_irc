@@ -53,7 +53,7 @@ void	partChannel(std::string channel, std::string message, int fd, IRCServer &se
 		return ;
 
 	}
-	if (!chan->InChannel(client->GetUsername()))
+	if (!chan->inChannel(client->GetUsername()))
 	{
 		// error no channel
 		log(ERROR, client->GetUsername() + "not on channel " + channel);
@@ -64,10 +64,10 @@ void	partChannel(std::string channel, std::string message, int fd, IRCServer &se
 	}
 
 	for (std::map<int, Client*>::iterator it = server.getClients()->begin(); it != server.getClients()->end(); it++) {
-		if (it->second != NULL && chan->InChannel(it->second->GetUsername()))
+		if (it->second != NULL && chan->inChannel(it->second->GetUsername()))
 			message_server(chan->getChannelName(), "PART", *client , ":" + message, it->first);
 	}
-	if (chan->InChannel(client->GetUsername()) == true)
+	if (chan->inChannel(client->GetUsername()) == true)
 		chan->remove_client(*client);
 }
 

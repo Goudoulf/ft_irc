@@ -66,6 +66,7 @@ Channel::Channel(const std::string &name, const Client &creator, const std::stri
 	_users.push_back(creator);
 	_password = key;
 	_isEmpty = false;
+	_isInviteOnly = false;
 }
 
 Channel::~Channel()
@@ -87,7 +88,7 @@ std::string Channel::getUsers()
 	std::string temp;
 	std::vector<Client>::iterator it;
 	for (it = _users.begin(); it != _users.end(); it++) {
-		if (IsOp(it->GetUsername()) == true)
+		if (isOp(it->GetUsername()) == true)
 			temp = temp + "@" + it->GetNickname();
 		else
 			temp = temp + it->GetNickname();
@@ -104,7 +105,7 @@ bool	Channel::keyIsValid(std::string &key)
 	return false;
 }
 
-bool	Channel::InChannel(std::string client)
+bool	Channel::inChannel(std::string client)
 {
 	std::vector<Client>::iterator it;
 	for (it = _users.begin(); it != _users.end(); it++) {
@@ -114,7 +115,7 @@ bool	Channel::InChannel(std::string client)
 	return (false);
 }
 
-bool	Channel::IsOp(std::string client)
+bool	Channel::isOp(std::string client)
 {
 	std::vector<Client>::iterator it;
 	for (it = _operators.begin(); it != _operators.end(); it++) {
@@ -127,6 +128,16 @@ bool	Channel::IsOp(std::string client)
 void	Channel::setTopic(std::string topic)
 {
 	_topic = topic;
+}
+
+void Channel::setInviteOnly(bool sign)
+{
+	_isInviteOnly = sign;
+}
+
+bool Channel::getInviteOnly()
+{
+	return _isInviteOnly;
 }
 
 std::string		Channel::getTopic()

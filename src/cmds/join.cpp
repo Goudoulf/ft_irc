@@ -58,7 +58,7 @@ void	joinChannel(std::string channel, std::string key, int fd, IRCServer &server
 	Channel *chan;
 	if (!(chan = server.find_channel(channel)))
 		chan = server.create_channel(channel, *client, key);
-	if (chan->InChannel(client->GetUsername()) == false)
+	if (chan->inChannel(client->GetUsername()) == false)
 	{
 		if (!chan->keyIsValid(key))
 		{
@@ -71,7 +71,7 @@ void	joinChannel(std::string channel, std::string key, int fd, IRCServer &server
 	}
 	// add client send function
 	for (std::map<int, Client*>::iterator it = server.getClients()->begin(); it != server.getClients()->end(); it++) {
-		if (it->second != NULL && chan->InChannel(it->second->GetUsername()))
+		if (it->second != NULL && chan->inChannel(it->second->GetUsername()))
 			message_server("", "JOIN", *client, chan->getChannelName(), it->first);
 	}
 	//if topic is set -> RPL_TOPIC

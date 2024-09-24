@@ -22,17 +22,17 @@ void topic(IRCServer &server, int fd, std::vector<std::string>& params)
 			}
 			else
 			{
-				if ((*_it)->IsOp(client->GetUsername()))
+				if ((*_it)->isOp(client->GetUsername()))
 				{
 					(*_it)->setTopic(topic);
 					std::string rpl = ":" + client->GetPrefix() + " TOPIC " + (*_it)->getChannelName() + " :" + (*_it)->getTopic() + "\r\n";
 					for (std::map<int, Client*>::iterator it = server.getClients()->begin(); it != server.getClients()->end(); it++)
 					{
-						if ((*_it)->InChannel(it->second->GetUsername()))
+						if ((*_it)->inChannel(it->second->GetUsername()))
 							send(it->second->GetSocket(), rpl.c_str(), rpl.length(), 0);
 					}
 				}
-				else if ((*_it)->InChannel(client->GetUsername()))
+				else if ((*_it)->inChannel(client->GetUsername()))
 					reply_server("482", *client, (*_it)->getChannelName() + " :You're not channel operator");
 				else
 					reply_server("442", *client, (*_it)->getChannelName() + " :You're not on that channel");

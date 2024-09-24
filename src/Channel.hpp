@@ -30,12 +30,14 @@ class Channel
 		std::string getChannelName();
 		std::string getUsers();
 		channelMode getChannelMode();
-		bool	InChannel(std::string client);
-		bool	IsOp(std::string client);
+		bool	inChannel(std::string client);
+		bool	isOp(std::string client);
 		bool	keyIsValid(std::string &key);
 		void	add_client(Client &client);
 		void	remove_client(Client &client);
 		void	setTopic(std::string topic);
+		void	setInviteOnly(bool sign);
+		bool	getInviteOnly();
 		std::string	getTopic();
 		
 		class InvalidName: public std::exception {
@@ -55,9 +57,13 @@ class Channel
 		
 		std::vector<Client> _users;
 		std::vector<Client> _operators;
+		std::vector<Client> _invitationList;
 		std::string			_topic;
 		std::string			_password;
 		bool				_isEmpty;
+		bool				_isInviteOnly;
+		bool				_topicRestrictions;
+		int					_clientLimit;
 		channelMode _mode;//channel mode, depending on name prefix
 		//stack of strings to make a message history if needed.
 

@@ -3,11 +3,31 @@
 #include "../../includes/debug.h"
 
 
-void	mode_invite(bool plus, std::vector<std::string> params, Client& client, IRCServer& server)
+void	mode_invite(bool sign, std::vector<std::string> params, Client& client, IRCServer& server)
 {
 	for (std::vector<std::string>::iterator it = params.begin(); it != params.end(); it++)
+	{
+		Channel *chan = server.find_channel(*it);
+		std::cout << *it << std::endl;
+		if (!chan)
+		{
+			std::cout << "error chan not found" << std::endl; //ERR_NOSUCHCHANNEL (403)
+			continue;
+		}
+		if (chan->getChannelMode() == noMode)
+		{
+			std::cout << "no mode chan" << std::endl;
+			continue;
+		}
+		if (chan->isOp(client.GetUsername()))
+		{
+			std::cout << "user not ope" << std::endl; // ERR_CHANOPRIVSNEEDED (482)
+			continue;
+		}
+		chan->setInviteOnly(sign);
 		std::cout << "invite" << std::endl;
-	(void)plus;
+	}
+	(void)sign;
 	(void)params;
 	(void)client;
 	(void)server;
@@ -64,19 +84,21 @@ void	mapModeInit(std::map<std::string, void (*)(bool, std::vector<std::string>, 
 
 
 
-/**
+/**	
  * while +/-
  * 	-> while "i,t,k,o,l"
  * 		-> while str -> apply cmd on str
  */
 
-std::vector<std::string>::iterator nextArgs(std::vector<std::string>::iterator &it, std::vector<std::string> &tokens)
+std::vector<std::string>::iterator nextArgs(const std::vector<std::string>::iterator &it, const std::vector<std::string> &tokens)
 {
 	std::vector<std::string>::iterator result = it + 1;
+	std::cout << "start:" << *result << std::endl;
 	for (std::vector<std::string>::iterator it2 = it + 1; it2 != tokens.end() && !(it2->compare(0, 1, "-") == 0 || it2->compare(0, 1, "+") == 0); it2++)
 	{
 		result = it2;
 	}
+	std::cout << "end:" << *result << std::endl;
 	return (result);
 }
 
@@ -95,6 +117,8 @@ void	mode(IRCServer &server, int fd, std::vector<std::string>& params)
 				{
 					if (it->compare(i, 1, it2->first) == 0)
 					{
+						if (it + 1 != params.end()) //give list of modes if no modes given 
+							it++;
 						std::vector<std::string> args(it, nextArgs(it, params));
 						it2->second(it->compare(0, 1, "+") == 0, args, *client, server);
 					}
