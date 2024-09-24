@@ -60,7 +60,7 @@ int main(int argc, char **argv)
         std::cout << "Wrond number of arguments" << std::endl;
         return (-1);
     }
-    if (argc > 3 && std::strcmp(argv[3], "--debug") == 0)
+    if (argc > 3 && std::strcmp(argv[2], "--debug") == 0)
         currentLogLevel = DEBUG;
     else
         currentLogLevel = INFO;

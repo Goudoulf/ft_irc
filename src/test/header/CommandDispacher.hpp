@@ -1,5 +1,5 @@
-#ifndef COMMANDDISPACHER_HPP
-#define COMMANDDISPACHER_HPP
+#pragma once
+
 #include "CommandBuilder.hpp"
 #include <string>
 #include <vector>
@@ -17,3 +17,4 @@ class CommandDispacher {
 			}
 		}
 };
+

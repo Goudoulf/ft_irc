@@ -1,5 +1,5 @@
+#pragma once
 #include <string>
-#include <map>
 #include "JoinCommand.hpp"
 #include "NickCommand.hpp"
 
@@ -16,7 +16,6 @@ public:
         {
             return new JoinCommand();
         }
-        
         return 0;  // Unknown command
     }
 };

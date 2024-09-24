@@ -46,7 +46,6 @@ void processMessage(IRCServer& server,int client_fd, const std::string& message)
     std::istringstream iss(trimmedMessage);
     std::string prefix, command, params;
 
-    Client* client = (server.getClients()->find(client_fd))->second;
     trimmedMessage.erase(0, trimmedMessage.find_first_not_of(" \r\n"));
     trimmedMessage.erase(trimmedMessage.find_last_not_of(" \r\n") + 1);
 
@@ -77,8 +76,7 @@ void processMessage(IRCServer& server,int client_fd, const std::string& message)
 	} 
 	parsedParams.push_back(param);
     }
-    if (client->GetIsConnected())
-	dispatchCommand(server, client_fd, command, parsedParams);
+    dispatchCommand(server, client_fd, command, parsedParams);
 }
 
 std::vector<std::string> splitBuffer(const std::string& buffer, std::string& remainingPartial) {
