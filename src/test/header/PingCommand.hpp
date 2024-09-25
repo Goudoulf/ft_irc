@@ -8,5 +8,5 @@ class PingCommand : public Command {
 public:
 
     PingCommand() {}
-    void execute(int client_fd, const std::vector<std::string>& params, IRCServer& server);
+    void execute(int client_fd, std::vector<std::pair<std::string, std::string>> params, IRCServer& server);
 };
