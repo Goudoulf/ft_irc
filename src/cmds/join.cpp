@@ -57,7 +57,10 @@ void	joinChannel(std::string channel, std::string key, int fd, IRCServer &server
 	log(CMD, client->GetNickname() + ":_____join_____");
 	Channel *chan;
 	if (!(chan = server.find_channel(channel)))
+	{
 		chan = server.create_channel(channel, *client, key);
+		chan->addOp(*client);
+	}
 	if (chan->inChannel(client->GetUsername()) == false)
 	{
 		if (!chan->keyIsValid(key))
@@ -67,7 +70,7 @@ void	joinChannel(std::string channel, std::string key, int fd, IRCServer &server
 			sendIRCReply(*client, "475", par);
 			return ;
 		}
-		chan->add_client(*client);
+		chan->addClient(*client);
 	}
 	// add client send function
 	for (std::map<int, Client*>::iterator it = server.getClients()->begin(); it != server.getClients()->end(); it++) {

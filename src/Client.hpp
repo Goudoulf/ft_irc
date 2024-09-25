@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cassie <cassie@student.42lyon.fr>          +#+  +:+       +#+        */
+/*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 10:10:52 by cassie            #+#    #+#             */
-/*   Updated: 2024/09/06 10:11:00 by cassie           ###   ########.fr       */
+/*   Updated: 2024/09/25 16:56:39 by lvallini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ class Client
 		Client(const int &socket, std::string hostname, IRCServer* server);
 		~Client();
 		bool operator <(const Client& toComp) const;
+		bool operator ==(const Client& toComp) const;
 
 		void		SetClient();
 		void		findnick(const char *buffer);

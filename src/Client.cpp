@@ -24,6 +24,11 @@ bool Client::operator<(const Client &toComp) const
 	return _socket < toComp._socket;
 }
 
+bool Client::operator==(const Client &toComp) const
+{
+	return _socket == toComp._socket;
+}
+
 void	Client::findnick(const char *buffer)
 {
 	char *temp = new char[1024];

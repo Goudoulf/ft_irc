@@ -67,6 +67,7 @@ Channel::Channel(const std::string &name, const Client &creator, const std::stri
 	_password = key;
 	_isEmpty = false;
 	_isInviteOnly = false;
+	_topicRestrictions = false;
 }
 
 Channel::~Channel()
@@ -88,7 +89,7 @@ std::string Channel::getUsers()
 	std::string temp;
 	std::vector<Client>::iterator it;
 	for (it = _users.begin(); it != _users.end(); it++) {
-		if (isOp(it->GetUsername()) == true)
+		if (isOp(*it) == true)
 			temp = temp + "@" + it->GetNickname();
 		else
 			temp = temp + it->GetNickname();
@@ -115,11 +116,11 @@ bool	Channel::inChannel(std::string client)
 	return (false);
 }
 
-bool	Channel::isOp(std::string client)
+bool	Channel::isOp(Client &client)
 {
-	std::vector<Client>::iterator it;
-	for (it = _operators.begin(); it != _operators.end(); it++) {
-		if (it->GetUsername() == client)
+	for (std::vector<Client>::iterator it = _operators.begin(); it != _operators.end(); it++) 
+	{
+		if (it->GetUsername() == client.GetUsername())
 			return (true);
 	}
 	return (false);
@@ -135,19 +136,34 @@ void Channel::setInviteOnly(bool sign)
 	_isInviteOnly = sign;
 }
 
+void Channel::addOp(Client &client)
+{
+	_operators.push_back(client);
+}
+
 bool Channel::getInviteOnly()
 {
 	return _isInviteOnly;
 }
 
-std::string		Channel::getTopic()
+bool Channel::getTopicRestrictions()
+{
+	return _topicRestrictions;
+}
+
+void Channel::setTopicRestrictions(bool sign)
+{
+	_topicRestrictions = sign;
+}
+
+std::string	Channel::getTopic()
 {
 	return _topic;
 }
 
-void	Channel::add_client(Client &client)
+void	Channel::addClient(Client &client)
 {
-	_users.push_back(client);	
+	_users.push_back(client);
 }
 
 void	Channel::remove_client(Client &client)

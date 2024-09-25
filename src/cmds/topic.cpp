@@ -22,7 +22,7 @@ void topic(IRCServer &server, int fd, std::vector<std::string>& params)
 			}
 			else
 			{
-				if ((*_it)->isOp(client->GetUsername()))
+				if ((*_it)->isOp(*client))
 				{
 					(*_it)->setTopic(topic);
 					std::string rpl = ":" + client->GetPrefix() + " TOPIC " + (*_it)->getChannelName() + " :" + (*_it)->getTopic() + "\r\n";
