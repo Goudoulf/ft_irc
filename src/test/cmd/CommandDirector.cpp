@@ -4,7 +4,7 @@
 #include <string>
 #include <map>
 
-void	CommandDirector::addCommand(const CommandBuilder *command)
+void	CommandDirector::addCommand(const TemplateBuilder *command)
 {
 	_commandList.insert(std::make_pair(command->getName(), command));
 }

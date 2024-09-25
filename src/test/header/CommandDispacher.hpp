@@ -6,7 +6,7 @@
 class CommandDispacher {
 	public:
 		
-		void dispachCommand(int client_fd, const std::string& command, const std::vector<std::string>& params)
+		void dispachCommand(int client_fd, const std::string& command, std::map<std::string, std::string>std::map<std::string, std::string>& params)
 		{
 			Command *cmd = CommandBuilder()
 				.command("hello")

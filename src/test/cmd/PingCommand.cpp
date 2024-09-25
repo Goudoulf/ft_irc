@@ -3,7 +3,7 @@
 #include "../../../includes/cmds.h"
 #include "../../../includes/debug.h"
 
-void PingCommand::execute(int client_fd, std::vector<std::pair<std::string, std::string>> params, IRCServer& server)
+void PingCommand::execute(int client_fd, std::map<std::string, std::string>& params, IRCServer& server)
 {
 	(void)params;
     Client* client = (server.getClients()->find(client_fd))->second;

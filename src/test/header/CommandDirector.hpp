@@ -1,16 +1,16 @@
 #pragma once
-#include "CommandBuilder.hpp"
+#include "TemplateBuilder.hpp"
 #include <map>
 
 class CommandDirector {
 
 	public:
 	
-		void	addCommand(const CommandBuilder *command);
+		void	addCommand(const TemplateBuilder *command);
 		void	parseCommand(int fd, std::string buffer, IRCServer& server);
 		~CommandDirector();
 
 	private:
 		
-		std::map<std::string, const CommandBuilder *> _commandList;
+		std::map<std::string, const TemplateBuilder *> _commandList;
 };

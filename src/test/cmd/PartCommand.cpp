@@ -1,7 +1,7 @@
 
 #include "../header/PartCommand.hpp"
 
-void PartCommand::execute(int client_fd, std::vector<std::pair<std::string, std::string>> params, IRCServer& server)
+void PartCommand::execute(int client_fd, std::map<std::string, std::string>& params, IRCServer& server)
 {
 	std::vector<std::string> channels = split(params[0], ',');
 
