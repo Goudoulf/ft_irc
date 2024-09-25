@@ -8,9 +8,9 @@ CommandBuilder::Builder& CommandBuilder::Builder::name(std::string name)
 	return *this;
 }
 
-CommandBuilder::Builder& CommandBuilder::Builder::param(std::string description, std::string param)
+CommandBuilder::Builder& CommandBuilder::Builder::param(std::string param)
 {
-	this->_params.push_back(std::make_pair(description, param));
+	this->_params.push_back(param);
 	return *this;
 }
 
