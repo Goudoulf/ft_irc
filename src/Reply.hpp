@@ -10,8 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef REPLY_HPP
-#define REPLY_HPP
+#pragma once
+// #ifndef REPLY_HPP
+// #define REPLY_HPP
 
 #include <string>
 #include <map>
@@ -32,4 +33,4 @@ class Reply
 		std::map<std::string, std::string> _ErrorTemplates;
 };
 
-#endif
+// #endif

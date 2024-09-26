@@ -10,8 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CLIENT_HPP
-#define CLIENT_HPP
+#pragma once
+// #ifndef CLIENT_HPP
+// #define CLIENT_HPP
 
 #include <string>
 #include "IRCServer.hpp"
@@ -62,4 +63,4 @@ class Client
 		IRCServer*	_server;
 };
 
-#endif
+// #endif

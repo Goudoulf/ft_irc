@@ -16,7 +16,14 @@ SRCS_FILE = main.cpp IRCServer.cpp Client.cpp client_checker.cpp \
 			cmds/find_cmd.cpp cmds/join.cpp cmds/nick.cpp cmds/pass.cpp cmds/ping.cpp\
 			cmds/privmsg.cpp cmds/quit.cpp cmds/mode.cpp cmds/client_connect.cpp Channel.cpp\
 			cmds/reply.cpp cmds/tokenize.cpp cmds/split.cpp debug/debug.cpp cmds/part.cpp\
-			cmds/topic.cpp cmds/user.cpp reply2.cpp cmds/cap.cpp
+			cmds/topic.cpp cmds/user.cpp reply2.cpp cmds/cap.cpp \
+			test/cmd/CapCommand.cpp test/cmd/Command.cpp test/cmd/CommandDirector.cpp \
+			test/cmd/CommandDispacher.cpp test/cmd/InviteCommand.cpp test/cmd/JoinCommand.cpp \
+			test/cmd/KickCommand.cpp test/cmd/ModeCommand.cpp test/cmd/NickCommand.cpp \
+			test/cmd/PartCommand.cpp test/cmd/PassCommand.cpp test/cmd/PingCommand.cpp\
+			test/cmd/PongCommand.cpp test/cmd/PrivmsgCommand.cpp test/cmd/QuitCommand.cpp \
+			test/cmd/TemplateBuilder.cpp test/cmd/TopicCommand.cpp\
+			test/cmd/UserCommand.cpp test/cmd/WhoCommand.cpp test/cmd/WhoisCommand.cpp
 
 DIR_SRC := src/
 DIR_OBJ := .object/

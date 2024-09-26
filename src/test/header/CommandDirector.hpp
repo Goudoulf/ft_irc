@@ -2,6 +2,8 @@
 #include "TemplateBuilder.hpp"
 #include <map>
 
+class TemplateBuilder;
+
 class CommandDirector {
 
 	public:

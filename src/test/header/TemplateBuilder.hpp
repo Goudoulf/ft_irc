@@ -3,6 +3,8 @@
 #include <utility>
 #include "Command.hpp"
 
+class Command;
+
 class TemplateBuilder {
 
 public:
@@ -39,6 +41,6 @@ private:
     std::string _name;
     std::map<std::string, std::string>_params;
     Command *_command;
-    void    fill_param(int fd, std::vector<std::string>& param, IRCServer& server);
+    void    fill_param(int fd, std::vector<std::string>& param, IRCServer& server)const;
 
     };

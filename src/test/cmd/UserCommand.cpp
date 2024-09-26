@@ -1,4 +1,7 @@
 #include "../header/UserCommand.hpp"
+#include "../../../includes/cmds.h"
+#include "../../../includes/debug.h"
+#include "../../../includes/reply.h"
 
 void UserCommand::execute(int client_fd, std::map<std::string, std::string>& params, IRCServer& server)
 {

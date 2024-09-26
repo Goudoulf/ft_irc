@@ -40,6 +40,7 @@
 #include <utility>
 #include <errno.h>
 
+
 extern bool stop;
 
 void my_exit(std::string error, int code)
@@ -143,7 +144,8 @@ void    IRCServer::read_data(int i)
                 log(ERROR, "recv: error");
         }
         else
-            processBuffer(*this, client->GetSocket(), client->GetBuffer());
+            _director->parseCommand(client->GetSocket(), client->GetBuffer(), *this);
+            //processBuffer(*this, client->GetSocket(), client->GetBuffer());
 }
 
 void    IRCServer::accept_connection(fd_set *all_sockets)
@@ -353,7 +355,6 @@ void    IRCServer::setCommandTemplate()
                           .command(new PongCommand())
                           .build()
                           );
-
 }
 
 std::string	IRCServer::set_time()

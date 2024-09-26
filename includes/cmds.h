@@ -5,6 +5,7 @@
 #include "ircserv.h"
 #include <map>
 #include <iostream>
+#include <vector>
 #include <string>
 
 class IRCServer;

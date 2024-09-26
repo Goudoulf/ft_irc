@@ -1,7 +1,9 @@
-
 #include "../header/JoinCommand.hpp"
+#include "../../../includes/cmds.h"
+#include "../../../includes/debug.h"
+#include "../../../includes/reply.h"
 
-void	joinChannel(std::string channel, std::string key, int fd, IRCServer &server)
+void	joinChannel2(std::string channel, std::string key, int fd, IRCServer &server)
 {
 
         Client* client = (server.getClients()->find(fd))->second;
@@ -55,7 +57,7 @@ void JoinCommand::execute(int client_fd, std::map<std::string, std::string>& par
 	std::string key = (i < keys.size()) ? keys[i] : "";
 
 	// Handle the join operation for each channel and key
-	joinChannel(channel, key, client_fd, server);
+	joinChannel2(channel, key, client_fd, server);
     }
 }
 

@@ -10,8 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef IRCSERVER_HPP
-#define IRCSERVER_HPP
+#pragma once
 
 #include <map>
 #include "Client.hpp"
@@ -24,6 +23,7 @@
 #include <sys/socket.h>
 #include <sys/select.h>
 #include "test/header/CommandDirector.hpp"
+#include "test/header/TemplateBuilder.hpp"
 #include <netinet/in.h>
 #include <cerrno>
 #include <cstdio>
@@ -34,6 +34,8 @@
 
 class Client;
 class Channel;
+class CommandDirector;
+class TemplateBuilder;
 
 class IRCServer
 {
@@ -94,5 +96,3 @@ class IRCServer
 		IRCServer(IRCServer&);
 		IRCServer& operator=(IRCServer&);
 };
-
-#endif

@@ -1,5 +1,6 @@
-#ifndef CHANNEL_HPP
-# define CHANNEL_HPP
+#pragma once
+// #ifndef CHANNEL_HPP
+// # define CHANNEL_HPP
 
 #include <string>
 #include <map>
@@ -63,4 +64,4 @@ class Channel
 
 };
 
-#endif
+// #endif

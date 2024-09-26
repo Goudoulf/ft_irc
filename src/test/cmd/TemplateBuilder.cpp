@@ -11,6 +11,8 @@ TemplateBuilder::TemplateBuilder(const std::string& name, const std::vector<std:
 		_params.insert(std::pair<std::string, std::string>(*it, ""));
 	}
 }
+TemplateBuilder::Builder::Builder()
+{}
 
 TemplateBuilder::Builder& TemplateBuilder::Builder::name(std::string name)
 {
@@ -46,17 +48,18 @@ const std::string TemplateBuilder::getName()const
 	return _name;
 }
 
-void    TemplateBuilder::fill_param(int fd, std::vector<std::string>& param, IRCServer& server)
+void    TemplateBuilder::fill_param(int fd, std::vector<std::string>& param, IRCServer& server)const
 {
-	std::map<std::string, std::string>::iterator it = _params.begin();
+	std::map<std::string, std::string> final;
+	std::map<std::string, std::string>::const_iterator it = _params.begin();
 	std::vector<std::string>::iterator it2 = param.begin();
 	while ((it != _params.end()) && (it2 != param.end()))
 	{
-		it->second = *it2;
+		final.insert(std::pair<std::string, std::string>(it->first, *it2));
 		it++;
 		it2++;
 	}
-	_command->execute(fd, _params , server);
+	_command->execute(fd, final , server);
 }
 
 TemplateBuilder::~TemplateBuilder() {}

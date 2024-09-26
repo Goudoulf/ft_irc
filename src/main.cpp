@@ -69,6 +69,7 @@ int main(int argc, char **argv)
     if (isValidPassword(argv[2]))
     {
 	IRCServer *server= new IRCServer(argv[1], "");
+        server->setCommandTemplate();
 	server->run();
     }
     return (0);
