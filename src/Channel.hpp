@@ -41,6 +41,8 @@ class Channel
 		bool	getInviteOnly();
 		bool	getTopicRestrictions();
 		void	setTopicRestrictions(bool sign);
+		int		getClientLimit();
+		void	setClientLimit(int limit);
 		std::string	getTopic();
 		
 		class InvalidName: public std::exception {
@@ -66,7 +68,7 @@ class Channel
 		bool				_isEmpty;
 		bool				_isInviteOnly;
 		bool				_topicRestrictions;
-		// int					_clientLimit;
+		int					_clientLimit;
 		channelMode _mode;//channel mode, depending on name prefix
 		//stack of strings to make a message history if needed.
 

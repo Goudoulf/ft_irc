@@ -63,7 +63,10 @@ void	mode_topic(bool sign, std::vector<std::string> params, Client& client, IRCS
 void	mode_key(bool plus, std::vector<std::string> params, Client& client, IRCServer& server)
 {
 	for (std::vector<std::string>::iterator it = params.begin(); it != params.end(); it++)
+	{
+		//TODO, need different parsing.
 		std::cout << "key" << std::endl;
+	}
 	(void)plus;
 	(void)params;
 	(void)client;
@@ -74,31 +77,40 @@ void	mode_ope(bool plus, std::vector<std::string> params, Client& client, IRCSer
 {
 	for (std::vector<std::string>::iterator it = params.begin(); it != params.end(); it++)
 	{
-		Channel *chan = server.find_channel(*it);
-		std::cout << *it << std::endl;
-		if (!chan)
-		{
-			std::cout << "error chan not found" << std::endl; //ERR_NOSUCHCHANNEL (403)
-			continue;
-		}
-		if (chan->getChannelMode() == noMode)
-		{
-			std::cout << "no mode chan" << std::endl;
-			continue;
-		}
-		if (!chan->isOp(client))
-		{
-			std::cout << "user not ope" << std::endl; // ERR_CHANOPRIVSNEEDED (482)
-			continue;
-		}
+		//TODO, need different parsing.
 		std::cout << "ope" << std::endl;
 	}
+		(void)plus;
+	(void)params;
+	(void)client;
+	(void)server;
 }
 
 void	mode_limit(bool plus, std::vector<std::string> params, Client& client, IRCServer& server)
 {
 	for (std::vector<std::string>::iterator it = params.begin(); it != params.end(); it++)
-		std::cout << "limit" << std::endl;
+	{
+		//TODO, need different parsing.
+		// Channel *chan = server.find_channel(*it);
+		// std::cout << *it << std::endl;
+		// if (!chan)
+		// {
+		// 	std::cout << "error chan not found" << std::endl; //ERR_NOSUCHCHANNEL (403)
+		// 	continue;
+		// }
+		// if (chan->getChannelMode() == noMode)
+		// {
+		// 	std::cout << "no mode chan" << std::endl;
+		// 	continue;
+		// }
+		// if (!chan->isOp(client))
+		// {
+		// 	std::cout << "user not ope" << std::endl; // ERR_CHANOPRIVSNEEDED (482)
+		// 	continue;
+		// }
+		// //chan->setClientLimit()
+		// std::cout << "limit" << std::endl;
+	}
 	(void)plus;
 	(void)params;
 	(void)client;

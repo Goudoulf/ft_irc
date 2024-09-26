@@ -156,6 +156,16 @@ void Channel::setTopicRestrictions(bool sign)
 	_topicRestrictions = sign;
 }
 
+int Channel::getClientLimit()
+{
+	return _clientLimit;
+}
+
+void Channel::setClientLimit(int limit)
+{
+	_clientLimit = limit;
+}
+
 std::string	Channel::getTopic()
 {
 	return _topic;
