@@ -13,7 +13,7 @@ void PartCommand::execute(int client_fd, std::map<std::string, std::string>& par
 		std::string channel = channels[i];
 
 		// Handle the join operation for each channel and key
-		partChannel(channel, params[1], client_fd, server);
+		partChannel(channel, params.find("trailing")->second, client_fd, server);
 	}
 }
 

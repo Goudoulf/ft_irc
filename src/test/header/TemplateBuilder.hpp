@@ -17,6 +17,7 @@ public:
         Builder();
         Builder& name(std::string name);
         Builder& param(std::string param);
+        Builder& trailing(std::string param);
         Builder& command(Command *command);
         
         const TemplateBuilder *build() const;

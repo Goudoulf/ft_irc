@@ -23,6 +23,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/select.h>
+#include "test/header/CommandDirector.hpp"
 #include <netinet/in.h>
 #include <cerrno>
 #include <cstdio>
@@ -55,6 +56,7 @@ class IRCServer
 		std::string	getCreationDate();
 		std::string	getPort();
 		std::string	getPassword();
+		void    setCommandTemplate();
 		IRCServer*	getIRCServer();
 		void		stopServer();
 		
@@ -86,6 +88,7 @@ class IRCServer
 		int addrlen;
 		char buffer[1024];
 		std::map<int, Client*> _clients;
+		CommandDirector *_director;
 
 		IRCServer(void);
 		IRCServer(IRCServer&);

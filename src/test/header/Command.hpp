@@ -1,7 +1,10 @@
 #pragma once
 #include <string>
-#include <vector>
 #include "../../IRCServer.hpp"
+#include "../../../includes/cmds.h"
+#include "../../../includes/reply.h"
+#include "../../Channel.hpp"
+#include "../../../includes/debug.h"
 
 
 class Command {

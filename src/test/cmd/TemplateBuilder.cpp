@@ -2,7 +2,7 @@
 #include <string>
 #include <utility>
 
-TemplateBuilder::TemplateBuilder(const std::string& name, std::map<std::string, std::string>& params, Command *command)
+TemplateBuilder::TemplateBuilder(const std::string& name, const std::vector<std::string>& params, Command *command)
 {
 	_name = name;
 	_command = command;
@@ -19,6 +19,12 @@ TemplateBuilder::Builder& TemplateBuilder::Builder::name(std::string name)
 }
 
 TemplateBuilder::Builder& TemplateBuilder::Builder::param(std::string param)
+{
+	this->_params.push_back(param);
+	return *this;
+}
+
+TemplateBuilder::Builder& TemplateBuilder::Builder::trailing(std::string param)
 {
 	this->_params.push_back(param);
 	return *this;

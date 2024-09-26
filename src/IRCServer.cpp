@@ -15,6 +15,24 @@
 #include "Client.hpp"
 #include "../includes/debug.h"
 #include "../includes/cmds.h"
+#include "test/header/CommandDirector.hpp"
+#include "test/header/TemplateBuilder.hpp"
+#include "test/header/JoinCommand.hpp"
+#include "test/header/PartCommand.hpp"
+#include "test/header/PassCommand.hpp"
+#include "test/header/UserCommand.hpp"
+#include "test/header/NickCommand.hpp"
+#include "test/header/QuitCommand.hpp"
+#include "test/header/ModeCommand.hpp"
+#include "test/header/TopicCommand.hpp"
+#include "test/header/InviteCommand.hpp"
+#include "test/header/KickCommand.hpp"
+#include "test/header/PrivmsgCommand.hpp"
+#include "test/header/WhoCommand.hpp"
+#include "test/header/WhoisCommand.hpp"
+#include "test/header/PingCommand.hpp"
+#include "test/header/PongCommand.hpp"
+#include "test/header/CapCommand.hpp"
 #include <cmath>
 #include <cstring>
 #include <sys/select.h>
@@ -204,6 +222,139 @@ void	IRCServer::remove_client(Client &client)
 	}
 }
 
+void    IRCServer::setCommandTemplate()
+{
+    _director = new CommandDirector(); 
+
+    _director->addCommand(TemplateBuilder::Builder()
+                          .name("CAP")
+                          .param("toto")
+                          .command(new CapCommand())
+                          .build()
+                          );
+
+    _director->addCommand(TemplateBuilder::Builder()
+                          .name("PASS")
+                          .param("password")
+                          .command(new PassCommand())
+                          .build()
+                          );
+
+    _director->addCommand(TemplateBuilder::Builder()
+                          .name("USER")
+                          .param("user")
+                          .param("mode")
+                          .param("unused")
+                          .trailing("realname")
+                          .command(new UserCommand())
+                          .build()
+                          );
+
+    _director->addCommand(TemplateBuilder::Builder()
+                          .name("NICK")
+                          .param("nick")
+                          .command(new NickCommand())
+                          .build()
+                          );
+
+    _director->addCommand(TemplateBuilder::Builder()
+                          .name("JOIN")
+                          .param("channel")
+                          .param("key")
+                          .command(new JoinCommand())
+                          .build()
+                          );
+
+    _director->addCommand(TemplateBuilder::Builder()
+                          .name("PART")
+                          .param("channel")
+                          .trailing("message")
+                          .command(new PartCommand())
+                          .build()
+                          );
+
+    _director->addCommand(TemplateBuilder::Builder()
+                          .name("QUIT")
+                          .trailing("message")
+                          .command(new QuitCommand())
+                          .build()
+                          );
+    
+    _director->addCommand(TemplateBuilder::Builder()
+                          .name("MODE")
+                          .param("channel")
+                          .trailing("message")
+                          .command(new ModeCommand())
+                          .build()
+                          );
+
+    _director->addCommand(TemplateBuilder::Builder()
+                          .name("TOPIC")
+                          .param("channel")
+                          .param("mode")
+                          .param("modeparams")
+                          .command(new TopicCommand())
+                          .build()
+                          );
+
+    _director->addCommand(TemplateBuilder::Builder()
+                          .name("Invite")
+                          .param("nickname")
+                          .param("channel")
+                          .command(new InviteCommand())
+                          .build()
+                          );
+
+    _director->addCommand(TemplateBuilder::Builder()
+                          .name("KICK")
+                          .param("channel")
+                          .param("user")
+                          .trailing("comment")
+                          .command(new KickCommand())
+                          .build()
+                          );
+
+    _director->addCommand(TemplateBuilder::Builder()
+                          .name("PRIVMSG")
+                          .param("msgtarget")
+                          .trailing("message")
+                          .command(new PrivmsgCommand())
+                          .build()
+                          );
+
+    _director->addCommand(TemplateBuilder::Builder()
+                          .name("WHO")
+                          .param("mask")
+                          .param("o")
+                          .command(new WhoCommand())
+                          .build()
+                          );
+
+    _director->addCommand(TemplateBuilder::Builder()
+                          .name("WHOIS")
+                          .param("target")
+                          .param("mask")
+                          .command(new WhoisCommand())
+                          .build()
+                          );
+
+    _director->addCommand(TemplateBuilder::Builder()
+                          .name("PING")
+                          .param("server1")
+                          .param("server2")
+                          .command(new PingCommand())
+                          .build()
+                          );
+
+    _director->addCommand(TemplateBuilder::Builder()
+                          .name("PONG")
+                          .param("server1")
+                          .param("server2")
+                          .command(new PongCommand())
+                          .build()
+                          );
+
+}
 
 std::string	IRCServer::set_time()
 {
