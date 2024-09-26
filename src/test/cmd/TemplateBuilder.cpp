@@ -56,6 +56,7 @@ void    TemplateBuilder::fill_param(int fd, std::vector<std::string>& param, IRC
 	while ((it != _params.end()) && (it2 != param.end()))
 	{
 		final.insert(std::pair<std::string, std::string>(it->first, *it2));
+		std::cout << "_parms="<< it->first << " param=" << *it2 << std::endl;
 		it++;
 		it2++;
 	}

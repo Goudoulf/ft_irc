@@ -42,6 +42,9 @@
 
 
 extern bool stop;
+const size_t MAX_BUFFER_SIZE = 512;
+
+std::map<int, std::string> clientPartialBuffers;
 
 void my_exit(std::string error, int code)
 {
@@ -102,6 +105,7 @@ int     IRCServer::run(void)
         activity = select(max_sd + 1, &readfds, NULL, NULL, &timeout);
         if ((activity < 0) && (errno != EINTR))
             my_exit("select error", EXIT_FAILURE);
+        // log(INFO, "Server waiting for socket update..");
         if (activity == 0)
         {
             //log(INFO, "Server waiting for socket update..");
@@ -132,20 +136,42 @@ int     IRCServer::run(void)
 
 void    IRCServer::read_data(int i)
 {
-        Client* client = (_clients.find(i))->second;
-        log(INFO, "Clear buffer");
-        bzero(client->GetBuffer(), 1024);
-        log(INFO, "Server reading data");
-        if ((valread = recv(i, client->GetBuffer(), 1024, 0)) == 0) {
-            close(sd);
-            log(WARN, "recv: socket closed");
-            (*_it)->SetSocket(0);
-            if (valread == -1)  
-                log(ERROR, "recv: error");
+    Client* client = (_clients.find(i))->second;
+    log(INFO, "Clear buffer");
+    bzero(client->GetBuffer(), 1024);
+    log(INFO, "Server reading data");
+    if ((valread = recv(i, client->GetBuffer(), 1024, 0)) == 0) {
+        close(sd);
+        log(WARN, "recv: socket closed");
+        (*_it)->SetSocket(0);
+        if (valread == -1)  
+            log(ERROR, "recv: error");
+    }
+    else
+    {
+        log(DEBUG, client->GetBuffer());
+        std::string& clientPartial = clientPartialBuffers[i];
+
+        std::string completeBuffer = clientPartial + client->GetBuffer();
+        if (completeBuffer.size() > MAX_BUFFER_SIZE) {
+            log(ERROR, "Buffer overflow from client , disconnecting.");
+            close(i);
+            clientPartialBuffers.erase(i);
+            return;
         }
-        else
-            _director->parseCommand(client->GetSocket(), client->GetBuffer(), *this);
-            //processBuffer(*this, client->GetSocket(), client->GetBuffer());
+
+        std::string remainingPartial;
+        log(DEBUG, "Spliting buffer=" + completeBuffer );
+        std::vector<std::string> messages = splitBuffer(completeBuffer, remainingPartial);
+
+        clientPartialBuffers[i] = remainingPartial;
+        log(DEBUG, "Loop director");
+        for (std::vector<std::string>::iterator it = messages.begin(); it != messages.end(); it++)
+            _director->parseCommand(client->GetSocket(), *it, *this);
+
+
+    }
+    //processBuffer(*this, client->GetSocket(), client->GetBuffer());
 }
 
 void    IRCServer::accept_connection(fd_set *all_sockets)

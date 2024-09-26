@@ -42,7 +42,7 @@ void	joinChannel2(std::string channel, std::string key, int fd, IRCServer &serve
 
 void JoinCommand::execute(int client_fd, std::map<std::string, std::string>& params, IRCServer& server)
 {
-    log(INFO, params[0]);
+    log(INFO, "cmd");
     std::vector<std::string> channels = split(params.find("channel")->second, ',');
 
     // Split keys if provided

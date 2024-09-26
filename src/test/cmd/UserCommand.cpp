@@ -5,9 +5,12 @@
 
 void UserCommand::execute(int client_fd, std::map<std::string, std::string>& params, IRCServer& server)
 {
+	params.begin();
 	Client* client = (server.getClients()->find(client_fd))->second;
+		std::cout << "USER PARAM=" << params.find("user")->second << std::endl;
+		
 	std::cout << "_____user command_____" << std::endl;
-	client->SetUsername(params[0]);
+	client->SetUsername(params.find("user")->second);
 	//set prefix
 	std::cout << "New user =" << client->GetUsername() << "|" << std::endl;
 	if (client->GetUsername().size() != 0 && client->GetNickname().size() != 0)

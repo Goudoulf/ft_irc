@@ -1,4 +1,5 @@
 #include "../header/CommandDirector.hpp"
+#include "../../../includes/debug.h"
 #include <utility>
 #include <sstream>
 #include <string>
@@ -12,6 +13,7 @@ void	CommandDirector::addCommand(const TemplateBuilder *command)
 void	CommandDirector::parseCommand(int fd, std::string buffer, IRCServer& server)
 {
 	(void)fd;
+    log(INFO, "Director Parsing");
     std::string trimmedMessage = buffer;
     std::istringstream iss(trimmedMessage);
     std::string prefix, command, params;
@@ -32,9 +34,15 @@ void	CommandDirector::parseCommand(int fd, std::string buffer, IRCServer& server
 	return;
     }
     if ((_commandList.find(command)) == _commandList.end())
+    {
+	log(ERROR, "Can't find command " + command);
 	return;
+    }
     if (command == "CAP")
+    {
+	log(ERROR, "Cap do nothing");
 	return ;
+    }
     std::vector<std::string> parsedParams;
     std::string param;
 
@@ -49,5 +57,6 @@ void	CommandDirector::parseCommand(int fd, std::string buffer, IRCServer& server
 	} 
 	parsedParams.push_back(param);
     }
+    log(INFO, "Director fill param");
     _commandList.find(command)->second->fill_param(fd, parsedParams, server);
 }

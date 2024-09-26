@@ -5,9 +5,9 @@
 #include <string>
 #include <map>
 
-const size_t MAX_BUFFER_SIZE = 512;
+//const size_t MAX_BUFFER_SIZE = 512;
 
-std::map<int, std::string> clientPartialBuffers;
+//std::map<int, std::string> clientPartialBuffers;
 
 void dispatchCommand(IRCServer& server, int client_fd, const std::string& command, std::vector<std::string>& params)
 {
@@ -100,22 +100,22 @@ std::vector<std::string> splitBuffer(const std::string& buffer, std::string& rem
     return lines;
 }
 
-void processBuffer(IRCServer& server, int client_fd, const std::string& buffer) {
-    log(DEBUG, "{" + buffer + "}");
-    std::string& clientPartial = clientPartialBuffers[client_fd];
-
-    std::string completeBuffer = clientPartial + buffer;
-    if (completeBuffer.size() > MAX_BUFFER_SIZE) {
-        log(ERROR, "Buffer overflow from client , disconnecting.");
-        close(client_fd);
-        clientPartialBuffers.erase(client_fd);
-        return;
-    }
-
-    std::string remainingPartial;
-    std::vector<std::string> messages = splitBuffer(completeBuffer, remainingPartial);
-
-    clientPartialBuffers[client_fd] = remainingPartial;
-    for (std::vector<std::string>::iterator it = messages.begin(); it != messages.end(); it++)
-	processMessage(server, client_fd, *it);
-}
+// void processBuffer(IRCServer& server, int client_fd, const std::string& buffer) {
+//     log(DEBUG, "{" + buffer + "}");
+//     std::string& clientPartial = clientPartialBuffers[client_fd];
+//
+//     std::string completeBuffer = clientPartial + buffer;
+//     if (completeBuffer.size() > MAX_BUFFER_SIZE) {
+//         log(ERROR, "Buffer overflow from client , disconnecting.");
+//         close(client_fd);
+//         clientPartialBuffers.erase(client_fd);
+//         return;
+//     }
+//
+//     std::string remainingPartial;
+//     std::vector<std::string> messages = splitBuffer(completeBuffer, remainingPartial);
+//
+//     clientPartialBuffers[client_fd] = remainingPartial;
+//     for (std::vector<std::string>::iterator it = messages.begin(); it != messages.end(); it++)
+// 	processMessage(server, client_fd, *it);
+// }
