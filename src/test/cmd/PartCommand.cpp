@@ -5,7 +5,7 @@
 
 void PartCommand::execute(int client_fd, std::map<std::string, std::string>& params, IRCServer& server)
 {
-	std::vector<std::string> channels = split(params[0], ',');
+	std::vector<std::string> channels = split(params.find("channel")->second, ',');
 
 	// Split keys if provided
 	std::cout << params.size() << std::endl;
@@ -13,9 +13,12 @@ void PartCommand::execute(int client_fd, std::map<std::string, std::string>& par
 	// Process each channel and its corresponding key
 	for (size_t i = 0; i < channels.size(); ++i) {
 		std::string channel = channels[i];
+		std::string message = "";
 
 		// Handle the join operation for each channel and key
-		partChannel(channel, params.find("trailing")->second, client_fd, server);
+		if (params.find("trailing") != params.end())
+			message = params.find("trailing")->second;
+		partChannel(channel, message, client_fd, server);
 	}
 }
 

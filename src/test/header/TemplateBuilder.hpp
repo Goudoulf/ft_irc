@@ -39,7 +39,7 @@ private:
 
     friend class CommandDirector;
     std::string _name;
-    std::map<std::string, std::string>_params;
+    std::vector<std::pair<std::string, std::string>>_params;
     Command *_command;
     void    fill_param(int fd, std::vector<std::string>& param, IRCServer& server)const;
 

@@ -143,7 +143,6 @@ void    IRCServer::read_data(int i)
     if ((valread = recv(i, client->GetBuffer(), 1024, 0)) == 0) {
         close(sd);
         log(WARN, "recv: socket closed");
-        (*_it)->SetSocket(0);
         if (valread == -1)  
             log(ERROR, "recv: error");
     }
@@ -239,6 +238,7 @@ void	IRCServer::remove_client(Client &client)
 	for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end();) {
 		if (it->second && it->second->GetUsername() == client.GetUsername())
                 {
+                        log(DEBUG, it->second->GetUsername() + " is deleted");
                         FD_CLR(it->first, &all_sockets);
                         close(it->first);
                         delete ((it->second->GetClient()));
