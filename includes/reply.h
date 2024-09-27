@@ -4,7 +4,7 @@
 #define DATETIME "31/07/2024"
 #include <string>
 #include <map>
-#include "../includes/cmds.h"
+#include "cmds.h"
 enum IRCReplies {
 	RPL_WELCOME = 001,
 	RPL_YOURHOST = 002,

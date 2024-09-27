@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "IRCServer.hpp"
-#include "../includes/debug.h"
+#include "debug.h"
 #include <cstring>
 #include <signal.h>
 #include <iostream>

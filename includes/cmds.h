@@ -1,7 +1,7 @@
 #ifndef CMDS_H
 #define CMDS_H
 
-#include "../src/Client.hpp"
+#include "Client.hpp"
 #include "ircserv.h"
 #include <map>
 #include <iostream>

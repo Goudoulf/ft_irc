@@ -13,8 +13,8 @@
 #include <iostream>
 #include <ostream>
 #include <string>
-#include "../../includes/color.h"
-#include "../../includes/debug.h"
+#include "color.h"
+#include "debug.h"
 #define MAX_SIZE 80
 
 LogLevel currentLogLevel = DEBUG;

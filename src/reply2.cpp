@@ -15,7 +15,7 @@
 #include <string>
 #include <sys/socket.h>
 #include <utility>
-#include "../includes/cmds.h"
+#include "cmds.h"
 #include "IRCServer.hpp"
 
 typedef struct s_reply

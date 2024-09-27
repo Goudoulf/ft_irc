@@ -3,7 +3,7 @@
 #include <cstring>
 #include <iostream>
 #include <string>
-#include "../includes/debug.h"
+#include "debug.h"
 #include "IRCServer.hpp"
 
 Client::Client(const int &socket, std::string hostname, IRCServer* server): _hostname(hostname), _socket(socket)

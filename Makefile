@@ -11,19 +11,14 @@
 # **************************************************************************** #
 
 NAME = ircserv
-
-SRCS_FILE = main.cpp IRCServer.cpp Client.cpp client_checker.cpp \
-			cmds/find_cmd.cpp cmds/join.cpp cmds/nick.cpp cmds/pass.cpp cmds/ping.cpp\
-			cmds/privmsg.cpp cmds/quit.cpp cmds/mode.cpp cmds/client_connect.cpp Channel.cpp\
-			cmds/reply.cpp cmds/tokenize.cpp cmds/split.cpp debug/debug.cpp cmds/part.cpp\
-			cmds/topic.cpp cmds/user.cpp reply2.cpp cmds/cap.cpp \
-			test/cmd/CapCommand.cpp test/cmd/Command.cpp test/cmd/CommandDirector.cpp \
-			test/cmd/CommandDispacher.cpp test/cmd/InviteCommand.cpp test/cmd/JoinCommand.cpp \
-			test/cmd/KickCommand.cpp test/cmd/ModeCommand.cpp test/cmd/NickCommand.cpp \
-			test/cmd/PartCommand.cpp test/cmd/PassCommand.cpp test/cmd/PingCommand.cpp\
-			test/cmd/PongCommand.cpp test/cmd/PrivmsgCommand.cpp test/cmd/QuitCommand.cpp \
-			test/cmd/TemplateBuilder.cpp test/cmd/TopicCommand.cpp\
-			test/cmd/UserCommand.cpp test/cmd/WhoCommand.cpp test/cmd/WhoisCommand.cpp
+SRCS_FILE = Channel.cpp client_checker.cpp Client.cpp cmds/CapCommand.cpp cmds/Command.cpp\
+			cmds/CommandDirector.cpp cmds/CommandDispacher.cpp cmds/InviteCommand.cpp\
+			cmds/JoinCommand.cpp cmds/KickCommand.cpp cmds/ModeCommand.cpp cmds/NickCommand.cpp\
+			cmds/PartCommand.cpp cmds/PassCommand.cpp cmds/PingCommand.cpp cmds/PongCommand.cpp\
+			cmds/PrivmsgCommand.cpp cmds/QuitCommand.cpp cmds/TemplateBuilder.cpp cmds/TopicCommand.cpp\
+			cmds/UserCommand.cpp cmds/utils/find_cmd.cpp cmds/utils/reply.cpp\
+			cmds/utils/split.cpp cmds/utils/tokenize.cpp cmds/WhoCommand.cpp cmds/WhoisCommand.cpp debug/debug.cpp \
+			IRCServer.cpp main.cpp reply2.cpp
 
 DIR_SRC := src/
 DIR_OBJ := .object/
@@ -34,7 +29,7 @@ SRCS = $(addprefix ${DIR_SRC},${SRCS_FILE})
 
 CC = c++
 MD := mkdir -p
-CFLAGS = -Wall -Wextra -Werror -g -MD #-std=c++98
+CFLAGS = -Wall -Wextra -Werror -I includes -g -MD #-std=c++98
 
 RM = rm -rf
 
