@@ -12,7 +12,6 @@ void	CommandDirector::addCommand(const TemplateBuilder *command)
 
 void	CommandDirector::parseCommand(int fd, std::string buffer, IRCServer& server)
 {
-	(void)fd;
     log(INFO, "Director Parsing");
     std::string trimmedMessage = buffer;
     std::istringstream iss(trimmedMessage);
@@ -30,18 +29,13 @@ void	CommandDirector::parseCommand(int fd, std::string buffer, IRCServer& server
     iss >> command;
     if (command.empty())
     {
-	// log(ERROR, "Received an invalid IRC message with no command.");
+	log(ERROR, "Received an invalid IRC message with no command.");
 	return;
     }
     if ((_commandList.find(command)) == _commandList.end())
     {
 	log(ERROR, "Can't find command " + command);
 	return;
-    }
-    if (command == "CAP")
-    {
-	log(ERROR, "Cap do nothing");
-	return ;
     }
     std::vector<std::string> parsedParams;
     std::string param;

@@ -18,7 +18,7 @@ public:
 
         Builder();
         Builder& name(std::string name);
-        Builder& param(std::string param);
+        Builder& param(std::string param, std::vector<std::string> parser(std::string));
         Builder& trailing(std::string param);
         Builder& command(Command *command);
         
