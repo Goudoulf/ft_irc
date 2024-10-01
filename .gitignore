@@ -1,0 +1,4 @@
+.cached
+.vscode
+.clangd
+compile_commands.json
