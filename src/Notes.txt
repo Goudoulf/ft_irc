@@ -154,3 +154,18 @@ ERR_RESTRICTED
   hexdigit   =  digit / "A" / "B" / "C" / "D" / "E" / "F"
   special    =  %x5B-60 / %x7B-7D
                    ; "[", "]", "\", "`", "_", "^", "{", "|", "}"
+
+En attendant que je fasse toutes mes merdes, je te propose de commencer le bot. On doit faire un truc de dingue
+Suite a notre discussion hier j'ai un plan.
+On fait un bot de jeu avec du multi
+Avec plusieurs jeux car on est la pour flex
+
+On fait un rpg textuel (probablement solo celui la (quoi que))
+Un trivia avec des scores, en multi du coup (peut etre meme un leaderboard?)
+Un pendu ?
+Typing speed game
+Deathrolling (un jeu de de ou roll entre 0-1000 et le premier a 0  a gagner)
+
+Bon je sais pas si on peu tout faire mais, faut voir avant de faire le jeu comment faire un systeme en cpp ou peu l'adapter sur different jeu avec 1 bot. Si sa te chauffe bien sur.. 
+tu me dis (modifié)
+

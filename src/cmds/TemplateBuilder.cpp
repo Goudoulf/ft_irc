@@ -1,4 +1,5 @@
 #include "TemplateBuilder.hpp"
+#include "ParamTemplate.hpp"
 #include <string>
 #include <utility>
 
@@ -18,9 +19,9 @@ TemplateBuilder::Builder& TemplateBuilder::Builder::name(std::string name)
 	return *this;
 }
 
-TemplateBuilder::Builder& TemplateBuilder::Builder::param(std::string param)
+TemplateBuilder::Builder& TemplateBuilder::Builder::param(std::string type)
 {
-	this->_params.push_back(param);
+	this->_params.push_back(type);
 	return *this;
 }
 

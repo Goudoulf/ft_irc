@@ -10,9 +10,7 @@ void PassCommand::execute(int client_fd, std::map<std::string, std::string>& par
 	if (params.size() < 1)
 	{
 		log(ERROR, "Wrong Number of param");
-		std::map<std::string, std::string> par {{"command", "PASS"}};
-		sendIRCReply(*client, "461", par);
-		return ;
+			return ;
 	}
 	if (params.find("pass")->second == server.getPassword())
 	{
@@ -21,6 +19,5 @@ void PassCommand::execute(int client_fd, std::map<std::string, std::string>& par
 	}
 	log(ERROR, "Wrong password");
 	std::map<std::string, std::string> par {{"command", "PASS"}};
-	sendIRCReply(*client, "464", par);
 	return ;
 }

@@ -31,8 +31,6 @@ void	PartCommand::partChannel(std::string channel, std::string message, int fd, 
 	{
 		// error no channel
 		log(ERROR, "No channel :" + channel + "|");
-		std::map<std::string, std::string> param {{"channel name", channel}};
-		sendIRCReply(*client, "403", param );
 		return ;
 
 	}
@@ -40,8 +38,8 @@ void	PartCommand::partChannel(std::string channel, std::string message, int fd, 
 	{
 		// error no channel
 		log(ERROR, client->GetUsername() + "not on channel " + channel);
-		std::map<std::string, std::string> param {{"channel", channel}};
-		sendIRCReply(*client, "442", param );
+		std::string rpl(ERR_NOTONCHANNEL(channel));
+		send(fd , rpl.c_str() , rpl.length() , 0);
 		return ;
 
 	}
