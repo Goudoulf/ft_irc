@@ -6,7 +6,7 @@
 /*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 08:21:58 by cassie            #+#    #+#             */
-/*   Updated: 2024/08/26 14:46:02 by lvallini         ###   ########.fr       */
+/*   Updated: 2024/10/02 11:04:45 by lvallini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,7 +150,7 @@ void    IRCServer::read_data(int i)
     {
         log(DEBUG, client->GetBuffer());
         std::string& clientPartial = clientPartialBuffers[i];
-
+        std::cout << client->GetBuffer() << std::endl;
         std::string completeBuffer = clientPartial + client->GetBuffer();
         if (completeBuffer.size() > MAX_BUFFER_SIZE) {
             log(ERROR, "Buffer overflow from client , disconnecting.");
@@ -178,6 +178,7 @@ void    IRCServer::accept_connection(fd_set *all_sockets)
     int     new_socket;
     log(INFO, "Server accepting new connection");
     new_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen);
+    std::cout << new_socket << std::endl;
     if (new_socket < 0)
         my_exit("accept error", EXIT_FAILURE);
     FD_SET(new_socket, all_sockets);
