@@ -76,5 +76,6 @@
 #define RPL_STATSUPTIME(days, hours, minutes, seconds) (":localhost 242 :Server Up " + days + " days " + hours + ":" + minutes + ":" + seconds)
 #define RPL_STATS
 #define ERR_NOTONCHANNEL(channel) (":localhost 442 " + channel + ":You're not on that channel")
+#define ERR_BADCHANNELKEY(channel) (":localhost 475 " + channel + ":Cannot join channel (+k)")
 
 #endif
