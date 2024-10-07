@@ -46,6 +46,14 @@ const size_t MAX_BUFFER_SIZE = 512;
 
 std::map<int, std::string> clientPartialBuffers;
 
+void print_client_list(std::map<int, Client*> client)
+{
+    for (std::map<int, Client*>::iterator it = client.begin(); it != client.end();) {
+        if (it->second)
+            std::cout << "USER=" << it->second->GetUsername() << std::endl;
+    }
+}
+
 void my_exit(std::string error, int code)
 {
     // std::cerr << error << std::endl;
@@ -99,6 +107,7 @@ int     IRCServer::run(void)
     max_sd = server_fd;
     log(INFO, "IRC Server loop is starting");
     while (true) {
+        //print_client_list(_clients);
         readfds = all_sockets;
         timeout.tv_sec = 0;
         timeout.tv_usec = 0;
@@ -256,128 +265,132 @@ void    IRCServer::setCommandTemplate()
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("CAP")
-                          .param("toto")
+                          .param("toto", NULL)
                           .command(new CapCommand())
                           .build()
                           );
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("PASS")
-                          .param("password")
+                          .param("password", NULL)
                           .command(new PassCommand())
                           .build()
                           );
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("USER")
-                          .param("user")
-                          .param("mode")
-                          .param("unused")
-                          .trailing("realname")
+                          .param("user", NULL)
+                          .param("mode", NULL)
+                          .param("unused", NULL)
+                          .trailing("realname", NULL)
                           .command(new UserCommand())
                           .build()
                           );
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("NICK")
-                          .param("nick")
+                          .param("nick", NULL)
                           .command(new NickCommand())
                           .build()
                           );
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("JOIN")
-                          .param("channel")
-                          .param("key")
+                          .param("channel", ParamTemplate::Builder()
+                                 .addChecker(&isAlphaNum)
+                                 .build()
+                                 )
+
+                          .param("key", NULL)
                           .command(new JoinCommand())
                           .build()
                           );
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("PART")
-                          .param("channel")
-                          .trailing("message")
+                          .param("channel", NULL)
+                          .trailing("message", NULL)
                           .command(new PartCommand())
                           .build()
                           );
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("QUIT")
-                          .trailing("message")
+                          .trailing("message", NULL)
                           .command(new QuitCommand())
                           .build()
                           );
     
     _director->addCommand(TemplateBuilder::Builder()
                           .name("MODE")
-                          .param("channel")
-                          .trailing("message")
+                          .param("channel", NULL)
+                          .trailing("message", NULL)
                           .command(new ModeCommand())
                           .build()
                           );
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("TOPIC")
-                          .param("channel")
-                          .param("mode")
-                          .param("modeparams")
+                          .param("channel", NULL)
+                          .param("mode", NULL)
+                          .param("modeparams", NULL)
                           .command(new TopicCommand())
                           .build()
                           );
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("Invite")
-                          .param("nickname")
-                          .param("channel")
+                          .param("nickname", NULL)
+                          .param("channel", NULL)
                           .command(new InviteCommand())
                           .build()
                           );
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("KICK")
-                          .param("channel")
-                          .param("user")
-                          .trailing("comment")
+                          .param("channel", NULL)
+                          .param("user", NULL)
+                          .trailing("comment", NULL)
                           .command(new KickCommand())
                           .build()
                           );
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("PRIVMSG")
-                          .param("msgtarget")
-                          .trailing("message")
+                          .param("msgtarget", NULL)
+                          .trailing("message", NULL)
                           .command(new PrivmsgCommand())
                           .build()
                           );
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("WHO")
-                          .param("mask")
-                          .param("o")
+                          .param("mask", NULL)
+                          .param("o", NULL)
                           .command(new WhoCommand())
                           .build()
                           );
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("WHOIS")
-                          .param("target")
-                          .param("mask")
+                          .param("target", NULL)
+                          .param("mask", NULL)
                           .command(new WhoisCommand())
                           .build()
                           );
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("PING")
-                          .param("server1")
-                          .param("server2")
+                          .param("server1", NULL)
+                          .param("server2", NULL)
                           .command(new PingCommand())
                           .build()
                           );
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("PONG")
-                          .param("server1")
-                          .param("server2")
+                          .param("server1", NULL)
+                          .param("server2", NULL)
                           .command(new PongCommand())
                           .build()
                           );

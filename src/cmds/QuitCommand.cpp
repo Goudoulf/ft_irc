@@ -15,7 +15,6 @@ void	quitServer2(std::string channel, std::string message, Client &client, IRCSe
 	}
 	if (chan->InChannel(client.GetUsername()) == true)
 		chan->remove_client(client);
-	server.remove_client(client);
 	//if topic is set -> RPL_TOPIC
 	// if (!chan->getTopic().empty())
 	// 	reply_server("332", client, " " + chan->getChannelName() + " :" + chan->getTopic());
@@ -36,5 +35,6 @@ void QuitCommand::execute(int client_fd, std::map<std::string, std::string>& par
 		if ((*_it)->InChannel(client->GetUsername()))
 			quitServer2((*_it)->getChannelName() , params.find("message")->second, *client, server);
 	}
+	server.remove_client(*client);
 
 }

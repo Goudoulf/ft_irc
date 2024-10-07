@@ -16,24 +16,25 @@ public:
     public: 
 
         Builder();
-        Builder& addChecker(bool (*ptr)(const std::vector<std::string>));
+        Builder& addChecker(bool (*ptr)(const std::string, int fd , IRCServer& server));
         const ParamTemplate *build() const;
 
     private:
 
         // bool (Builder::*pmf)(const std::vector<std::string&>);
-        std::vector<bool (*)(const std::vector<std::string>)> _paramChecker;
+        std::vector<bool (*)(const std::string, int fd , IRCServer& server)> _paramChecker;
     };
 
 protected:
 
-    ParamTemplate(std::vector<bool (*)(const std::vector<std::string>)> checker);
+    ParamTemplate(std::vector<bool (*)(const std::string, int fd , IRCServer& server)> checker);
 
 private:
 
     friend class CommandDirector;
+    friend class TemplateBuilder;
     bool    _isValid;
     std::vector<std::string>    _param;
-    std::vector<bool (*)(const std::vector<std::string>)> _paramCheckers;
-    void    checkParam(int fd, std::vector<std::string>& param, IRCServer& server);
+    std::vector<bool (*)(const std::string, int fd , IRCServer& server)> _paramCheckers;
+    bool    checkParam(int fd, const std::string& param, IRCServer& server)const;
     };

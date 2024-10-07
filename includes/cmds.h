@@ -32,6 +32,7 @@ void	topic(IRCServer &server, int fd, std::vector<std::string>& params);
 void	invite();
 void	mode(IRCServer &server, int fd, std::vector<std::string>& params);
 void	cap(IRCServer &server, int fd, std::vector<std::string>& params);
+bool	isAlphaNum(const std::string param, int fd , IRCServer& server);
 
 
 #endif
