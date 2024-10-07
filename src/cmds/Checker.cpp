@@ -5,6 +5,14 @@
 #include <string>
 #include "reply.h"
 
+bool	isConnected(const std::string param, int fd , IRCServer& server)
+{
+    (void) param;
+    Client* client = (server.getClients()->find(fd))->second;
+    return (client->GetIsConnected());
+
+}
+
 bool	isAlphaNum(const std::string param, int fd , IRCServer& server)
 {
     (void)server;
