@@ -9,10 +9,10 @@
 Client::Client(const int &socket, std::string hostname, IRCServer* server): _hostname(hostname), _socket(socket)
 {
 	_buffer = new char[1024];
-	//buffer = new char[1024];
 	_nickname = "default";
 	_realname = "realname";
-	_isconnected = false;
+	_isconnected = !server->getpasswordIsSet();
+	_isRegistered = false;
 	_server = server;
 }
 
@@ -104,6 +104,11 @@ void		Client::SetIsConnected(bool isconnected)
 	_isconnected = isconnected;
 }
 
+void		Client::SetIsRegistered(bool isregistered)
+{
+	_isRegistered = isregistered;
+}
+
 std::string	Client::GetNickname() const
 {
 	return _nickname;
@@ -152,6 +157,11 @@ std::string	Client::GetBufferString()
 bool		Client::GetIsConnected()
 {
 	return _isconnected;
+}
+
+bool		Client::GetIsRegistered()
+{
+	return _isRegistered;
 }
 
 Client		*Client::GetClient()

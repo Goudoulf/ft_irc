@@ -35,6 +35,8 @@ void	cap(IRCServer &server, int fd, std::vector<std::string>& params);
 
 bool	isAlphaNum(const std::string param, int fd , IRCServer& server);
 bool	isConnected(const std::string param, int fd , IRCServer& server);
+bool	isValidNick(const std::string param, int fd , IRCServer& server);
+bool	isValidPassword(const std::string param, int fd , IRCServer& server);
 
 
 #endif

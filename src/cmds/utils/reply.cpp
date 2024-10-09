@@ -30,3 +30,8 @@ void	message_server(std::string target, std::string command, Client &client, std
 	log(REPLY, rpl);
 	send(sd, rpl.c_str(), rpl.length(), 0);
 }
+
+void	rpl_send(int fd, std::string rpl)
+{
+	send(fd, rpl.c_str(), rpl.size(), 0);
+}

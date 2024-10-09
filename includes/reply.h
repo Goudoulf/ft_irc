@@ -1,6 +1,8 @@
 #ifndef REPLY_H
 #define REPLY_H
 
+#include <string>
+
 #define DATETIME "31/07/2024"
 
 #define id(nickname, username) (":" + nickname + "!" + username + "@localhost")
@@ -75,7 +77,48 @@
 #define RPL_ENDOFSTATS(stats_letter) (":localhost 219 " + stats_letter + " :End of STATS report")
 #define RPL_STATSUPTIME(days, hours, minutes, seconds) (":localhost 242 :Server Up " + days + " days " + hours + ":" + minutes + ":" + seconds)
 #define RPL_STATS
-#define ERR_NOTONCHANNEL(channel) (":localhost 442 " + channel + ":You're not on that channel")
-#define ERR_BADCHANNELKEY(channel) (":localhost 475 " + channel + ":Cannot join channel (+k)")
+#define ERR_NOTONCHANNEL(channel) (":localhost 442 " + channel + " :You're not on that channel\r\n")
+#define ERR_BADCHANNELKEY(channel) (":localhost 475 " + channel + " :Cannot join channel (+k)\r\n")
+// Error responses with "localhost" as the source server
+#define ERR_NOSUCHNICK(nickname) (":localhost 401 " + nickname + " :No such nick/channel\r\n")
+#define ERR_NOSUCHSERVER(server) (":localhost 402 " + server + " :No such server\r\n")
+#define ERR_NOSUCHCHANNEL(channel) (":localhost 403 " + channel + " :No such channel\r\n")
+#define ERR_CANNOTSENDTOCHAN(channel) (":localhost 404 " + channel + " :Cannot send to channel\r\n")
+#define ERR_TOOMANYCHANNELS(channel) (":localhost 405 " + channel + " :You have joined too many channels\r\n")
+#define ERR_WASNOSUCHNICK(nickname) (":localhost 406 " + nickname + " :There was no such nickname\r\n")
+#define ERR_TOOMANYTARGETS(target) (":localhost 407 " + target + " :Duplicate recipients. No message delivered\r\n")
+#define ERR_NOORIGIN() (":localhost 409 :No origin specified\r\n")
+#define ERR_NORECIPIENT() (":localhost 411 :No recipient given\r\n")
+#define ERR_NOTEXTTOSEND() (":localhost 412 :No text to send\r\n")
+#define ERR_NOTOPLEVEL(mask) (":localhost 413 " + mask + " :No toplevel domain specified\r\n")
+#define ERR_WILDTOPLEVEL(mask) (":localhost 414 " + mask + " :Wildcard in toplevel domain\r\n")
+#define ERR_UNKNOWNCOMMAND(command) (":localhost 421 " + command + " :Unknown command\r\n")
+#define ERR_NOMOTD() (":localhost 422 :MOTD File is missing\r\n")
+#define ERR_NOADMININFO(server) (":localhost 423 " + server + " :No administrative info available\r\n")
+#define ERR_NONICKNAMEGIVEN() (":localhost 431 :No nickname given\r\n")
+#define ERR_ERRONEUSNICKNAME(nickname) (":localhost 432 " + nickname + " :Erroneous nickname\r\n")
+#define ERR_NICKNAMEINUSE(nickname) (":localhost 433 " + nickname + " :Nickname is already in use\r\n")
+#define ERR_USERNOTINCHANNEL(nickname, channel) (":localhost 441 " + nickname + " " + channel + " :They aren't on that channel\r\n")
+#define ERR_NOTONCHANNEL(channel) (":localhost 442 " + channel + " :You're not on that channel\r\n")
+#define ERR_USERONCHANNEL(nickname, channel) (":localhost 443 " + nickname + " " + channel + " :is already on channel\r\n")
+#define ERR_NOLOGIN(nickname) (":localhost 444 " + nickname + " :User not logged in\r\n")
+#define ERR_SUMMONDISABLED() (":localhost 445 :SUMMON has been disabled\r\n")
+#define ERR_USERSDISABLED() (":localhost 446 :USERS has been disabled\r\n")
+#define ERR_NOTREGISTERED() (":localhost 451 :You have not registered\r\n")
+#define ERR_NEEDMOREPARAMS(command) (":localhost 461 " + command + " :Not enough parameters\r\n")
+#define ERR_ALREADYREGISTRED() (":localhost 462 :You may not reregister\r\n")
+#define ERR_NOPERMFORHOST() (":localhost 463 :Your host isn't among the privileged\r\n")
+#define ERR_PASSWDMISMATCH() (":localhost 464 :Password incorrect\r\n")
+#define ERR_YOUREBANNEDCREEP() (":localhost 465 :You are banned from this server\r\n")
+#define ERR_CHANNELISFULL(channel) (":localhost 471 " + channel + " :Cannot join channel (+l)\r\n")
+#define ERR_UNKNOWNMODE(mode) (":localhost 472 " + mode + " :is unknown mode char to me\r\n")
+#define ERR_INVITEONLYCHAN(channel) (":localhost 473 " + channel + " :Cannot join channel (+i)\r\n")
+#define ERR_BANNEDFROMCHAN(channel) (":localhost 474 " + channel + " :Cannot join channel (+b)\r\n")
+#define ERR_BADCHANNELKEY(channel) (":localhost 475 " + channel + " :Cannot join channel (+k)\r\n")
+#define ERR_NOPRIVILEGES() (":localhost 481 :Permission Denied- You're not an IRC operator\r\n")
+#define ERR_CHANOPRIVSNEEDED(channel) (":localhost 482 " + channel + " :You're not channel operator\r\n")
+#define ERR_CANTKILLSERVER() (":localhost 483 :You can't kill a server!\r\n")
+#define ERR_NOOPERHOST() (":localhost 491 :No O-lines for your host\r\n")
 
+void	rpl_send(int fd, std::string rpl);
 #endif

@@ -38,6 +38,7 @@ class Client
 		void		SetPrefix();
 		void		SetBuffer(const char * string);
 		void		SetIsConnected(bool isconnected);
+		void		SetIsRegistered(bool isregistered);
 		std::string	GetNickname() const;
 		std::string	GetUsername() const;
 		std::string	GetRealname() const;
@@ -49,6 +50,7 @@ class Client
 		char		*GetBuffer();
 		std::string	GetBufferString();
 		bool		GetIsConnected();
+		bool		GetIsRegistered();
 
 	private:
 		std::string	_nickname; // 9 char and unique ; name which appears for other users
@@ -57,6 +59,7 @@ class Client
 		std::string	_hostname;
 		std::string _prefix;
 		bool		_isconnected;
+		bool		_isRegistered;
 		char		*_buffer;
 		int			_socket;
 		std::map<int, std::string> _clientPartialBuffers;

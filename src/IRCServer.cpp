@@ -56,7 +56,6 @@ void print_client_list(std::map<int, Client*> client)
 
 void my_exit(std::string error, int code)
 {
-    // std::cerr << error << std::endl;
     log(ERROR, error);
     exit(code);
 }
@@ -70,7 +69,7 @@ IRCServer::IRCServer(std::string port, std::string password)
     _port = static_cast<unsigned short>(std::strtod(port.c_str(), &end)); 
     _port_string = port;
     _password = password;
-   
+    _passwordIsSet = !_password.empty();
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
         my_exit("socket failed", EXIT_FAILURE);
     if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &test, sizeof(test)))
@@ -107,17 +106,14 @@ int     IRCServer::run(void)
     max_sd = server_fd;
     log(INFO, "IRC Server loop is starting");
     while (true) {
-        //print_client_list(_clients);
         readfds = all_sockets;
         timeout.tv_sec = 0;
         timeout.tv_usec = 0;
         activity = select(max_sd + 1, &readfds, NULL, NULL, &timeout);
         if ((activity < 0) && (errno != EINTR))
             my_exit("select error", EXIT_FAILURE);
-        // log(INFO, "Server waiting for socket update..");
         if (activity == 0)
         {
-            //log(INFO, "Server waiting for socket update..");
             if (stop == true)
             {
                 close(server_fd);
@@ -193,7 +189,6 @@ void    IRCServer::accept_connection(fd_set *all_sockets)
     if (new_socket > max_sd)
         max_sd = new_socket;
     _clients.insert(std::pair<int, Client*>(new_socket, new Client(new_socket, inet_ntoa(address.sin_addr), getIRCServer())));
-    _fds.push_back(new_socket);
 }
 
 std::string	IRCServer::getPassword()
@@ -224,6 +219,11 @@ IRCServer*	IRCServer::getIRCServer()
 std::string	IRCServer::getPort()
 {
     return _port_string;
+}
+
+bool    IRCServer::getpasswordIsSet()
+{
+    return _passwordIsSet;
 }
 
 Channel *IRCServer::create_channel(std::string channel, Client &client, std::string key)
@@ -266,6 +266,7 @@ void    IRCServer::setCommandTemplate()
     _director->addCommand(TemplateBuilder::Builder()
                           .name("CAP")
                           .param("toto", ParamTemplate::Builder()
+                                 .addChecker(&isValidPassword)
                                  .build()
                                  )
                           .command(new CapCommand())
@@ -278,6 +279,16 @@ void    IRCServer::setCommandTemplate()
                                  .build()
                                  )
                           .command(new PassCommand())
+                          .build()
+                          );
+
+    _director->addCommand(TemplateBuilder::Builder()
+                          .name("NICK")
+                          .param("nick", ParamTemplate::Builder()
+                                 .addChecker(&isValidNick)
+                                 .build()
+                                 )
+                          .command(new NickCommand())
                           .build()
                           );
 
@@ -298,18 +309,9 @@ void    IRCServer::setCommandTemplate()
                           );
 
     _director->addCommand(TemplateBuilder::Builder()
-                          .name("NICK")
-                          .param("nick", ParamTemplate::Builder()
-                                 .build()
-                                 )
-                          .command(new NickCommand())
-                          .build()
-                          );
-
-    _director->addCommand(TemplateBuilder::Builder()
                           .name("JOIN")
                           .param("channel", ParamTemplate::Builder()
-                                 .addChecker(&isAlphaNum)
+                                 .addChecker(&isConnected)
                                  .build()
                                  )
 
@@ -322,7 +324,9 @@ void    IRCServer::setCommandTemplate()
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("PART")
-                          .param("channel", NULL)
+                          .param("channel", ParamTemplate::Builder()
+                                 .build()
+                                 )
                           .trailing("message", NULL)
                           .command(new PartCommand())
                           .build()
@@ -337,7 +341,9 @@ void    IRCServer::setCommandTemplate()
     
     _director->addCommand(TemplateBuilder::Builder()
                           .name("MODE")
-                          .param("channel", NULL)
+                          .param("channel", ParamTemplate::Builder()
+                                 .build()
+                                 )
                           .trailing("message", NULL)
                           .command(new ModeCommand())
                           .build()
@@ -345,25 +351,39 @@ void    IRCServer::setCommandTemplate()
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("TOPIC")
-                          .param("channel", NULL)
-                          .param("mode", NULL)
-                          .param("modeparams", NULL)
+                          .param("channel", ParamTemplate::Builder()
+                                 .build()
+                                 )
+                          .param("mode", ParamTemplate::Builder()
+                                 .build()
+                                 )
+                          .param("modeparams", ParamTemplate::Builder()
+                                 .build()
+                                 )
                           .command(new TopicCommand())
                           .build()
                           );
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("Invite")
-                          .param("nickname", NULL)
-                          .param("channel", NULL)
+                          .param("nickname", ParamTemplate::Builder()
+                                 .build()
+                                 )
+                          .param("channel", ParamTemplate::Builder()
+                                 .build()
+                                 )
                           .command(new InviteCommand())
                           .build()
                           );
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("KICK")
-                          .param("channel", NULL)
-                          .param("user", NULL)
+                          .param("channel", ParamTemplate::Builder()
+                                 .build()
+                                 )
+                          .param("user", ParamTemplate::Builder()
+                                 .build()
+                                 )
                           .trailing("comment", NULL)
                           .command(new KickCommand())
                           .build()
@@ -371,7 +391,9 @@ void    IRCServer::setCommandTemplate()
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("PRIVMSG")
-                          .param("msgtarget", NULL)
+                          .param("msgtarget", ParamTemplate::Builder()
+                                 .build()
+                                 )
                           .trailing("message", NULL)
                           .command(new PrivmsgCommand())
                           .build()
@@ -379,35 +401,60 @@ void    IRCServer::setCommandTemplate()
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("WHO")
-                          .param("mask", NULL)
-                          .param("o", NULL)
+                          .param("mask", ParamTemplate::Builder()
+                                 .build()
+                                 )
+                          .param("o", ParamTemplate::Builder()
+                                 .build()
+                                 )
                           .command(new WhoCommand())
                           .build()
                           );
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("WHOIS")
-                          .param("target", NULL)
-                          .param("mask", NULL)
+                          .param("target", ParamTemplate::Builder()
+                                 .build()
+                                 )
+                          .param("mask", ParamTemplate::Builder()
+                                 .build()
+                                 )
                           .command(new WhoisCommand())
                           .build()
                           );
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("PING")
-                          .param("server1", NULL)
-                          .param("server2", NULL)
+                          .param("server1", ParamTemplate::Builder()
+                                 .build()
+                                 )
+                          .param("server2", ParamTemplate::Builder()
+                                 .build()
+                                 )
                           .command(new PingCommand())
                           .build()
                           );
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("PONG")
-                          .param("server1", NULL)
-                          .param("server2", NULL)
+                          .param("server1", ParamTemplate::Builder()
+                                 .build()
+                                 )
+                          .param("server2", ParamTemplate::Builder()
+                                 .build()
+                                 )
                           .command(new PongCommand())
                           .build()
                           );
+}
+
+bool	IRCServer::checkNick(const std::string& nick)
+{
+    for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); it++) {
+		if (it->second && it->second->GetNickname() == nick)
+                    return false;
+	}
+    return true;
 }
 
 std::string	IRCServer::set_time()
