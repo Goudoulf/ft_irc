@@ -48,7 +48,7 @@ void	CommandDirector::parseCommand(int fd, std::string buffer, IRCServer& server
 	    std::getline(iss, trailing);
 	    parsedParams.push_back(param.substr(1) + trailing);
 	    break;
-	} 
+	}
 	parsedParams.push_back(param);
     }
     log(INFO, "Director fill param");

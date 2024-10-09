@@ -8,5 +8,26 @@
 # include <netinet/in.h>
 # include <arpa/inet.h>
 # include <unistd.h>
+# include <vector>
+# include <sstream>
+# include "game.hpp"
+
+class Bot
+{
+	private:
+		std::vector<Game*> _games;
+		int _socketFd;
+		u_int16_t _port;
+		struct sockaddr_in _address;
+
+	public:
+		Bot(std::string port);
+		~Bot();
+		Game *findGame(std::string toFind);
+		void addGame(Game *newGame);
+		std::vector<Game*> getGames();
+		void run();
+		void readData(std::string buffer);
+};
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 08:21:58 by cassie            #+#    #+#             */
-/*   Updated: 2024/10/02 11:04:45 by lvallini         ###   ########.fr       */
+/*   Updated: 2024/10/07 15:08:15 by lvallini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,7 +162,6 @@ void    IRCServer::read_data(int i)
         std::string remainingPartial;
         log(DEBUG, "Spliting buffer=" + completeBuffer );
         std::vector<std::string> messages = splitBuffer(completeBuffer, remainingPartial);
-
         clientPartialBuffers[i] = remainingPartial;
         log(DEBUG, "Loop director");
         for (std::vector<std::string>::iterator it = messages.begin(); it != messages.end(); it++)
