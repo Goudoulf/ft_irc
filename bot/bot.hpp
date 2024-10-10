@@ -11,6 +11,7 @@
 # include <vector>
 # include <sstream>
 # include "game.hpp"
+# include "hanghim.hpp"
 
 class Bot
 {

@@ -12,8 +12,8 @@ class ConnectFour : public Game
 		std::vector<std::string> _players;
 
 	public:
-		ConnectFour();
-		virtual ~ConnectFour();
+		ConnectFour(std::vector<std::string> params);
+		~ConnectFour();
 		ConnectFour(const ConnectFour& myConnectFour);
 		const ConnectFour& operator=(const ConnectFour& myConnectFour);
 		void createRoom();

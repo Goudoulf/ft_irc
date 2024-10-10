@@ -20,12 +20,14 @@ class Game
 
 	public:
 		Game();
-		virtual ~Game();
-		Game(const Game& myGame);
-		const Game& operator=(const Game& myGame);
+		// Game(std::vector<std::string> params);
+		// virtual ~Game();
+		// Game(const Game& myGame);
+		// const Game& operator=(const Game& myGame);
 		std::string getChanName();
-		virtual void createRoom() = 0;
-		virtual void newTurn() = 0;
+		std::string generateChanId();
+		// virtual void createRoom() = 0;
+		// virtual void newTurn() = 0;
 		
 };
 

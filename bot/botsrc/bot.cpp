@@ -1,4 +1,15 @@
-#include "bot.hpp"
+#include "../bot.hpp"
+
+std::vector<std::string> split(const std::string& input, char delimiter)
+{
+    std::vector<std::string> tokens;
+    std::string token;
+    std::istringstream tokenStream(input);
+    while (std::getline(tokenStream, token, delimiter)) {
+        tokens.push_back(token);
+    }
+    return tokens;
+}
 
 Bot::Bot(std::string port)
 {
@@ -27,15 +38,6 @@ Bot::~Bot()
 {
 }
 
-Game *Bot::findGame(std::string toFind)
-{
-	for (std::vector<Game*>::iterator it = _games.begin(); it != _games.end(); it++)
-	{
-		if ((*it)->getChanName() == toFind)
-			return (*it);
-	}
-	return NULL;
-}
 void Bot::run()
 {
 	char buffer[1024];
@@ -70,23 +72,34 @@ void Bot::readData (std::string buffer)
 	iss >> channel;
 	iss >> game;
 	game = game.substr(1);
-	if (game.at(0) != '!' && channel == "#botchan")
-		return;
-	std::getline(iss, trailing);
-	std::vector<std::string> params = split (trailing.substr(1), ' ');
-	std::cout << "game: " << game << std::endl;
-	std::cout << "params: " << params.front() << std::endl;
-	std::cout << "trailing: " << trailing << std::endl;
-	findGame(game);
+	if (game.at(0) == '!' && channel == "#botchan")
+	{
+		std::getline(iss, trailing);
+		std::vector<std::string> params = split (trailing.substr(1), ' ');
+		std::cout << "game: " << game << std::endl;
+		std::cout << "params: " << params.front() << std::endl;
+		std::cout << "trailing: " << trailing << std::endl;
+		addGame(new HangHim(game.substr(1), params));
+		std::cout << findGame(game)->getChanName() << std::endl;
+	}
 }
 
-std::vector<std::string> split(const std::string& input, char delimiter)
+void Bot::addGame(Game *newGame)
 {
-    std::vector<std::string> tokens;
-    std::string token;
-    std::istringstream tokenStream(input);
-    while (std::getline(tokenStream, token, delimiter)) {
-        tokens.push_back(token);
-    }
-    return tokens;
+	_games.push_back(newGame);
+	std::cout << "Game added" << std::endl;
+}
+
+Game *Bot::findGame(std::string toFind)
+{
+	for (std::vector<Game*>::iterator it = _games.begin(); it != _games.end(); it++)
+	{
+		std::cout << "found" << std::endl;
+		std::cout << *(it) << std::endl;
+		if ((*it)->getChanName() == toFind)
+		{
+			return (*it);
+		}
+	}
+	return NULL;
 }
