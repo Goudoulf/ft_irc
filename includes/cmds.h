@@ -10,6 +10,7 @@
 
 class IRCServer;
 class Client;
+enum CmdLevel {NONE, CONNECTED, REGISTERED, OP};
 
 std::vector<std::string> splitBuffer(const std::string& buffer, std::string& remainingPartial);
 void processBuffer(IRCServer& server, int client_fd, const std::string& buffer);

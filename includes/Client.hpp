@@ -16,6 +16,7 @@
 
 #include <string>
 #include "IRCServer.hpp"
+#include "cmds.h"
 #include <map>
 #include <string>
 
@@ -34,6 +35,7 @@ class Client
 		void		SetNickname(std::string nickname);
 		void		SetHostname(std::string nickname);
 		void		SetUsername(std::string username);
+		void		SetLevel(CmdLevel level);
 		void		SetSocket(int i);
 		void		SetPrefix();
 		void		SetBuffer(const char * string);
@@ -43,6 +45,7 @@ class Client
 		std::string	GetUsername() const;
 		std::string	GetRealname() const;
 		std::string	GetHostname() const;
+		CmdLevel	GetLevel() const;
 		IRCServer*	getServer()const;
 		Client		*GetClient();
 		int			GetSocket() const;
@@ -60,6 +63,7 @@ class Client
 		std::string _prefix;
 		bool		_isconnected;
 		bool		_isRegistered;
+		CmdLevel	_level;
 		char		*_buffer;
 		int			_socket;
 		std::map<int, std::string> _clientPartialBuffers;

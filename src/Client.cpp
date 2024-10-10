@@ -3,6 +3,7 @@
 #include <cstring>
 #include <iostream>
 #include <string>
+#include "cmds.h"
 #include "debug.h"
 #include "IRCServer.hpp"
 
@@ -11,8 +12,10 @@ Client::Client(const int &socket, std::string hostname, IRCServer* server): _hos
 	_buffer = new char[1024];
 	_nickname = "default";
 	_realname = "realname";
-	_isconnected = !server->getpasswordIsSet();
-	_isRegistered = false;
+	if (server->getpasswordIsSet())
+		_level = NONE;
+	else
+		_level = CONNECTED;
 	_server = server;
 }
 
@@ -74,6 +77,11 @@ void	Client::SetClient()
 {
 }
 
+void		Client::SetLevel(CmdLevel level)
+{
+	_level = level;	
+}
+
 void	Client::SetNickname(std::string nickname)
 {
 	_nickname = nickname;
@@ -127,6 +135,11 @@ std::string	Client::GetUsername() const
 std::string	Client::GetRealname() const
 {
 	return _realname;
+}
+
+CmdLevel	Client::GetLevel() const
+{
+	return _level;
 }
 
 IRCServer*	Client::getServer()const

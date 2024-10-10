@@ -1,9 +1,12 @@
 #include "ParamTemplate.hpp"
+#include "reply.h"
 
-ParamTemplate::ParamTemplate(std::vector<bool (*)(const std::string, int fd , IRCServer& server)> checker) : _paramCheckers(checker)
-{}
+ParamTemplate::ParamTemplate(std::vector<bool (*)(const std::string, int fd , IRCServer& server)> checker, bool optional) : _paramCheckers(checker)
+{
+	_isOptional = optional;
+}
 
-ParamTemplate::Builder::Builder()
+ParamTemplate::Builder::Builder() : _isOptional(false)
 {}
 
 ParamTemplate::Builder& ParamTemplate::Builder::addChecker(bool (*ptr)(const std::string, int fd , IRCServer& server))
@@ -12,9 +15,15 @@ ParamTemplate::Builder& ParamTemplate::Builder::addChecker(bool (*ptr)(const std
 	return *this;
 }
 
+ParamTemplate::Builder& ParamTemplate::Builder::isOptional()
+{
+	_isOptional = true;
+	return *this;
+}
+
 const ParamTemplate *ParamTemplate::Builder::build() const
 {
-	return new ParamTemplate(_paramChecker);
+	return new ParamTemplate(_paramChecker, _isOptional);
 }
 
 bool    ParamTemplate::checkParam(int fd, const std::string& param, IRCServer& server)const
