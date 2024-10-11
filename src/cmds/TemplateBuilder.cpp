@@ -1,8 +1,11 @@
 #include "TemplateBuilder.hpp"
 #include "ParamTemplate.hpp"
 #include "cmds.h"
+#include "reply.h"
 #include <string>
 #include <utility>
+#include "debug.h"
+#include <sstream>
 
 TemplateBuilder::TemplateBuilder(const std::string& name, CmdLevel level, const std::vector<std::pair<std::string, const ParamTemplate*>>& params , Command *command)
 {
@@ -55,21 +58,38 @@ const std::string TemplateBuilder::getName()const
 	return _name;
 }
 
-bool    TemplateBuilder::check_level(int fd, IRCServer& server)
+bool    TemplateBuilder::check_level(int fd, IRCServer& server)const
 {
         Client* client = (server.getClients()->find(fd))->second;
-		if (client->GetLevel() >= _levelNeeded)
-			return true;
-		return false;
+	std::ostringstream ss;
+	ss << client->GetLevel();
+	ss << " ";
+	ss << _levelNeeded;
+	std::string str = ss.str();
+	log(DEBUG, "LEVEL =" + str);
+	if (this->_name != "USER" && this->_name != "PASS" && client->GetLevel() >= _levelNeeded)
+	{
+		return true;
+	}
+	if (client->GetLevel() == _levelNeeded)
+		return true;
+	return false;
 }
 
 void    TemplateBuilder::fill_param(int fd, std::vector<std::string>& param, IRCServer& server)const
 {
+	log(INFO, "Filling param for " + this->_name);
+	if (!check_level(fd, server))
+	{
+		rpl_send(fd, ERR_NOTREGISTERED());
+		return ;
+	}
 	std::map<std::string, std::string> final;
 	std::vector<std::pair<std::string, const ParamTemplate*>>::const_iterator it = _params.begin();
 	std::vector<std::string>::iterator it2 = param.begin();
 	while ((it != _params.end()))
 	{
+		log(INFO, "Param = " + it->first);
 		if (it->second->_isOptional == false && it2 == param.end())
 		{
 			rpl_send(fd, ERR_NEEDMOREPARAMS(this->getName()));

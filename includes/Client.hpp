@@ -19,6 +19,7 @@
 #include "cmds.h"
 #include <map>
 #include <string>
+#include "CmdLevel.h"
 
 class IRCServer;
 

@@ -1,12 +1,10 @@
-#ifndef REPLY_H
-#define REPLY_H
-
+#pragma once
 #include <string>
 
 #define DATETIME "31/07/2024"
 
-#define id(nickname, username) (":" + nickname + "!" + username + "@localhost")
-#define RPL_WELCOME(id, nickname) (":localhost 001 " + nickname + ":Welcome to the Internet Relay Network, " + nickname + "!\r\n")
+#define idd(nickname, username) (":" + nickname + "!" + username + "@localhost")
+#define RPL_WELCOME(idd, nickname) ( idd + " " + nickname + ":Welcome to the Internet Relay Network, " + nickname + "!\r\n")
 #define RPL_YOURHOST(servername, version) (":localhost 002 Your host is " + servername + ", running version " + version)
 #define RPL_CREATED(date) (":localhost 003 This server was created " + date)
 #define RPL_MYINFO(servername, version, user_modes, channel_modes) (":localhost 004 " + servername + " " + version + " " + user_modes + " " + channel_modes)
@@ -76,10 +74,9 @@
 #define RPL_STATSCOMMAND(command, count, byte_count, remote_count) (":localhost 212 " + command + " " + count + " " + byte_count + " " + remote_count)
 #define RPL_ENDOFSTATS(stats_letter) (":localhost 219 " + stats_letter + " :End of STATS report")
 #define RPL_STATSUPTIME(days, hours, minutes, seconds) (":localhost 242 :Server Up " + days + " days " + hours + ":" + minutes + ":" + seconds)
-#define RPL_STATS
+//#define RPL_STATS
 #define ERR_NOTONCHANNEL(channel) (":localhost 442 " + channel + " :You're not on that channel\r\n")
 #define ERR_BADCHANNELKEY(channel) (":localhost 475 " + channel + " :Cannot join channel (+k)\r\n")
-// Error responses with "localhost" as the source server
 #define ERR_NOSUCHNICK(nickname) (":localhost 401 " + nickname + " :No such nick/channel\r\n")
 #define ERR_NOSUCHSERVER(server) (":localhost 402 " + server + " :No such server\r\n")
 #define ERR_NOSUCHCHANNEL(channel) (":localhost 403 " + channel + " :No such channel\r\n")
@@ -121,4 +118,3 @@
 #define ERR_NOOPERHOST() (":localhost 491 :No O-lines for your host\r\n")
 
 void	rpl_send(int fd, std::string rpl);
-#endif

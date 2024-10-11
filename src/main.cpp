@@ -34,10 +34,8 @@ void	signal_handling(void)
 }
 
 bool isValidPassword(const std::string& password) {
-    if (password.length() < 1 || password.length() > 23) {
+    if (password.length() < 1 || password.length() > 23)
         return false;
-    }
-
     for (char c : password) {
         unsigned char uc = static_cast<unsigned char>(c);
 
@@ -68,7 +66,7 @@ int main(int argc, char **argv)
     signal_handling();
     if (isValidPassword(argv[2]))
     {
-	IRCServer *server= new IRCServer(argv[1], "");
+	IRCServer *server= new IRCServer(argv[1], "tutu");
         server->setCommandTemplate();
 	server->run();
     }

@@ -1,16 +1,12 @@
-#ifndef CMDS_H
-#define CMDS_H
+#pragma once
 
 #include "Client.hpp"
-#include "ircserv.h"
-#include <map>
-#include <iostream>
 #include <vector>
 #include <string>
+#include <iostream>
 
 class IRCServer;
 class Client;
-enum CmdLevel {NONE, CONNECTED, REGISTERED, OP};
 
 std::vector<std::string> splitBuffer(const std::string& buffer, std::string& remainingPartial);
 void processBuffer(IRCServer& server, int client_fd, const std::string& buffer);
@@ -38,6 +34,5 @@ bool	isAlphaNum(const std::string param, int fd , IRCServer& server);
 bool	isConnected(const std::string param, int fd , IRCServer& server);
 bool	isValidNick(const std::string param, int fd , IRCServer& server);
 bool	isValidPassword(const std::string param, int fd , IRCServer& server);
-
-
-#endif
+bool	isEmpty(const std::string param, int fd , IRCServer& server);
+bool	isValidChannel(const std::string param, int fd , IRCServer& server);

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "IRCServer.hpp"
+#include "CmdLevel.h"
 #include "ircserv.h"
 #include "Client.hpp"
 #include "debug.h"
@@ -265,6 +266,7 @@ void    IRCServer::setCommandTemplate()
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("CAP")
+                          .level(NONE)
                           .param("toto", ParamTemplate::Builder()
                                  .build()
                                  )
@@ -274,7 +276,9 @@ void    IRCServer::setCommandTemplate()
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("PASS")
+                          .level(NONE)
                           .param("password", ParamTemplate::Builder()
+                                 .addChecker(&isConnected)
                                  .addChecker(&isValidPassword)
                                  .build()
                                  )
@@ -284,7 +288,9 @@ void    IRCServer::setCommandTemplate()
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("NICK")
+                          .level(CONNECTED)
                           .param("nick", ParamTemplate::Builder()
+                                 .addChecker(&isEmpty)
                                  .addChecker(&isValidNick)
                                  .build()
                                  )
@@ -294,6 +300,7 @@ void    IRCServer::setCommandTemplate()
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("USER")
+                          .level(CONNECTED)
                           .param("user", ParamTemplate::Builder()
                                  .build()
                                  )
@@ -303,15 +310,19 @@ void    IRCServer::setCommandTemplate()
                           .param("unused", ParamTemplate::Builder()
                                  .build()
                                  )
-                          .trailing("realname", NULL)
+                          .trailing("realname", ParamTemplate::Builder()
+                                 .build()
+                                 )
+
                           .command(new UserCommand())
                           .build()
                           );
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("JOIN")
+                          .level(REGISTERED)
                           .param("channel", ParamTemplate::Builder()
-                                 .addChecker(&isConnected)
+                                 .addChecker(&isValidChannel)
                                  .build()
                                  )
 
@@ -325,33 +336,46 @@ void    IRCServer::setCommandTemplate()
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("PART")
+                          .level(REGISTERED)
                           .param("channel", ParamTemplate::Builder()
                                  .build()
                                  )
-                          .trailing("message", NULL)
+                          .trailing("message", ParamTemplate::Builder()
+                                 .build()
+                                 )
+
                           .command(new PartCommand())
                           .build()
                           );
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("QUIT")
-                          .trailing("message", NULL)
+                          .level(REGISTERED)
+                          .trailing("message",  ParamTemplate::Builder()
+                                 .build()
+                                 )
+
                           .command(new QuitCommand())
                           .build()
                           );
     
     _director->addCommand(TemplateBuilder::Builder()
                           .name("MODE")
+                          .level(REGISTERED)
                           .param("channel", ParamTemplate::Builder()
                                  .build()
                                  )
-                          .trailing("message", NULL)
+                          .trailing("message",  ParamTemplate::Builder()
+                                 .build()
+                                 )
+
                           .command(new ModeCommand())
                           .build()
                           );
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("TOPIC")
+                          .level(REGISTERED)
                           .param("channel", ParamTemplate::Builder()
                                  .build()
                                  )
@@ -367,6 +391,7 @@ void    IRCServer::setCommandTemplate()
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("Invite")
+                          .level(REGISTERED)
                           .param("nickname", ParamTemplate::Builder()
                                  .build()
                                  )
@@ -379,29 +404,38 @@ void    IRCServer::setCommandTemplate()
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("KICK")
+                          .level(REGISTERED)
                           .param("channel", ParamTemplate::Builder()
                                  .build()
                                  )
                           .param("user", ParamTemplate::Builder()
                                  .build()
                                  )
-                          .trailing("comment", NULL)
+                          .trailing("comment",  ParamTemplate::Builder()
+                                 .build()
+                                 )
+
                           .command(new KickCommand())
                           .build()
                           );
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("PRIVMSG")
+                          .level(REGISTERED)
                           .param("msgtarget", ParamTemplate::Builder()
                                  .build()
                                  )
-                          .trailing("message", NULL)
+                          .trailing("message",  ParamTemplate::Builder()
+                                 .build()
+                                 )
+
                           .command(new PrivmsgCommand())
                           .build()
                           );
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("WHO")
+                          .level(REGISTERED)
                           .param("mask", ParamTemplate::Builder()
                                  .build()
                                  )
@@ -414,6 +448,7 @@ void    IRCServer::setCommandTemplate()
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("WHOIS")
+                          .level(REGISTERED)
                           .param("target", ParamTemplate::Builder()
                                  .build()
                                  )
@@ -426,6 +461,7 @@ void    IRCServer::setCommandTemplate()
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("PING")
+                          .level(REGISTERED)
                           .param("server1", ParamTemplate::Builder()
                                  .build()
                                  )
@@ -438,6 +474,7 @@ void    IRCServer::setCommandTemplate()
 
     _director->addCommand(TemplateBuilder::Builder()
                           .name("PONG")
+                          .level(REGISTERED)
                           .param("server1", ParamTemplate::Builder()
                                  .build()
                                  )

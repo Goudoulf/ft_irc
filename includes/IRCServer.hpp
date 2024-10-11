@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <vector>
 #include "cmds.h"
+#include "CmdLevel.h"
 #define MAX_CLIENTS 30
 
 class Client;

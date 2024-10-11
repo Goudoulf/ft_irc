@@ -1,5 +1,6 @@
 #include "Channel.hpp"
 #include <string>
+#include <iostream>
 
 // TODO: Add fucntion to add new client to channel
 bool	validName(std::string name)
@@ -80,6 +81,11 @@ std::string Channel::getChannelName()
 channelMode Channel::getChannelMode()
 {
 	return _mode;
+}
+
+std::string Channel::getPassword()
+{
+	return _password;
 }
 
 std::string Channel::getUsers()

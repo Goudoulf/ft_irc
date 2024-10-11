@@ -30,6 +30,7 @@ class Channel
 		~Channel();
 		std::string getChannelName();
 		std::string getUsers();
+		std::string getPassword();
 		channelMode getChannelMode();
 		bool	InChannel(std::string client);
 		bool	IsOp(std::string client);

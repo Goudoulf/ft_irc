@@ -2,8 +2,10 @@
 #include "Command.hpp"
 #include "ParamTemplate.hpp"
 #include "cmds.h"
+#include "reply.h"
 #include <string>
 #include <utility>
+#include "CmdLevel.h"
 
 class Command;
 class ParamTemplate;
@@ -45,7 +47,6 @@ private:
     CmdLevel        _levelNeeded;
     std::vector<std::pair<std::string, const ParamTemplate *>> _params;
     Command *_command;
-    bool    check_level(int fd, IRCServer& server);
-    void fill_param(int fd, std::vector<std::string> &param,
-                  IRCServer &server) const;
+    bool    check_level(int fd, IRCServer& server)const;
+    void fill_param(int fd, std::vector<std::string> &param, IRCServer &server) const;
 };
