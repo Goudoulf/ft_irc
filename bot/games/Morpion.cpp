@@ -1,17 +1,15 @@
 #include "Morpion.hpp"
+#include <iostream>
 
 Morpion::Morpion(std::string name) : Game()
 {
 	_name = name;
-	resetGameState();
 	_x = 0;
 	_y = 0;
 	_turn = 1;
-	_input = "";
 	_gameState = new std::string[3] {"   ", "   ", "   "};
 	setBuffer("---------------\n|   MORPION   |\n---------------");
 	displayGame();
-	gameLoop();
 }
 
 Morpion::~Morpion()
@@ -38,20 +36,20 @@ bool Morpion::checkInput()
 
 void Morpion::displayGame()
 {
-	setBuffer(getBuffer() + "\n   A   B   C\n");
+	setBuffer(_buffer + "\n   A   B   C\n");
 	for (int i = 0; i < 3; i++)
 	{
-		setBuffer(getBuffer() + (char)(i + 1 + '0') + " ");
+		setBuffer(_buffer + (char)(i + 1 + '0') + " ");
 		for (int j = 0; j < 3; j++)
 		{
 			if (j < 2)
-				setBuffer(getBuffer() + " " + _gameState[i][j] + " |");
+				setBuffer(_buffer + " " + _gameState[i][j] + " |");
 			else
-				setBuffer(getBuffer() + " " + _gameState[i][j] + " ");
+				setBuffer(_buffer + " " + _gameState[i][j] + " ");
 		}
-		setBuffer(getBuffer() + "\n");
+		setBuffer(_buffer + "\n");
 		if (i < 2)
-			setBuffer(getBuffer() + "  ---|---|---\n");
+			setBuffer(_buffer + "  ---|---|---\n");
 	}
 }
 
@@ -82,12 +80,12 @@ void Morpion::gameLoop()
 		}
 		else if (_turn % 2)
 		{
-			setBuffer(_buffer + "Player 1 win!");
+			setBuffer(_buffer + "Player 2 win!");
 			return;
 		}
 		else
 		{
-			setBuffer(_buffer + "Player 2 win!");
+			setBuffer(_buffer + "Player 1 win!");
 			return;
 		}
 	}
@@ -97,6 +95,7 @@ void Morpion::gameLoop()
 			setBuffer(_buffer + "\n\e[1;31mPlayer 1 turn\e[0m\nPut coordinates (ex: 1A, 3B, ...):");
 		else
 			setBuffer(_buffer + "\n\e[1;32mPlayer 2 turn\e[0m\nPut coordinates (ex: 1A, 3B, ...):");
+		return;
 	}
 	if (!checkInput())
 		return;
@@ -112,7 +111,36 @@ void Morpion::gameLoop()
 	else
 		_gameState[_x][_y] = 'o';
 	_turn++;
+
 	displayGame();
+	_input.clear();
+	
+	if (winCondition() || _turn >= 10)
+	{
+		if (_turn >= 10)
+		{
+			setBuffer(_buffer + "Draw!");
+			return;
+		}
+		else if (_turn % 2)
+		{
+			setBuffer(_buffer + "Player 2 win!");
+			return;
+		}
+		else
+		{
+			setBuffer(_buffer + "Player 1 win!");
+			return;
+		}
+	}
+	if (_input.empty())
+	{
+		if (_turn % 2)
+			setBuffer(_buffer + "\n\e[1;31mPlayer 1 turn\e[0m\nPut coordinates (ex: 1A, 3B, ...):");
+		else
+			setBuffer(_buffer + "\n\e[1;32mPlayer 2 turn\e[0m\nPut coordinates (ex: 1A, 3B, ...):");
+		return;
+	}
 }
 
 size_t Morpion::getTurn() const
@@ -123,34 +151,4 @@ size_t Morpion::getTurn() const
 std::string* Morpion::getGameState() const
 {
 	return _gameState;
-}
-
-int Morpion::getX() const
-{
-	return _x;
-}
-
-int Morpion::getY() const
-{
-	return _y;
-}
-
-void Morpion::setTurn(size_t turn)
-{
-	_turn = turn;
-}
-
-void Morpion::setGameState(std::string *gameState)
-{
-	_gameState = gameState;
-}
-
-void Morpion::setX(int x)
-{
-	_x = x;
-}
-
-void Morpion::setY(int y)
-{
-	_y = y;
 }

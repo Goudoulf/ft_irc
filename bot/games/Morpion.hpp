@@ -17,13 +17,6 @@ class Morpion: public Game
 
 		size_t			getTurn() const;
 		std::string*	getGameState() const;
-		int				getX() const;
-		int				getY() const;
-
-		void			setTurn(size_t	turn);
-		void			setGameState(std::string *_gameState);
-		void			setX(int x);
-		void			setY(int y);
 
 	private:
 		size_t		_turn;
