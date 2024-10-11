@@ -11,7 +11,8 @@
 # include <vector>
 # include <sstream>
 # include "game.hpp"
-# include "hanghim.hpp"
+# include "hangman.hpp"
+# include <map>
 
 class Bot
 {
@@ -20,12 +21,14 @@ class Bot
 		int _socketFd;
 		u_int16_t _port;
 		struct sockaddr_in _address;
+		std::map<std::string, Game *(*)(void)> _gameMap;
+		std::vector<std::string> _params;
 
 	public:
 		Bot(std::string port);
 		~Bot();
 		Game *findGame(std::string toFind);
-		void addGame(Game *newGame);
+		void addGame(std::string game, std::vector<std::string> params);
 		std::vector<Game*> getGames();
 		void run();
 		void readData(std::string buffer);

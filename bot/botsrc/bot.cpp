@@ -11,6 +11,18 @@ std::vector<std::string> split(const std::string& input, char delimiter)
     return tokens;
 }
 
+Game *createHang()
+{
+	return (new HangMan());
+}
+
+std::map<std::string, Game *(*)(void)> init_map()
+{
+	std::map<std::string, Game *(*)(void)> gameMap;
+	gameMap.insert(std::make_pair(std::string("hangman"), &createHang));
+	return gameMap;
+}
+
 Bot::Bot(std::string port)
 {
 	char *end;
@@ -32,7 +44,9 @@ Bot::Bot(std::string port)
 	{
 		std::cout << "ERROR CONNECT" << std::endl;
 	}
+	_gameMap = init_map();
 }
+
 
 Bot::~Bot()
 {
@@ -74,19 +88,24 @@ void Bot::readData (std::string buffer)
 	game = game.substr(1);
 	if (game.at(0) == '!' && channel == "#botchan")
 	{
+		game = game.substr(1);
 		std::getline(iss, trailing);
 		std::vector<std::string> params = split (trailing.substr(1), ' ');
 		std::cout << "game: " << game << std::endl;
 		std::cout << "params: " << params.front() << std::endl;
 		std::cout << "trailing: " << trailing << std::endl;
-		addGame(new HangHim(game.substr(1), params));
+		addGame(game, params);
 		std::cout << findGame(game)->getChanName() << std::endl;
 	}
 }
 
-void Bot::addGame(Game *newGame)
+void Bot::addGame(std::string game, std::vector<std::string> params)
 {
-	_games.push_back(newGame);
+	_games.push_back(_gameMap.find(game)->second());
+	std::cout << "123" << std::endl;
+	_games.back()->setPlayers(params);
+	_games.back()->setType(game);
+	_games.back()->setChanName();
 	std::cout << "Game added" << std::endl;
 }
 
@@ -94,12 +113,12 @@ Game *Bot::findGame(std::string toFind)
 {
 	for (std::vector<Game*>::iterator it = _games.begin(); it != _games.end(); it++)
 	{
-		std::cout << "found" << std::endl;
-		std::cout << *(it) << std::endl;
-		if ((*it)->getChanName() == toFind)
+		if ((*it)->getType() == toFind)
 		{
+			std::cout << "found" << std::endl;
 			return (*it);
 		}
 	}
+	std::cout << "not found" << std::endl;
 	return NULL;
 }
