@@ -36,3 +36,6 @@ bool	isValidNick(const std::string param, int fd , IRCServer& server);
 bool	isValidPassword(const std::string param, int fd , IRCServer& server);
 bool	isEmpty(const std::string param, int fd , IRCServer& server);
 bool	isValidChannel(const std::string param, int fd , IRCServer& server);
+bool	ChannelExist(const std::string param, int fd , IRCServer& server);
+bool	isOnChannel(const std::string param, int fd , IRCServer& server);
+bool	nickExist(const std::string param, int fd , IRCServer& server);

@@ -16,10 +16,10 @@ void NickCommand::execute(int client_fd, std::map<std::string, std::string>& par
 	std::vector<Channel*> *channels = server.getChannels();
 	for (std::vector<Channel*>::iterator it2 = channels->begin(); it2 != channels->end(); it2++)
 	{
-	    if ((*it2)->InChannel(client->GetUsername()))
+	    if ((*it2)->InChannel(client->GetNickname()))
 	    {
 		for (std::map<int, Client*>::iterator it = server.getClients()->begin(); it != server.getClients()->end(); it++) {
-		    if (it->second != NULL && (*it2)->InChannel(it->second->GetUsername()))	
+		    if (it->second != NULL && (*it2)->InChannel(it->second->GetNickname()))	
 			send(it->first, str.c_str(), str.length(), 0);
 		}
 	    }

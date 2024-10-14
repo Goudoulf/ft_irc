@@ -1,3 +1,4 @@
+#include "Channel.hpp"
 #include "CmdLevel.h"
 #include "IRCServer.hpp"
 #include <cctype>
@@ -5,6 +6,40 @@
 #include <vector>
 #include <string>
 #include "reply.h"
+
+bool	nickExist(const std::string param, int fd , IRCServer& server)
+{
+	for (std::map<int, Client*>::iterator it = server.getClients()->begin(); it != server.getClients()->end(); it++)
+	{
+	    if (it->second && it->second->GetNickname() == param)
+		return true;
+	}
+	rpl_send(fd, ERR_NOSUCHNICK(param));
+	return false;
+}
+
+bool	isOnChannel(const std::string param, int fd , IRCServer& server)
+{
+    Client* client = (server.getClients()->find(fd))->second;
+    Channel *channel = server.find_channel(param);
+
+    if (channel && !channel->InChannel(client->GetNickname()))
+    {
+	rpl_send(fd, ERR_NOTONCHANNEL(param));
+	return false;
+    }
+    return true;
+}
+
+bool	ChannelExist(const std::string param, int fd , IRCServer& server)
+{
+    if (!server.find_channel(param))
+    {
+	rpl_send(fd, ERR_NOSUCHCHANNEL(param));
+	return false;
+    }
+    return true;
+}
 
 bool	isValidPassword(const std::string param, int fd , IRCServer& server)
 {

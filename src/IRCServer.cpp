@@ -49,9 +49,9 @@ std::map<int, std::string> clientPartialBuffers;
 
 void print_client_list(std::map<int, Client*> client)
 {
-    for (std::map<int, Client*>::iterator it = client.begin(); it != client.end();) {
+    for (std::map<int, Client*>::iterator it = client.begin(); it != client.end(); it++) {
         if (it->second)
-            std::cout << "USER=" << it->second->GetUsername() << std::endl;
+            std::cout << "USER=" << it->second->GetNickname() << std::endl;
     }
 }
 
@@ -122,6 +122,7 @@ int     IRCServer::run(void)
             }
             continue;
         }
+        print_client_list(this->_clients);
         log(INFO, "Server new socket activity");
         int i = 0;
 	for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); it++) {
@@ -189,7 +190,7 @@ void    IRCServer::accept_connection(fd_set *all_sockets)
     FD_SET(new_socket, all_sockets);
     if (new_socket > max_sd)
         max_sd = new_socket;
-    _clients.insert(std::pair<int, Client*>(new_socket, new Client(new_socket, inet_ntoa(address.sin_addr), getIRCServer())));
+    _clients.insert(std::pair<int, Client*>(new_socket, new Client(new_socket, address, getIRCServer())));
 }
 
 std::string	IRCServer::getPassword()
@@ -246,9 +247,9 @@ Channel	*IRCServer::find_channel(std::string channel)
 void	IRCServer::remove_client(Client &client)
 {
 	for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end();) {
-		if (it->second && it->second->GetUsername() == client.GetUsername())
+		if (it->second && it->second->GetNickname() == client.GetNickname())
                 {
-                        log(DEBUG, it->second->GetUsername() + " is deleted");
+                        log(DEBUG, it->second->GetNickname() + " is deleted");
                         FD_CLR(it->first, &all_sockets);
                         close(it->first);
                         delete ((it->second->GetClient()));
@@ -313,7 +314,6 @@ void    IRCServer::setCommandTemplate()
                           .trailing("realname", ParamTemplate::Builder()
                                  .build()
                                  )
-
                           .command(new UserCommand())
                           .build()
                           );
@@ -325,7 +325,6 @@ void    IRCServer::setCommandTemplate()
                                  .addChecker(&isValidChannel)
                                  .build()
                                  )
-
                           .param("key", ParamTemplate::Builder()
                                  .isOptional()
                                  .build()
@@ -341,9 +340,9 @@ void    IRCServer::setCommandTemplate()
                                  .build()
                                  )
                           .trailing("message", ParamTemplate::Builder()
+                                 .isOptional()
                                  .build()
                                  )
-
                           .command(new PartCommand())
                           .build()
                           );
@@ -352,9 +351,9 @@ void    IRCServer::setCommandTemplate()
                           .name("QUIT")
                           .level(REGISTERED)
                           .trailing("message",  ParamTemplate::Builder()
+                                 .isOptional()
                                  .build()
                                  )
-
                           .command(new QuitCommand())
                           .build()
                           );
@@ -368,7 +367,6 @@ void    IRCServer::setCommandTemplate()
                           .trailing("message",  ParamTemplate::Builder()
                                  .build()
                                  )
-
                           .command(new ModeCommand())
                           .build()
                           );
@@ -377,12 +375,11 @@ void    IRCServer::setCommandTemplate()
                           .name("TOPIC")
                           .level(REGISTERED)
                           .param("channel", ParamTemplate::Builder()
+                                 .addChecker(&ChannelExist)
+                                 .addChecker(&isOnChannel)
                                  .build()
                                  )
-                          .param("mode", ParamTemplate::Builder()
-                                 .build()
-                                 )
-                          .param("modeparams", ParamTemplate::Builder()
+                          .param("topic", ParamTemplate::Builder()
                                  .build()
                                  )
                           .command(new TopicCommand())
@@ -393,9 +390,11 @@ void    IRCServer::setCommandTemplate()
                           .name("Invite")
                           .level(REGISTERED)
                           .param("nickname", ParamTemplate::Builder()
+                                 .addChecker(&nickExist)
                                  .build()
                                  )
                           .param("channel", ParamTemplate::Builder()
+                                 .addChecker(&isOnChannel)
                                  .build()
                                  )
                           .command(new InviteCommand())

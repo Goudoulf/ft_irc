@@ -40,23 +40,14 @@ class Channel
 		void	setTopic(std::string topic);
 		std::string	getTopic();
 		
-		class InvalidName: public std::exception {
-			public:
-				virtual const char* what() const throw() {return "Channel creation : Invalid name";}
-		};
-		class InvalidKey: public std::exception {
-			public:
-				virtual const char* what() const throw() {return "Channel creation : Invalid key";}
-		};
-
-
 	private:
 		std::string _name; //beginning with a &#+! length of 50 max char, case insensitive
 							// no spaces or control G (ASCII 7), no ',' or ':', can't be reused
 		//container of users, maybe a map <client, bool isOp> ?
 		
-		std::vector<Client> _users;
-		std::vector<Client> _operators;
+		std::map<Client, bool> _users;
+		// std::vector<Client> _users;
+		// std::vector<Client> _operators;
 		std::string			_topic;
 		std::string			_password;
 		bool				_isEmpty;

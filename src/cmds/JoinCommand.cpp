@@ -14,18 +14,18 @@ void	joinChannel2(std::string channel, std::string key, int fd, IRCServer &serve
 	Channel *chan;
 	if (!(chan = server.find_channel(channel)))
 		chan = server.create_channel(channel, *client, key);
-	if (chan->InChannel(client->GetUsername()) == false)
+	if (chan->InChannel(client->GetNickname()) == false)
 	{
 		if (!chan->keyIsValid(key))
 		{
-			log(ERROR, "Wrong Channel Key");
+			log(ERROR, "Wrong Channel Key " + channel);
 			rpl_send(fd, ERR_BADCHANNELKEY(channel));
 			return ;
 		}
 		chan->add_client(*client);
 	}
 	for (std::map<int, Client*>::iterator it = server.getClients()->begin(); it != server.getClients()->end(); it++) {
-		if (it->second != NULL && chan->InChannel(it->second->GetUsername()))
+		if (it->second != NULL && chan->InChannel(it->second->GetNickname()))
 			message_server("", "JOIN", *client, chan->getChannelName(), it->first);
 	}
 	if (!chan->getTopic().empty())

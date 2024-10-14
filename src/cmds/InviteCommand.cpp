@@ -5,4 +5,5 @@ void InviteCommand::execute(int client_fd, std::map<std::string, std::string>& p
     (void)client_fd;
     (void)params;
     (void)server;
+
 }

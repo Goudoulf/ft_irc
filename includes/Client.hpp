@@ -26,7 +26,7 @@ class IRCServer;
 class Client
 {
 	public:
-		Client(const int &socket, std::string hostname, IRCServer* server);
+		Client(const int &socket, struct sockaddr_in address, IRCServer* server);
 		~Client();
 		bool operator <(const Client& toComp) const;
 

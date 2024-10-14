@@ -76,7 +76,7 @@
 #define RPL_STATSUPTIME(days, hours, minutes, seconds) (":localhost 242 :Server Up " + days + " days " + hours + ":" + minutes + ":" + seconds)
 //#define RPL_STATS
 #define ERR_NOTONCHANNEL(channel) (":localhost 442 " + channel + " :You're not on that channel\r\n")
-#define ERR_BADCHANNELKEY(channel) (":localhost 475 " + channel + " :Cannot join channel (+k)\r\n")
+#define ERR_BADCHANNELKEY(channel) (":localhost 475 " + channel + " :Cannot join channel (+k) \r\n")
 #define ERR_NOSUCHNICK(nickname) (":localhost 401 " + nickname + " :No such nick/channel\r\n")
 #define ERR_NOSUCHSERVER(server) (":localhost 402 " + server + " :No such server\r\n")
 #define ERR_NOSUCHCHANNEL(channel) (":localhost 403 " + channel + " :No such channel\r\n")
@@ -111,7 +111,6 @@
 #define ERR_UNKNOWNMODE(mode) (":localhost 472 " + mode + " :is unknown mode char to me\r\n")
 #define ERR_INVITEONLYCHAN(channel) (":localhost 473 " + channel + " :Cannot join channel (+i)\r\n")
 #define ERR_BANNEDFROMCHAN(channel) (":localhost 474 " + channel + " :Cannot join channel (+b)\r\n")
-#define ERR_BADCHANNELKEY(channel) (":localhost 475 " + channel + " :Cannot join channel (+k)\r\n")
 #define ERR_NOPRIVILEGES() (":localhost 481 :Permission Denied- You're not an IRC operator\r\n")
 #define ERR_CHANOPRIVSNEEDED(channel) (":localhost 482 " + channel + " :You're not channel operator\r\n")
 #define ERR_CANTKILLSERVER() (":localhost 483 :You can't kill a server!\r\n")

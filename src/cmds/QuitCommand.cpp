@@ -5,23 +5,19 @@
 
 void	quitServer2(std::string channel, std::string message, Client &client, IRCServer &server)
 {
-	Channel *chan;
-	if (!(chan = server.find_channel(channel)))
-		log(ERROR, "No channel");
-		// error no channel
+	Channel *chan = server.find_channel(channel);
 	for (std::map<int, Client*>::iterator it = server.getClients()->begin(); it != server.getClients()->end(); it++) {
-		if (it->second && chan->InChannel(it->second->GetUsername()))
+		if (it->second && chan->InChannel(it->second->GetNickname()))
 			message_server("", "QUIT", client, message, it->second->GetSocket());
 	}
-	if (chan->InChannel(client.GetUsername()) == true)
-		chan->remove_client(client);
+	chan->remove_client(client);
 }
 
 void QuitCommand::execute(int client_fd, std::map<std::string, std::string>& params, IRCServer& server)
 {
 	Client* client = (server.getClients()->find(client_fd))->second;
 	for (std::vector<Channel*>::iterator _it = server.getChannels()->begin(); _it != server.getChannels()->end(); _it++) {
-		if ((*_it)->InChannel(client->GetUsername()))
+		if ((*_it)->InChannel(client->GetNickname()))
 			quitServer2((*_it)->getChannelName() , params.find("message")->second, *client, server);
 	}
 	server.remove_client(*client);

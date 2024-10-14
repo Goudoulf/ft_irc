@@ -8,9 +8,6 @@ void PartCommand::execute(int client_fd, std::map<std::string, std::string>& par
 {
 	std::vector<std::string> channels = split(params.find("channel")->second, ',');
 
-	// Split keys if provided
-	std::cout << params.size() << std::endl;
-
 	// Process each channel and its corresponding key
 	for (size_t i = 0; i < channels.size(); ++i) {
 		std::string channel = channels[i];
@@ -30,25 +27,22 @@ void	PartCommand::partChannel(std::string channel, std::string message, int fd, 
 	Channel *chan;
 	if (!(chan = server.find_channel(channel)))
 	{
-		// error no channel
 		log(ERROR, "No channel :" + channel + "|");
+		rpl_send(fd, ERR_NOSUCHCHANNEL(channel));
 		return ;
 
 	}
-	if (!chan->InChannel(client->GetUsername()))
+	if (!chan->InChannel(client->GetNickname()))
 	{
-		// error no channel
-		log(ERROR, client->GetUsername() + "not on channel " + channel);
-		std::string rpl(ERR_NOTONCHANNEL(channel));
-		send(fd , rpl.c_str() , rpl.length() , 0);
+		log(ERROR, client->GetNickname() + "not on channel " + channel);
+		rpl_send(fd, ERR_NOTONCHANNEL(channel));
 		return ;
 
 	}
-
 	for (std::map<int, Client*>::iterator it = server.getClients()->begin(); it != server.getClients()->end(); it++) {
-		if (it->second != NULL && chan->InChannel(it->second->GetUsername()))
+		if (it->second != NULL && chan->InChannel(it->second->GetNickname()))
 			message_server(chan->getChannelName(), "PART", *client , ":" + message, it->first);
 	}
-	if (chan->InChannel(client->GetUsername()) == true)
+	if (chan->InChannel(client->GetNickname()) == true)
 		chan->remove_client(*client);
 }

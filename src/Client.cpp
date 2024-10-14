@@ -2,13 +2,16 @@
 #include <cstddef>
 #include <cstring>
 #include <iostream>
+#include <netdb.h>
 #include <string>
+#include <sys/socket.h>
 #include "cmds.h"
 #include "debug.h"
 #include "IRCServer.hpp"
 
-Client::Client(const int &socket, std::string hostname, IRCServer* server): _hostname(hostname), _socket(socket)
+Client::Client(const int &socket, struct sockaddr_in address, IRCServer* server): _socket(socket)
 {
+	char test[1024];
 	_buffer = new char[1024];
 	_nickname = "default";
 	_realname = "realname";
@@ -17,6 +20,9 @@ Client::Client(const int &socket, std::string hostname, IRCServer* server): _hos
 	else
 		_level = CONNECTED;
 	_server = server;
+	getnameinfo((sockaddr*)&address, sizeof(address), test, 1024, NULL, 0, 0);
+	_hostname = test;
+	log(INFO, "CLient creation " + _hostname);
 }
 
 Client::~Client()
