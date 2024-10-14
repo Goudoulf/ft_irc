@@ -35,3 +35,30 @@ std::string Game::generateChanId()
 	}
 	return (res);
 }
+
+bool Game::isFinished()
+{
+	if (_finished == true)
+		return true;
+	return false;
+}
+
+std::string Game::getInput() const
+{
+	return _input;
+}
+
+std::string Game::getBuffer() const
+{
+	return _buffer;
+}
+
+void Game::cleanBuffer()
+{
+	_buffer.clear();
+}
+
+void Game::setInput(std::string input)
+{
+	_input = input;
+}

@@ -11,10 +11,10 @@ std::vector<std::string> split(const std::string& input, char delimiter)
     return tokens;
 }
 
-Game *createHang(std::string type, std::vector<std::string> params)
+/*Game *createHang(std::string type, std::vector<std::string> params)
 {
 	return (new HangMan(type, params));
-}
+}*/
 
 Game *createConnectFour(std::string type, std::vector<std::string> params)
 {
@@ -24,7 +24,7 @@ Game *createConnectFour(std::string type, std::vector<std::string> params)
 std::map<std::string, Game *(*)(std::string, std::vector<std::string>)> init_map()
 {
 	std::map<std::string, Game *(*)(std::string, std::vector<std::string>)> gameMap;
-	gameMap.insert(std::make_pair(std::string("hangman"), &createHang));
+	//gameMap.insert(std::make_pair(std::string("hangman"), &createHang));
 	gameMap.insert(std::make_pair(std::string("connectfour"), &createConnectFour));
 	return gameMap;
 }
@@ -103,6 +103,11 @@ void Bot::readData (std::string buffer)
 	Game *actualGame = findGame(channel);
 	if (actualGame)
 	{
+		actualGame->gameLoop();
+		//send Buffer;
+		actualGame->cleanBuffer();
+		if (actualGame->isFinished())
+			return;
 		std::cout << "play the game" << std::endl;
 	}
 	else

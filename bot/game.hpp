@@ -15,11 +15,15 @@ class Game
 	protected:
 		std::string _chanName;
 		std::vector<std::string> _players;
+		std::string	_input;
+		std::string	_buffer;
+		std::string	*_gameState;
+		bool		_finished;
 
 	public:
 		Game();
+		virtual ~Game();
 		// Game(std::vector<std::string> params);
-		// virtual ~Game();
 		// Game(const Game& myGame);
 		// const Game& operator=(const Game& myGame);
 		std::string getChanName();
@@ -27,6 +31,17 @@ class Game
 		std::vector<std::string> getPlayers();
 		void setPlayers(std::vector<std::string> players);
 		virtual void createRoom() = 0;
+
+		//virtual void	resetGameState() = 0;
+		virtual bool	winCondition() = 0;
+		virtual void	gameLoop() = 0;
+		bool			isFinished();
+
+		std::string		getInput() const;
+		std::string		getBuffer() const;
+
+		void			cleanBuffer();
+		void			setInput(std::string input);
 		// virtual void newTurn() = 0;
 		
 };
