@@ -11,14 +11,14 @@ std::vector<std::string> split(const std::string& input, char delimiter)
     return tokens;
 }
 
-Game *createHang()
+Game *createHang(std::string type, std::vector<std::string> params)
 {
-	return (new HangMan());
+	return (new HangMan(type, params));
 }
 
-std::map<std::string, Game *(*)(void)> init_map()
+std::map<std::string, Game *(*)(std::string, std::vector<std::string>)> init_map()
 {
-	std::map<std::string, Game *(*)(void)> gameMap;
+	std::map<std::string, Game *(*)(std::string, std::vector<std::string>)> gameMap;
 	gameMap.insert(std::make_pair(std::string("hangman"), &createHang));
 	return gameMap;
 }
@@ -91,29 +91,39 @@ void Bot::readData (std::string buffer)
 		game = game.substr(1);
 		std::getline(iss, trailing);
 		std::vector<std::string> params = split (trailing.substr(1), ' ');
-		std::cout << "game: " << game << std::endl;
-		std::cout << "params: " << params.front() << std::endl;
-		std::cout << "trailing: " << trailing << std::endl;
 		addGame(game, params);
-		std::cout << findGame(game)->getChanName() << std::endl;
+		return ;
 	}
+	Game *actualGame = findGame(channel);
+	if (actualGame)
+	{
+		std::cout << "play the game" << std::endl;
+	}
+	else
+		std::cout << "nothing" << std::endl;
 }
 
 void Bot::addGame(std::string game, std::vector<std::string> params)
 {
-	_games.push_back(_gameMap.find(game)->second());
-	std::cout << "123" << std::endl;
-	_games.back()->setPlayers(params);
-	_games.back()->setType(game);
-	_games.back()->setChanName();
-	std::cout << "Game added" << std::endl;
+	_games.push_back(_gameMap.find(game)->second(game, params));
+	std::string joinMessage("JOIN #" + _games.back()->getChanName() + "\r\n");
+	send(_socketFd, joinMessage.c_str(), joinMessage.length(), 0);
+	std::string creationMessage("PRIVMSG #botchan :" + _games.back()->getChanName() + " created, have fun !\r\n");
+	send(_socketFd, creationMessage.c_str(), creationMessage.length(), 0);
+	std::cout << _games.back()->getChanName() + " added" << std::endl;
+	std::vector<std::string> players = _games.back()->getPlayers();
+	for (std::vector<std::string>::iterator it = players.begin(); it != players.end(); it++)
+	{
+		std::string inviteMessage("INVITE " + *it + " #" + _games.back()->getChanName() + "\r\n");
+		send(_socketFd, inviteMessage.c_str(), inviteMessage.length(), 0);
+	}
 }
 
 Game *Bot::findGame(std::string toFind)
 {
 	for (std::vector<Game*>::iterator it = _games.begin(); it != _games.end(); it++)
 	{
-		if ((*it)->getType() == toFind)
+		if ((*it)->getChanName() == toFind)
 		{
 			std::cout << "found" << std::endl;
 			return (*it);

@@ -11,14 +11,10 @@ std::string Game::getChanName()
 	return _chanName;
 }
 
-std::string Game::getType()
-{
-	return _type;
-}
 
-void Game::setType (std::string type)
+std::vector<std::string> Game::getPlayers()
 {
-	_type = type;
+	return _players;
 }
 
 void Game::setPlayers(std::vector<std::string> players) 
@@ -26,10 +22,6 @@ void Game::setPlayers(std::vector<std::string> players)
 	_players = players;
 }
 
-void Game::setChanName()
-{
-	_chanName = _type + generateChanId();
-}
 std::string Game::generateChanId()
 {
 	time_t timestamp = time(NULL);

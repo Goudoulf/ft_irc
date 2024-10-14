@@ -21,7 +21,7 @@ class Bot
 		int _socketFd;
 		u_int16_t _port;
 		struct sockaddr_in _address;
-		std::map<std::string, Game *(*)(void)> _gameMap;
+		std::map<std::string, Game *(*)(std::string, std::vector<std::string>)> _gameMap;
 		std::vector<std::string> _params;
 
 	public:

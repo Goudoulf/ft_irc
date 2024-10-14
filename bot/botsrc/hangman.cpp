@@ -1,7 +1,9 @@
 #include "../hangman.hpp"
 
-HangMan::HangMan()
-{
+HangMan::HangMan(std::string type, std::vector<std::string> players)
+{	
+	_players = players;
+	_chanName = "#" + type + generateChanId();
 	std::cout << "HangMan game created" << std::endl;
 }
 

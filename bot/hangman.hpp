@@ -6,7 +6,7 @@
 class HangMan : public Game
 {
 	public:
-		HangMan();
+		HangMan(std::string type, std::vector<std::string> players);
 		~HangMan();
 		void createRoom();
 		// HangMan(const HangMan& myHangMan);
