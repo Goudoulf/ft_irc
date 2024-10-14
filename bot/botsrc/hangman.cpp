@@ -13,3 +13,13 @@ void HangMan::createRoom()
 {
 	std::cout << "create room" << std::endl;
 }
+
+bool HangMan::winCondition()
+{
+	return true;
+}
+
+
+void HangMan::gameLoop()
+{
+}

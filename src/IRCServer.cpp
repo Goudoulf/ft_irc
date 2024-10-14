@@ -6,7 +6,7 @@
 /*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 08:21:58 by cassie            #+#    #+#             */
-/*   Updated: 2024/10/07 15:08:15 by lvallini         ###   ########.fr       */
+/*   Updated: 2024/10/14 16:57:54 by lvallini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,7 @@ void    IRCServer::read_data(int i)
         std::string& clientPartial = clientPartialBuffers[i];
         std::cout << client->GetBuffer() << std::endl;
         std::string completeBuffer = clientPartial + client->GetBuffer();
+        std::cout << completeBuffer.length() << std::endl;
         if (completeBuffer.size() > MAX_BUFFER_SIZE) {
             log(ERROR, "Buffer overflow from client , disconnecting.");
             close(i);

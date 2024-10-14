@@ -11,10 +11,10 @@ std::vector<std::string> split(const std::string& input, char delimiter)
     return tokens;
 }
 
-/*Game *createHang(std::string type, std::vector<std::string> params)
+Game *createHang(std::string type, std::vector<std::string> params)
 {
 	return (new HangMan(type, params));
-}*/
+}
 
 Game *createConnectFour(std::string type, std::vector<std::string> params)
 {
@@ -24,7 +24,7 @@ Game *createConnectFour(std::string type, std::vector<std::string> params)
 std::map<std::string, Game *(*)(std::string, std::vector<std::string>)> init_map()
 {
 	std::map<std::string, Game *(*)(std::string, std::vector<std::string>)> gameMap;
-	//gameMap.insert(std::make_pair(std::string("hangman"), &createHang));
+	gameMap.insert(std::make_pair(std::string("hangman"), &createHang));
 	gameMap.insert(std::make_pair(std::string("connectfour"), &createConnectFour));
 	return gameMap;
 }
@@ -104,7 +104,17 @@ void Bot::readData (std::string buffer)
 	if (actualGame)
 	{
 		actualGame->gameLoop();
-		//send Buffer;
+		std::cout << actualGame->getBuffer() << std::endl;
+		// std::vector<std::string> message = split(actualGame->getBuffer(), '\n');
+		// for (std::vector<std::string>::iterator it = message.begin(); it != message.end(); it++)
+		// {
+		// 	std::string toSend("PRIVMSG " + actualGame->getChanName() + " :" + (*it).erase(((*it).length())) + "\r\n");
+		// 	std::cout << toSend<< std::endl;
+		// 	send(_socketFd, toSend.c_str(), toSend.length(), 0);
+		// }
+		std::string message ("PRIVMSG " + actualGame->getChanName() + " :" + actualGame->getBuffer() + "\r\n");
+		send(_socketFd, message.c_str(), message.length(), 0);
+		std::cout << actualGame->getBuffer().length() << std::endl;
 		actualGame->cleanBuffer();
 		if (actualGame->isFinished())
 			return;
@@ -117,7 +127,7 @@ void Bot::readData (std::string buffer)
 void Bot::addGame(std::string game, std::vector<std::string> params)
 {
 	_games.push_back(_gameMap.find(game)->second(game, params));
-	std::string joinMessage("JOIN #" + _games.back()->getChanName() + "\r\n");
+	std::string joinMessage("JOIN " + _games.back()->getChanName() + "\r\n");
 	send(_socketFd, joinMessage.c_str(), joinMessage.length(), 0);
 	std::string creationMessage("PRIVMSG #botchan :" + _games.back()->getChanName() + " created, have fun !\r\n");
 	send(_socketFd, creationMessage.c_str(), creationMessage.length(), 0);
@@ -125,7 +135,7 @@ void Bot::addGame(std::string game, std::vector<std::string> params)
 	std::vector<std::string> players = _games.back()->getPlayers();
 	for (std::vector<std::string>::iterator it = players.begin(); it != players.end(); it++)
 	{
-		std::string inviteMessage("INVITE " + *it + " #" + _games.back()->getChanName() + "\r\n");
+		std::string inviteMessage("INVITE " + *it + " " + _games.back()->getChanName() + "\r\n");
 		send(_socketFd, inviteMessage.c_str(), inviteMessage.length(), 0);
 	}
 }

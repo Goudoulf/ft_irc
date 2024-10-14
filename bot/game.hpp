@@ -22,7 +22,7 @@ class Game
 
 	public:
 		Game();
-		virtual ~Game();
+		virtual ~Game() {};
 		// Game(std::vector<std::string> params);
 		// Game(const Game& myGame);
 		// const Game& operator=(const Game& myGame);
