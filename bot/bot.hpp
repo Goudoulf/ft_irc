@@ -12,6 +12,7 @@
 # include <sstream>
 # include "game.hpp"
 # include "hangman.hpp"
+# include "connectfour.hpp"
 # include <map>
 
 class Bot

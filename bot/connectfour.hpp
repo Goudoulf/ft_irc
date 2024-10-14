@@ -6,18 +6,10 @@
 
 class ConnectFour : public Game
 {
-	protected:
-		std::string _type;
-		std::string _chanName;
-		std::vector<std::string> _players;
-
 	public:
-		ConnectFour(std::vector<std::string> params);
+		ConnectFour(std::string type, std::vector<std::string> players);
 		~ConnectFour();
-		ConnectFour(const ConnectFour& myConnectFour);
-		const ConnectFour& operator=(const ConnectFour& myConnectFour);
 		void createRoom();
-		void newTurn();
 };
 
 #endif
