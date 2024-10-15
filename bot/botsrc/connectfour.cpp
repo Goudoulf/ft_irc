@@ -183,6 +183,7 @@ bool ConnectFour::isBufferFull()
 	}
 	if (_input.empty())
 	{
+		std::cout << "turn = " << _turn << std::endl;
 		if (_turn % 2)
 			_buffer += "\n\e[1;31mPlayer 1 turn\e[0m\nInput a column number (1-7):";
 		else
@@ -196,10 +197,17 @@ bool ConnectFour::isBufferFull()
 
 void ConnectFour::gameLoop()
 {
+	std::cout << "INPUT = " << _input << std::endl;
 	if (isBufferFull())
+	{
+		std::cout << "BUFFERISFULL" << std::endl;
 		return;
+	}
 	if (!checkInput())
+	{
+		std::cout << "CHECKINPUT" << std::endl;
 		return;
+	}
 	for (int i = 0; i < 6; i++)
 	{
 		if ((i < 5 && _gameState[i + 1][_input[0] - '0' - 1] != ' ') || (i == 5 && _gameState[i][_input[0] - '0' - 1] == ' '))

@@ -102,7 +102,10 @@ void Bot::readData (std::string buffer)
 		Game *actualGame = findGame(channel);
 		if (actualGame != NULL)
 		{
+
+			std::cout << "INPUT = " << game << std::endl;
 			std::cout << "play the game" << std::endl;
+			actualGame->setInput(game);
 			actualGame->gameLoop();
 			std::cout << actualGame->getBuffer() << std::endl;
 			// std::vector<std::string> message = split(actualGame->getBuffer(), '\n');
