@@ -13,12 +13,16 @@ std::vector<std::string> splitBuffer(const std::string& buffer, std::string& rem
         }
         lines.push_back(temp);
     }
-
     if (!buffer.empty() && buffer.back() != '\n') {
-        remainingPartial = lines.back();
-        lines.pop_back();
+        if (!lines.empty()) {
+            remainingPartial = lines.back();
+            lines.pop_back();
+        } else {
+            remainingPartial = buffer;
+        }
     } else {
         remainingPartial.clear();
     }
+
     return lines;
 }

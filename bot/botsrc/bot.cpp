@@ -62,11 +62,8 @@ void Bot::run()
 {
 	char buffer[1024];
 	
-	sleep(1);
 	send(_socketFd, "PASS tutu\r\n", 11, 0);
-	sleep(1);
 	send(_socketFd, "NICK bot\r\nUSER bot 0 * :realname\r\n", 34, 0);
-	sleep(1);
 	send(_socketFd, "JOIN #botchan\r\n", 15, 0);
 	while (1)
 	{
@@ -100,33 +97,43 @@ void Bot::readData (std::string buffer)
 		addGame(game, params);
 		return ;
 	}
-	Game *actualGame = findGame(channel);
-	if (actualGame)
-	{
-		actualGame->gameLoop();
-		std::cout << actualGame->getBuffer() << std::endl;
-		// std::vector<std::string> message = split(actualGame->getBuffer(), '\n');
-		// for (std::vector<std::string>::iterator it = message.begin(); it != message.end(); it++)
-		// {
-		// 	std::string toSend("PRIVMSG " + actualGame->getChanName() + " :" + (*it).erase(((*it).length())) + "\r\n");
-		// 	std::cout << toSend<< std::endl;
-		// 	send(_socketFd, toSend.c_str(), toSend.length(), 0);
-		// }
-		std::string message ("PRIVMSG " + actualGame->getChanName() + " :" + actualGame->getBuffer() + "\r\n");
-		send(_socketFd, message.c_str(), message.length(), 0);
-		std::cout << actualGame->getBuffer().length() << std::endl;
-		actualGame->cleanBuffer();
-		if (actualGame->isFinished())
-			return;
-		std::cout << "play the game" << std::endl;
-	}
 	else
-		std::cout << "nothing" << std::endl;
+	{
+		Game *actualGame = findGame(channel);
+		if (actualGame != NULL)
+		{
+			std::cout << "play the game" << std::endl;
+			actualGame->gameLoop();
+			std::cout << actualGame->getBuffer() << std::endl;
+			// std::vector<std::string> message = split(actualGame->getBuffer(), '\n');
+			// for (std::vector<std::string>::iterator it = message.begin(); it != message.end(); it++)
+			// {
+			// 	std::string toSend("PRIVMSG " + actualGame->getChanName() + " :" + (*it).erase(((*it).length())) + "\r\n");
+			// 	std::cout << toSend<< std::endl;
+			// 	send(_socketFd, toSend.c_str(), toSend.length(), 0);
+			// }
+			std::string message ("PRIVMSG " + actualGame->getChanName() + " :" + actualGame->getBuffer() + "\r\n");
+			send(_socketFd, message.c_str(), message.length(), 0);
+			std::cout << actualGame->getBuffer().length() << std::endl;
+			actualGame->cleanBuffer();
+			if (actualGame->isFinished())
+				return;
+		}
+		else
+			std::cout << "nothing" << std::endl;
+	}
 }
 
 void Bot::addGame(std::string game, std::vector<std::string> params)
 {
-	_games.push_back(_gameMap.find(game)->second(game, params));
+	std::map<std::string, Game *(*)(std::string, std::vector<std::string>)>::iterator toAdd = _gameMap.find(game);
+	if (toAdd == _gameMap.end())
+	{
+		std::string errorMessage("PRIVMSG #botchan :" + game + " doesn't exist\r\n");
+		send(_socketFd, errorMessage.c_str(), errorMessage.length(), 0);
+		return ;
+	}
+	_games.push_back(toAdd->second(game, params));
 	std::string joinMessage("JOIN " + _games.back()->getChanName() + "\r\n");
 	send(_socketFd, joinMessage.c_str(), joinMessage.length(), 0);
 	std::string creationMessage("PRIVMSG #botchan :" + _games.back()->getChanName() + " created, have fun !\r\n");
@@ -144,6 +151,7 @@ Game *Bot::findGame(std::string toFind)
 {
 	for (std::vector<Game*>::iterator it = _games.begin(); it != _games.end(); it++)
 	{
+		std::cout << "iter" << std::endl;
 		if ((*it)->getChanName() == toFind)
 		{
 			std::cout << "found" << std::endl;
