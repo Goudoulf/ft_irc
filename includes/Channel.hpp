@@ -39,6 +39,8 @@ class Channel
 		void	remove_client(Client &client);
 		void	setTopic(std::string topic);
 		std::string	getTopic();
+		void	setIsInviteForOp(bool sign);
+		bool	getIsInviteForOp(void);
 		
 	private:
 		std::string _name; //beginning with a &#+! length of 50 max char, case insensitive
@@ -51,6 +53,7 @@ class Channel
 		std::string			_topic;
 		std::string			_password;
 		bool				_isEmpty;
+		bool				_isInviteForOp;
 		channelMode _mode;//channel mode, depending on name prefix
 		//stack of strings to make a message history if needed.
 

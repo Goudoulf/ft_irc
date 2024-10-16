@@ -39,3 +39,4 @@ bool	isValidChannel(const std::string param, int fd , IRCServer& server);
 bool	ChannelExist(const std::string param, int fd , IRCServer& server);
 bool	isOnChannel(const std::string param, int fd , IRCServer& server);
 bool	nickExist(const std::string param, int fd , IRCServer& server);
+bool    isValidInvite(const std::string param, int fd, IRCServer& server);

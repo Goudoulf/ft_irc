@@ -64,6 +64,7 @@ Channel::Channel(const std::string &name, const Client &creator, const std::stri
 	_users.insert(std::pair<Client, bool>(creator, true));
 	_password = key;
 	_isEmpty = false;
+	_isInviteForOp = false;
 }
 
 Channel::~Channel()
@@ -150,3 +151,7 @@ void	Channel::remove_client(Client &client)
 	if (_users.empty())
 		_isEmpty = true;
 }
+
+void	Channel::setIsInviteForOp(bool sign) {_isInviteForOp = sign;}
+
+bool	Channel::getIsInviteForOp(void) {return _isInviteForOp;}
