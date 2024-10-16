@@ -5,10 +5,8 @@ ConnectFour::ConnectFour(std::string type, std::vector<std::string> players)
 	_players = players;
 	_chanName = "#" + type + generateChanId();
 	std::cout << "Connectfour game created" << std::endl;
-	_turn = 1;
+	_turn = 0;
 	_gameState = new std::string[6] {"       ", "       ", "       ", "       ", "       ", "       "};
-	_buffer = "--------------------\n|   CONNECT FOUR   |\n--------------------\n";
-	displayGame();
 }
 
 ConnectFour::~ConnectFour()
@@ -198,6 +196,19 @@ bool ConnectFour::isBufferFull()
 void ConnectFour::gameLoop()
 {
 	std::cout << "INPUT = " << _input << std::endl;
+	if (_turn == 0 && _input == "start")
+	{
+		_buffer = "--------------------\n|   CONNECT FOUR   |\n--------------------\n";
+		displayGame();
+		_buffer += "\n\e[1;31mPlayer 1 turn\e[0m\nInput a column number (1-7):";
+		_turn++;
+		return;
+	}
+	else if (_turn == 0)
+	{
+		_buffer.clear();
+		return;
+	}
 	if (isBufferFull())
 	{
 		std::cout << "BUFFERISFULL" << std::endl;

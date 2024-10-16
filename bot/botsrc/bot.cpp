@@ -116,7 +116,8 @@ void Bot::readData (std::string buffer)
 			// 	send(_socketFd, toSend.c_str(), toSend.length(), 0);
 			// }
 			std::string message ("PRIVMSG " + actualGame->getChanName() + " :" + actualGame->getBuffer() + "\r\n");
-			send(_socketFd, message.c_str(), message.length(), 0);
+			if (!actualGame->getBuffer().empty())
+				send(_socketFd, message.c_str(), message.length(), 0);
 			std::cout << actualGame->getBuffer().length() << std::endl;
 			actualGame->cleanBuffer();
 			if (actualGame->isFinished())
