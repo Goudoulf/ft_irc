@@ -6,7 +6,7 @@
 /*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 08:21:58 by cassie            #+#    #+#             */
-/*   Updated: 2024/08/26 14:46:02 by lvallini         ###   ########.fr       */
+/*   Updated: 2024/10/15 15:53:52 by lvallini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -387,14 +387,14 @@ void    IRCServer::setCommandTemplate()
                           );
 
     _director->addCommand(TemplateBuilder::Builder()
-                          .name("Invite")
+                          .name("INVITE")
                           .level(REGISTERED)
                           .param("nickname", ParamTemplate::Builder()
                                  .addChecker(&nickExist)
                                  .build()
                                  )
                           .param("channel", ParamTemplate::Builder()
-                                 .addChecker(&isOnChannel)
+                                 .addChecker(&isValidInvite)
                                  .build()
                                  )
                           .command(new InviteCommand())

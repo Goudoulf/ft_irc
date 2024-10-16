@@ -7,6 +7,64 @@
 #include <string>
 #include "reply.h"
 
+
+/**
+ * if chan not exist
+ * {
+ *  send invite
+ * }
+ * !!!
+ * {
+ *  if client is on chan
+ *  {
+ *     if +i enabled
+ *      {
+ *          if client is op on chan
+ *          {
+ *              send invite
+ *          }
+ *          !!!
+ *          {
+ *              ERR_CHANOPRIVSNEEDED
+ *          }
+ *      }
+ *      !!!
+ *      {
+ *          send invite
+ *      }
+ *  }
+ *  !!!
+ *  {
+ *     ERR_NOTONCHANNEL
+ *  }
+ * }
+ */
+bool    isValidInvite(const std::string param, int fd, IRCServer &server)
+{
+    Channel *channel = server.find_channel(param);
+    if (!channel)
+        return (true);
+    else
+    {
+        if (isOnChannel(param, fd, server))
+        {
+            if (channel->getIsInviteForOp())
+            {
+                if (channel->IsOp((server.getClients()->find(fd))->second->GetNickname()))
+                    return (true);
+                else
+                    rpl_send(fd, ERR_CHANOPRIVSNEEDED(param));
+            }
+            else
+                return (true);
+        }
+        else
+            rpl_send(fd, ERR_NOTONCHANNEL(param));
+
+    }
+    return (false);
+}
+
 bool	nickExist(const std::string param, int fd , IRCServer& server)
 {
 	for (std::map<int, Client*>::iterator it = server.getClients()->begin(); it != server.getClients()->end(); it++)
