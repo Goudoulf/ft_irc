@@ -135,28 +135,28 @@ void ModeCommand::execute(int client_fd, std::map<std::string, std::string>& par
 	(void)server;
 	(void)client_fd;
 	(void)params;
-    //Client* client = (server.getClients()->find(client_fd))->second;
-	// std::map<std::string, void (*)(bool, std::vector<std::string>, Client&, IRCServer&)> mapFunc;
-	// mapModeInit(mapFunc);
-	// for (std::map<std::string, std::string>::iterator it = params.begin(); it != params.end(); it++)
-	// {
-	// 	if (it->second.compare(0, 1, "+") == 0 || it->second.compare(0, 1, "-") == 0)
-	// 	{
-	// 		for (unsigned int i = 1; i < it->second.length(); i++)
-	// 		{
-	// 			for (std::map<std::string, void (*)(bool, std::vector<std::string>, Client&, IRCServer&)>::iterator it2 = mapFunc.begin(); it2 != mapFunc.end(); it2++)
-	// 			{
-	// 				if (it->second.compare(i, 1, it2->first) == 0)
-	// 				{
-	// 					std::map<std::string, std::string>::iterator it3 = it++;
-	// 					if (it3 != params.end()) //give list of modes if no modes given 
-	// 					{
-	// 						std::map<std::string, std::string> args(it3, nextArgs(it3, params));
-	// 						//it2->second(it->second.compare(0, 1, "+") == 0, args, *client, server);
-	// 					}
-	// 				}
-	// 			}
-	// 		}
-	// 	}
-	// }
+    Client* client = (server.getClients()->find(client_fd))->second;
+	std::map<std::string, void (*)(bool, std::vector<std::string>, Client&, IRCServer&)> mapFunc;
+	mapModeInit(mapFunc);
+	for (std::map<std::string, std::string>::iterator it = params.begin(); it != params.end(); it++)
+	{
+		if (it->second.compare(0, 1, "+") == 0 || it->second.compare(0, 1, "-") == 0)
+		{
+			for (unsigned int i = 1; i < it->second.length(); i++)
+			{
+				for (std::map<std::string, void (*)(bool, std::vector<std::string>, Client&, IRCServer&)>::iterator it2 = mapFunc.begin(); it2 != mapFunc.end(); it2++)
+				{
+					if (it->second.compare(i, 1, it2->first) == 0)
+					{
+						std::map<std::string, std::string>::iterator it3 = it++;
+						if (it3 != params.end()) //give list of modes if no modes given 
+						{
+							std::map<std::string, std::string> args(it3, nextArgs(it3, params));
+							//it2->second(it->second.compare(0, 1, "+") == 0, args, *client, server);
+						}
+					}
+				}
+			}
+		}
+	}
 }
