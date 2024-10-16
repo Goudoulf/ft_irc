@@ -3,7 +3,9 @@
 
 void TopicCommand::execute(int client_fd, std::map<std::string, std::string>& params, IRCServer& server)
 {
-	std::string topic = params.find("topic")->second;
+	std::string topic = "";
+	if (params.size() > 1)
+		topic = params.find("topic")->second;
 	std::string channel = params.find("channel")->second;
 	Client* client = (server.getClients()->find(client_fd))->second;
 	for (std::vector<Channel*>::iterator _it = server.getChannels()->begin(); _it != server.getChannels()->end(); _it++)
@@ -16,7 +18,7 @@ void TopicCommand::execute(int client_fd, std::map<std::string, std::string>& pa
 				if ((topic = (*_it)->getTopic()).empty())
 					rpl_send(client_fd, RPL_NOTOPIC(channel));
 				else
-					rpl_send(client_fd, RPL_TOPIC(channel, topic));
+					rpl_send(client_fd, RPL_TOPIC(channel, client->GetNickname(), topic));
 			}
 			else
 			{

@@ -6,7 +6,7 @@
 /*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 08:21:58 by cassie            #+#    #+#             */
-/*   Updated: 2024/10/15 15:53:52 by lvallini         ###   ########.fr       */
+/*   Updated: 2024/10/16 15:14:34 by lvallini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -240,6 +240,16 @@ Channel	*IRCServer::find_channel(std::string channel)
     for (it = _channels.begin(); it != _channels.end(); it++) {
         if ((*it)->getChannelName() == channel)
             return (*it);
+    }
+    return (NULL);
+}
+
+Client	*IRCServer::findClient(std::string nickname)
+{
+    std::map<int, Client*>::iterator it;
+    for (it = _clients.begin(); it != _clients.end(); it++) {
+        if (it->second && it->second->GetNickname() == nickname)
+            return it->second;
     }
     return (NULL);
 }

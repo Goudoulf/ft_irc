@@ -3,7 +3,7 @@
 
 #define DATETIME "31/07/2024"
 
-#define idd(nickname, username) (":" + nickname + "!" + username + "@localhost")
+#define idd(nickname, username, host) (nickname + "!" + username + "@" + host)
 #define RPL_WELCOME(idd, nickname) ( idd + " " + nickname + ":Welcome to the Internet Relay Network, " + nickname + "!\r\n")
 #define RPL_YOURHOST(servername, version) (":localhost 002 Your host is " + servername + ", running version " + version + "\r\n")
 #define RPL_CREATED(date) (":localhost 003 This server was created " + date + "\r\n")
@@ -28,8 +28,9 @@
 #define RPL_CHANNELMODEIS(channel, modes, mode_params) (":localhost 324 " + channel + " " + modes + " " + mode_params+ "\r\n")
 #define RPL_UNIQOPIS(channel, nickname) (":localhost 325 " + channel + " " + nickname+ "\r\n")
 #define RPL_NOTOPIC(channel) (":localhost 331 " + channel + " :No topic is set\r\n")
-#define RPL_TOPIC(channel, topic) (":localhost 332 " + channel + " :" + topic+ "\r\n")
+#define RPL_TOPIC(channel, nickname, topic) (":localhost 332 " + nickname + " " + channel + " :" + topic + "\r\n")
 #define RPL_INVITING(channel, nickname) (":localhost 341 " + channel + " " + nickname+ "\r\n")
+#define RPL_INVITED(channel, nickname, prefix) (":" + prefix + " INVITE " + nickname + " " + channel + "\r\n")
 #define RPL_SUMMONING(user) (":localhost 342 " + user + " :Summoning user to IRC"+ "\r\n")
 #define RPL_INVITELIST(channel, mask) (":localhost 346 " + channel + " " + mask+ "\r\n")
 #define RPL_ENDOFINVITELIST(channel) (":localhost 347 " + channel + " :End of INVITELIST"+ "\r\n")
@@ -74,6 +75,7 @@
 #define RPL_STATSCOMMAND(command, count, byte_count, remote_count) (":localhost 212 " + command + " " + count + " " + byte_count + " " + remote_count+ "\r\n")
 #define RPL_ENDOFSTATS(stats_letter) (":localhost 219 " + stats_letter + " :End of STATS report"+ "\r\n")
 #define RPL_STATSUPTIME(days, hours, minutes, seconds) (":localhost 242 :Server Up " + days + " days " + hours + ":" + minutes + ":" + seconds+ "\r\n")
+
 //#define RPL_STATS
 #define ERR_NOTONCHANNEL(channel) (":localhost 442 " + channel + " :You're not on that channel\r\n")
 #define ERR_BADCHANNELKEY(channel) (":localhost 475 " + channel + " :Cannot join channel (+k) \r\n")

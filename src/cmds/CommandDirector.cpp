@@ -84,7 +84,7 @@ void	CommandDirector::parseCommand(int fd, std::string buffer, IRCServer& server
 	parsedParams.push_back(param);
     }
     if (command == "MODE")
-	parsedParams = parseMode(parsedParams);
+	    parsedParams = parseMode(parsedParams);
     log(INFO, "Director fill param");
     _commandList.find(command)->second->fill_param(fd, parsedParams, server);
 }

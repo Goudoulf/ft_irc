@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rjacq <rjacq@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 10:26:00 by cassie            #+#    #+#             */
-/*   Updated: 2024/08/02 15:53:53 by rjacq            ###   ########.fr       */
+/*   Updated: 2024/10/16 14:48:37 by lvallini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ class IRCServer
 		bool					getpasswordIsSet();
 		std::string				set_time();
 		struct timeval timeout;
+		Client					*findClient(std::string nickname);
 
 	private:
 
