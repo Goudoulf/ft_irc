@@ -181,11 +181,10 @@ bool ConnectFour::isBufferFull()
 	}
 	if (_input.empty())
 	{
-		std::cout << "turn = " << _turn << std::endl;
 		if (_turn % 2)
-			_buffer += "\n\e[1;31mPlayer 1 turn\e[0m\nInput a column number (1-7):";
+			_buffer += "\n" "\x03" "4" "Player 1 turn\nInput a column number (1-7):";
 		else
-			_buffer += "\n\e[1;32mPlayer 2 turn\e[0m\nInput a column number (1-7):";
+			_buffer += "\n" "\x03" "2" "Player 2 turn\nInput a column number (1-7):";
 		return true;
 	}
 	if (!checkInput())
@@ -195,12 +194,11 @@ bool ConnectFour::isBufferFull()
 
 void ConnectFour::gameLoop()
 {
-	std::cout << "INPUT = " << _input << std::endl;
-	if (_turn == 0 && _input == "start")
+	if (_turn == 0 && _input == "!start")
 	{
 		_buffer = "--------------------\n|   CONNECT FOUR   |\n--------------------\n";
 		displayGame();
-		_buffer += "\n\e[1;31mPlayer 1 turn\e[0m\nInput a column number (1-7):";
+		_buffer += "\n" "\x03" "4" "Player 1 turn\nInput a column number (1-7):";
 		_turn++;
 		return;
 	}
@@ -210,18 +208,12 @@ void ConnectFour::gameLoop()
 		return;
 	}
 	if (isBufferFull())
-	{
-		std::cout << "BUFFERISFULL" << std::endl;
 		return;
-	}
 	if (!checkInput())
-	{
-		std::cout << "CHECKINPUT" << std::endl;
 		return;
-	}
-	for (int i = 0; i < 6; i++)
+	for (int i = 5; i >= 0; i--)
 	{
-		if ((i < 5 && _gameState[i + 1][_input[0] - '0' - 1] != ' ') || (i == 5 && _gameState[i][_input[0] - '0' - 1] == ' '))
+		if ((i <= 5 && _gameState[i][_input[0] - '0' - 1] == ' '))
 		{
 			if (_turn % 2)
 				_gameState[i][_input[0] - '0' - 1] = 'x';

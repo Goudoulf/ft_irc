@@ -102,22 +102,21 @@ void Bot::readData (std::string buffer)
 		Game *actualGame = findGame(channel);
 		if (actualGame != NULL)
 		{
-
 			std::cout << "INPUT = " << game << std::endl;
 			std::cout << "play the game" << std::endl;
 			actualGame->setInput(game);
 			actualGame->gameLoop();
 			std::cout << actualGame->getBuffer() << std::endl;
-			// std::vector<std::string> message = split(actualGame->getBuffer(), '\n');
-			// for (std::vector<std::string>::iterator it = message.begin(); it != message.end(); it++)
-			// {
-			// 	std::string toSend("PRIVMSG " + actualGame->getChanName() + " :" + (*it).erase(((*it).length())) + "\r\n");
-			// 	std::cout << toSend<< std::endl;
-			// 	send(_socketFd, toSend.c_str(), toSend.length(), 0);
-			// }
-			std::string message ("PRIVMSG " + actualGame->getChanName() + " :" + actualGame->getBuffer() + "\r\n");
-			if (!actualGame->getBuffer().empty())
-				send(_socketFd, message.c_str(), message.length(), 0);
+			std::vector<std::string> message = split(actualGame->getBuffer(), '\n');
+			for (std::vector<std::string>::iterator it = message.begin(); it != message.end(); it++)
+			{
+				usleep(5000);
+				if (actualGame->getBuffer().empty())
+					break;
+				std::string toSend("PRIVMSG " + actualGame->getChanName() + " :" + (*it).erase(((*it).length())) + "\r\n");
+				std::cout << toSend<< std::endl;
+				send(_socketFd, toSend.c_str(), toSend.length(), 0);
+			}
 			std::cout << actualGame->getBuffer().length() << std::endl;
 			actualGame->cleanBuffer();
 			if (actualGame->isFinished())
