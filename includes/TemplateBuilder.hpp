@@ -43,7 +43,8 @@ protected:
 
 private:
     friend class CommandDirector;
-    std::string _name;
+    std::string     _name;
+    Client          *_sender;
     CmdLevel        _levelNeeded;
     std::vector<std::pair<std::string, const ParamTemplate *>> _params;
     Command *_command;

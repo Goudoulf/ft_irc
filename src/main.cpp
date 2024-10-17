@@ -66,7 +66,8 @@ int main(int argc, char **argv)
     signal_handling();
     if (isValidPassword(argv[2]))
     {
-	IRCServer *server= new IRCServer(argv[1], "");
+        IRCServer *server = IRCServer::getInstance();
+        server->initialize(argv[1], "");
         server->setCommandTemplate();
 	server->run();
     }

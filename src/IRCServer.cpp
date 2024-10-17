@@ -45,15 +45,8 @@
 extern bool stop;
 const size_t MAX_BUFFER_SIZE = 512;
 
+IRCServer* IRCServer::_instance = nullptr;
 std::map<int, std::string> clientPartialBuffers;
-
-void print_client_list(std::map<int, Client*> client)
-{
-    for (std::map<int, Client*>::iterator it = client.begin(); it != client.end(); it++) {
-        if (it->second)
-            std::cout << "USER=" << it->second->GetNickname() << std::endl;
-    }
-}
 
 void my_exit(std::string error, int code)
 {
@@ -61,7 +54,14 @@ void my_exit(std::string error, int code)
     exit(code);
 }
 
-IRCServer::IRCServer(std::string port, std::string password)
+IRCServer*	IRCServer::getInstance()
+{
+    if (_instance == nullptr)
+        return new IRCServer();
+    return _instance;
+}
+
+void	IRCServer::initialize(std::string port, std::string password)
 {
     char *end;
     log(DEBUG, "IRC Server is setting up socket");
@@ -88,6 +88,18 @@ IRCServer::IRCServer(std::string port, std::string password)
     addrlen = sizeof(address);
     _clients.insert(std::pair<int, Client*>(server_fd, NULL));
     _creation_date = set_time();
+}
+
+void print_client_list(std::map<int, Client*> client)
+{
+    for (std::map<int, Client*>::iterator it = client.begin(); it != client.end(); it++) {
+        if (it->second)
+            std::cout << "USER=" << it->second->GetNickname() << std::endl;
+    }
+}
+
+IRCServer::IRCServer(void)
+{
 }
 
 IRCServer::~IRCServer(void)

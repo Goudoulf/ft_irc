@@ -41,8 +41,11 @@ class TemplateBuilder;
 class IRCServer
 {
 	public:
+
+		static IRCServer*	getInstance();
+
+		void	initialize(std::string port, std::string password);
 			
-		IRCServer(std::string port, std::string password);
 		~IRCServer(void);
 		void					setCommandTemplate();
 		IRCServer*				getIRCServer();
@@ -66,6 +69,11 @@ class IRCServer
 
 	private:
 
+		static IRCServer* _instance;
+
+		IRCServer();
+
+
 		int server_fd, max_sd, sd, activity, valread, addrlen;
 		fd_set					readfds;
 		fd_set					all_sockets;
@@ -80,7 +88,7 @@ class IRCServer
 		std::map<int, Client*>	_clients;
 		CommandDirector			*_director;
 
-		IRCServer(void);
 		IRCServer(IRCServer&);
 		IRCServer& operator=(IRCServer&);
 };
+
