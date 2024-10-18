@@ -58,30 +58,21 @@ const std::string TemplateBuilder::getName()const
 	return _name;
 }
 
-bool    TemplateBuilder::check_level(int fd, IRCServer& server)const
+bool    TemplateBuilder::check_level(Client *client)const
 {
-        Client* client = (server.getClients()->find(fd))->second;
-	std::ostringstream ss;
-	ss << client->GetLevel();
-	ss << " ";
-	ss << _levelNeeded;
-	std::string str = ss.str();
-	log(DEBUG, "LEVEL =" + str);
 	if (this->_name != "USER" && this->_name != "PASS" && client->GetLevel() >= _levelNeeded)
-	{
 		return true;
-	}
 	if (client->GetLevel() == _levelNeeded)
 		return true;
 	return false;
 }
 
-void    TemplateBuilder::fill_param(int fd, std::vector<std::string>& param, IRCServer& server)const
+void    TemplateBuilder::fill_param(Client *client, std::vector<std::string>& param)const
 {
 	log(INFO, "Filling param for " + this->_name);
-	if (!check_level(fd, server))
+	if (!check_level(client))
 	{
-		rpl_send(fd, ERR_NOTREGISTERED());
+		rpl_send(client->GetSocket(), ERR_NOTREGISTERED());
 		return ;
 	}
 	std::map<std::string, std::string> final;
@@ -92,7 +83,7 @@ void    TemplateBuilder::fill_param(int fd, std::vector<std::string>& param, IRC
 		log(INFO, "Param = " + it->first);
 		if (it->second->_isOptional == false && it2 == param.end())
 		{
-			rpl_send(fd, ERR_NEEDMOREPARAMS(this->getName()));
+			rpl_send(client->GetSocket(), ERR_NEEDMOREPARAMS(this->getName()));
 			return ;
 		}
 		if (it->second->_isOptional == true && it2 == param.end())
@@ -100,14 +91,14 @@ void    TemplateBuilder::fill_param(int fd, std::vector<std::string>& param, IRC
 			it++;
 			continue ;
 		}
-		if (it->second && !it->second->checkParam(fd, (*it2), server))
+		if (it->second && !it->second->checkParam(client, (*it2)))
 			return ;
 		final.insert(std::pair<std::string, std::string>(it->first, *it2));
 		it++;
 		if (it2 != param.end())
 			it2++;
 	}
-	_command->execute(fd, final , server);
+	_command->execute(client, final);
 }
 
 TemplateBuilder::~TemplateBuilder() {}

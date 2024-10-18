@@ -1,7 +1,7 @@
 #include "TopicCommand.hpp"
 #include "reply.h"
 
-void TopicCommand::execute(int client_fd, std::map<std::string, std::string>& params, IRCServer& server)
+void TopicCommand::execute(Client *client, std::map<std::string, std::vector<std::string>>& params)
 {
 	std::string topic = "";
 	if (params.size() > 1)

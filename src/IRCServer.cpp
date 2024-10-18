@@ -185,7 +185,7 @@ void    IRCServer::read_data(int i)
         clientPartialBuffers[i] = remainingPartial;
         log(DEBUG, "Loop director");
         for (std::vector<std::string>::iterator it = messages.begin(); it != messages.end(); it++)
-            _director->parseCommand(client->GetSocket(), *it, *this);
+            _director->parseCommand(client, *it);
 
 
     }

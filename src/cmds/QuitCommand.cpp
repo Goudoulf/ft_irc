@@ -13,7 +13,7 @@ void	quitServer2(std::string channel, std::string message, Client &client, IRCSe
 	chan->remove_client(client);
 }
 
-void QuitCommand::execute(int client_fd, std::map<std::string, std::string>& params, IRCServer& server)
+void QuitCommand::execute(Client *client, std::map<std::string, std::vector<std::string>>& params)
 {
 	Client* client = (server.getClients()->find(client_fd))->second;
 	for (std::vector<Channel*>::iterator _it = server.getChannels()->begin(); _it != server.getChannels()->end(); _it++) {

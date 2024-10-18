@@ -4,7 +4,7 @@
 #include "reply.h"
 
 
-void PartCommand::execute(int client_fd, std::map<std::string, std::string>& params, IRCServer& server)
+void PartCommand::execute(Client *client, std::map<std::string, std::vector<std::string>>& params)
 {
 	std::vector<std::string> channels = split(params.find("channel")->second, ',');
 

@@ -9,7 +9,7 @@ class CommandDirector {
 	public:
 	
 		void	addCommand(const TemplateBuilder *command);
-		void	parseCommand(int fd, std::string buffer);
+		void	parseCommand(Client* client, std::string buffer);
 		~CommandDirector();
 
 	private:

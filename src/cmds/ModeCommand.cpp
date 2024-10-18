@@ -130,7 +130,7 @@
 // 	return (tokens.end());
 // }
 
-void ModeCommand::execute(int client_fd, std::map<std::string, std::string>& params, IRCServer& server)
+void ModeCommand::execute(Client *client, std::map<std::string, std::vector<std::string>>& params)
 {
 	(void)server;
 	(void)client_fd;

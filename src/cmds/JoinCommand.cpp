@@ -5,26 +5,25 @@
 #include <map>
 #include <string>
 
-void	joinChannel2(std::string channel, std::string key, int fd, IRCServer &server)
+void	joinChannel2(std::string channel, std::string key, Client *client, IRCServer *server)
 {
 
-        Client* client = (server.getClients()->find(fd))->second;
 	log(CMD, client->GetNickname() + ":_____join_____");
 	log(CMD, channel + " key=" + key); 
 	Channel *chan;
-	if (!(chan = server.find_channel(channel)))
-		chan = server.create_channel(channel, *client, key);
+	if (!(chan = server->find_channel(channel)))
+		chan = server->create_channel(channel, *client, key);
 	if (chan->InChannel(client->GetNickname()) == false)
 	{
 		if (!chan->keyIsValid(key))
 		{
 			log(ERROR, "Wrong Channel Key " + channel);
-			rpl_send(fd, ERR_BADCHANNELKEY(channel));
+			rpl_send(client->GetSocket(), ERR_BADCHANNELKEY(channel));
 			return ;
 		}
 		chan->add_client(*client);
 	}
-	for (std::map<int, Client*>::iterator it = server.getClients()->begin(); it != server.getClients()->end(); it++) {
+	for (std::map<int, Client*>::iterator it = server->getClients()->begin(); it != server->getClients()->end(); it++) {
 		if (it->second != NULL && chan->InChannel(it->second->GetNickname()))
 			message_server("", "JOIN", *client, chan->getChannelName(), it->first);
 	}
@@ -35,15 +34,16 @@ void	joinChannel2(std::string channel, std::string key, int fd, IRCServer &serve
 
 }
 
-void JoinCommand::execute(int client_fd, std::map<std::string, std::string>& params, IRCServer& server)
+void JoinCommand::execute(Client *client, std::map<std::string, std::vector<std::string>>& params)
 {
 	log(INFO, "cmd");
-	std::vector<std::string> channels = split(params.find("channel")->second, ',');
+        IRCServer *server = IRCServer::getInstance();
+	std::vector<std::string> channels = params.find("channel")->second;
 
 	// Split keys if provided
 	std::vector<std::string> keys;
 	if (params.find("key") != params.end() && !params.find("key")->second.empty()) {
-		keys = split(params.find("key")->second, ',');
+		keys = params.find("key")->second;
 	}
 	// Process each channel and its corresponding key
 	size_t j = 0;
@@ -52,12 +52,12 @@ void JoinCommand::execute(int client_fd, std::map<std::string, std::string>& par
 		Channel *chan;
 		std::string channel = channels[i];
 		std::string key = "";
-		if ((!server.find_channel(channel)) || ((chan = server.find_channel(channel)) && chan->getPassword().size()))
+		if ((!server->find_channel(channel)) || ((chan = server->find_channel(channel)) && chan->getPassword().size()))
 		{
 			key = (j < keys.size()) ? keys[j] : "";
 			j++;
 		}
-		joinChannel2(channel, key, client_fd, server);
+		joinChannel2(channel, key, client, server);
 	}
 }
 

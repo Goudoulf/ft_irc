@@ -39,6 +39,6 @@ private:
     bool    _isValid;
     bool _isOptional;
     std::vector<std::string>    _param;
-    std::vector<bool (*)(const std::string, int fd , IRCServer& server)> _paramCheckers;
-    bool    checkParam(int fd, const std::string& param, IRCServer& server)const;
+    std::vector<bool (*)(const std::string, Client *client)> _paramCheckers;
+    bool    checkParam(Client* client, const std::string& param)const;
     };

@@ -42,7 +42,7 @@ std::vector<std::string> parseMode(std::vector<std::string> parsedParams)
     return parsedMode;
 }
 
-void	CommandDirector::parseCommand(int fd, std::string buffer, IRCServer& server)
+void	CommandDirector::parseCommand(Client* client, std::string buffer)
 {
     log(INFO, "Director Parsing");
     std::string trimmedMessage = buffer;
@@ -86,5 +86,5 @@ void	CommandDirector::parseCommand(int fd, std::string buffer, IRCServer& server
     if (command == "MODE")
 	    parsedParams = parseMode(parsedParams);
     log(INFO, "Director fill param");
-    _commandList.find(command)->second->fill_param(fd, parsedParams, server);
+    _commandList.find(command)->second->fill_param(client, parsedParams);
 }

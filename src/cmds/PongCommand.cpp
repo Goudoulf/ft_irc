@@ -2,7 +2,7 @@
 #include "cmds.h"
 #include "debug.h"
 
-void PongCommand::execute(int client_fd, std::map<std::string, std::string>& params, IRCServer& server)
+void PongCommand::execute(Client *client, std::map<std::string, std::vector<std::string>>& params)
 {
 	(void)params;
     Client* client = (server.getClients()->find(client_fd))->second;

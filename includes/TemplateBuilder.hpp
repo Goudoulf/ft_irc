@@ -36,18 +36,18 @@ public:
   };
 
 protected:
-  TemplateBuilder(
-        const std::string &name, CmdLevel level,
+        
+        TemplateBuilder(const std::string &name, CmdLevel level,
         const std::vector<std::pair<std::string, const ParamTemplate *>> &_params,
         Command *command);
 
 private:
-    friend class CommandDirector;
-    std::string     _name;
-    Client          *_sender;
-    CmdLevel        _levelNeeded;
-    std::vector<std::pair<std::string, const ParamTemplate *>> _params;
-    Command *_command;
-    bool    check_level(int fd, IRCServer& server)const;
-    void fill_param(int fd, std::vector<std::string> &param, IRCServer &server) const;
+  friend class CommandDirector;
+  std::string     _name;
+  Client          *_sender;
+  CmdLevel        _levelNeeded;
+  std::vector<std::pair<std::string, const ParamTemplate *>> _params;
+  Command *_command;
+  bool    check_level(Client *client)const;
+  void fill_param(Client *client, std::vector<std::string> &param) const;
 };

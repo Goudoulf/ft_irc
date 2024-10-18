@@ -1,6 +1,6 @@
 #include "InviteCommand.hpp"
 
-void InviteCommand::execute(int client_fd, std::map<std::string, std::string>& params, IRCServer& server)
+void InviteCommand::execute(Client *client, std::map<std::string, std::vector<std::string>>& params)
 {
     std::string target = params.find("nickname")->second;
     std::string channelTarget = params.find("channel")->second;
