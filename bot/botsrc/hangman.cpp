@@ -1,6 +1,6 @@
 #include "../hangman.hpp"
 
-HangMan::HangMan(std::string type, std::vector<std::string> players)
+HangMan::HangMan(std::string type, std::vector<std::string> players) : Game()
 {	
 	_players = players;
 	_chanName = "#" + type + generateChanId();
@@ -30,11 +30,6 @@ HangMan::~HangMan()
 void HangMan::createRoom()
 {
 	std::cout << "create room" << std::endl;
-}
-
-bool HangMan::winCondition()
-{
-	return true;
 }
 
 void	HangMan::cleanBuffer()
@@ -98,21 +93,28 @@ bool HangMan::isBufferFull()
 	return false;
 }
 
-void HangMan::gameLoop()
+bool HangMan::checkStart()
 {
-	if (!_start && _input == "!start")
+	if (!_start == 0 && _input == "!start")
 	{
-		_buffer = "--------------------\n|   CONNECT FOUR   |\n--------------------\n";
+		_buffer = "-------------------\n|     HANGMAN     |\n-------------------\n";
 		displayGame();
 		_buffer += "\nInput a letter or a word: ";
 		_start = true;
-		return;
+		return true;
 	}
-	else if (!_start)
+	else if (!_start == 0)
 	{
 		_buffer.clear();
-		return;
+		return true;
 	}
+	return false;
+}
+
+void HangMan::gameLoop()
+{
+	if (checkStart())
+		return;
 	if (isBufferFull())
 		return;
 	if (!checkInput())

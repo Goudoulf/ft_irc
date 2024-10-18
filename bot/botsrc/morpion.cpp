@@ -1,9 +1,11 @@
-#include "Morpion.hpp"
+#include "../morpion.hpp"
 #include <iostream>
 
-Morpion::Morpion(std::string name) : Game()
+Morpion::Morpion(std::string type, std::vector<std::string> players) : Game()
 {
-	_name = name;
+	_players = players;
+	_chanName = "#" + type + generateChanId();
+	std::cout << "Morpion game created" << std::endl;
 	_x = 0;
 	_y = 0;
 	_turn = 0;
@@ -13,6 +15,11 @@ Morpion::Morpion(std::string name) : Game()
 Morpion::~Morpion()
 {
 	delete[] _gameState;
+}
+
+void Morpion::createRoom()
+{
+	std::cout << "create room" << std::endl;
 }
 
 void Morpion::cleanBuffer()
@@ -31,7 +38,7 @@ bool Morpion::checkInput()
 {
 	if (_input.length() != 2 || _input[0] > '3' || _input[0] < '1' || _input[1] > 'C' || _input[1] < 'A')
 	{
-		setBuffer(_buffer + "\nWrong input\nPut coordinates (ex: 1A, 3B, ...):");
+		_buffer += "Wrong input\nPut coordinates (ex: 1A, 3B, ...):";
 		return false;
 	}
 	return true;
@@ -39,20 +46,23 @@ bool Morpion::checkInput()
 
 void Morpion::displayGame()
 {
-	setBuffer(_buffer + "\n   A   B   C\n");
+	_buffer += "\n   A   B   C\n";
 	for (int i = 0; i < 3; i++)
 	{
-		setBuffer(_buffer + (char)(i + 1 + '0') + " ");
+		_buffer += (char)(i + 1 + '0');
+		_buffer += " ";
 		for (int j = 0; j < 3; j++)
 		{
+			_buffer += " ";
+			_buffer += _gameState[i][j];
 			if (j < 2)
-				setBuffer(_buffer + " " + _gameState[i][j] + " |");
+				_buffer += " |";
 			else
-				setBuffer(_buffer + " " + _gameState[i][j] + " ");
+				_buffer += " ";
 		}
-		setBuffer(_buffer + "\n");
+		_buffer += "\n";
 		if (i < 2)
-			setBuffer(_buffer + "  ---|---|---\n");
+			_buffer += "  ---|---|---\n";
 	}
 }
 
@@ -88,9 +98,9 @@ bool Morpion::isBufferFull()
 	if (_input.empty())
 	{
 		if (_turn % 2)
-			_buffer += "\n" "\x03" "4" "Player 1 turn\e[0m\nPut coordinates (ex: 1A, 3B, ...):";
+			_buffer += "\n" "\x03" "4" "Player 1 turn\nPut coordinates (ex: 1A, 3B, ...):";
 		else
-			_buffer += "\n" "\x03" "3" "Player 2 turn\e[0m\nPut coordinates (ex: 1A, 3B, ...):";
+			_buffer += "\n" "\x03" "3" "Player 2 turn\nPut coordinates (ex: 1A, 3B, ...):";
 		return true;
 	}
 	if (!checkInput())
@@ -98,7 +108,7 @@ bool Morpion::isBufferFull()
 	return false;
 }
 
-void Morpion::gameLoop()
+bool Morpion::checkStart()
 {
 	if (_turn == 0 && _input == "!start")
 	{
@@ -106,17 +116,26 @@ void Morpion::gameLoop()
 		displayGame();
 		_buffer += "\n" "\x03" "4" "Player 1 turn\nPut coordinates (ex: 1A, 3B, ...):";
 		_turn++;
-		return;
+		return true;
 	}
 	else if (_turn == 0)
 	{
 		_buffer.clear();
-		return;
+		return true;
 	}
+	return false;
+}
+
+void Morpion::gameLoop()
+{
+	if (checkStart())
+		return;
 	if (isBufferFull())
 		return;
 	if (!checkInput())
 		return;
+
+
 	_x = _input[0] - '0' - 1;
 	_y = _input[1] - 'A';
 	if (_gameState[_x][_y] != ' ')
@@ -129,18 +148,10 @@ void Morpion::gameLoop()
 	else
 		_gameState[_x][_y] = 'o';
 	_turn++;
+
+
 	displayGame();
 	_input.clear();
 	if (isBufferFull())
 		return;
-}
-
-size_t Morpion::getTurn() const
-{
-	return _turn;
-}
-
-std::string* Morpion::getGameState() const
-{
-	return _gameState;
 }

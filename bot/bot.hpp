@@ -13,6 +13,7 @@
 # include "game.hpp"
 # include "hangman.hpp"
 # include "connectfour.hpp"
+# include "morpion.hpp"
 # include <map>
 
 class Bot

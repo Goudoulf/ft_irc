@@ -21,11 +21,17 @@ Game *createConnectFour(std::string type, std::vector<std::string> params)
 	return (new ConnectFour(type, params));
 }
 
+Game *createMorpion(std::string type, std::vector<std::string> params)
+{
+	return (new Morpion(type, params));
+}
+
 std::map<std::string, Game *(*)(std::string, std::vector<std::string>)> init_map()
 {
 	std::map<std::string, Game *(*)(std::string, std::vector<std::string>)> gameMap;
 	gameMap.insert(std::make_pair(std::string("hangman"), &createHang));
 	gameMap.insert(std::make_pair(std::string("connectfour"), &createConnectFour));
+	gameMap.insert(std::make_pair(std::string("morpion"), &createMorpion));
 	return gameMap;
 }
 

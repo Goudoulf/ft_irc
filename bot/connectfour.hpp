@@ -19,9 +19,9 @@ class ConnectFour : public Game
 		bool	checkInput();
 		bool	winCondition();
 		bool	isBufferFull();
+		bool	checkStart();
 		void	gameLoop();
-
-		std::string*	getGameState() const;
+		bool	checkDirection(int deltaX, int deltaY);
 };
 
 #endif

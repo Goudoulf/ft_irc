@@ -6,19 +6,18 @@
 class Morpion: public Game
 {
 	public:
-		Morpion(std::string name);
+		Morpion(std::string type, std::vector<std::string> players);
 		~Morpion();
+		void createRoom();
 
-		void			resetGameState();
-		void			displayGame();
-		bool			checkInput();
-		bool			winCondition();
-		bool			isBufferFull();
-		void			cleanBuffer();
-		void			gameLoop();
-
-		size_t			getTurn() const;
-		std::string*	getGameState() const;
+		void	resetGameState();
+		void	displayGame();
+		bool	checkInput();
+		bool	winCondition();
+		bool	isBufferFull();
+		bool	checkStart();
+		void	cleanBuffer();
+		void	gameLoop();
 
 	private:
 		size_t		_turn;

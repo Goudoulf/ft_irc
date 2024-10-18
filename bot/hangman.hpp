@@ -18,6 +18,7 @@ class HangMan : public Game
 		bool	checkInput();
 		bool	winCondition();
 		bool	isBufferFull();
+		bool	checkStart();
 		void	setNewWordToGuess();
 		void	gameLoop();
 		void	cleanBuffer();

@@ -1,6 +1,6 @@
 #include "../connectfour.hpp"
 
-ConnectFour::ConnectFour(std::string type, std::vector<std::string> players)
+ConnectFour::ConnectFour(std::string type, std::vector<std::string> players) : Game()
 {	
 	_players = players;
 	_chanName = "#" + type + generateChanId();
@@ -19,7 +19,40 @@ void ConnectFour::createRoom()
 	std::cout << "create room" << std::endl;
 }
 
+bool ConnectFour::checkDirection(int deltaX, int deltaY)
+{
+	for (int startX = 0; startX < 7; ++startX) {
+		for (int startY = 0; startY < 6; ++startY) {
+			char past = _gameState[startY][startX];
+			if (past == ' ') continue;
+
+			int connected = 1;
+			int x = startX, y = startY;
+
+			while (true) {
+				x += deltaX;
+				y += deltaY;
+
+				if (x < 0 || x >= 7 || y < 0 || y >= 6) break;
+
+				if (_gameState[y][x] == past) {
+					connected++;
+					if (connected == 4) return true;
+				} else {
+					break;
+				}
+			}
+		}
+	}
+	return false;
+}
+
 bool ConnectFour::winCondition()
+{
+	return checkDirection(0, 1) || checkDirection(1, 0) || checkDirection(1, 1) || checkDirection(1, -1);
+}
+
+/*bool ConnectFour::winCondition()
 {
 	int connected;
 	char past;
@@ -136,7 +169,7 @@ bool ConnectFour::winCondition()
 		}
 	}
 	return false;
-}
+}*/
 
 bool ConnectFour::checkInput()
 {
@@ -192,7 +225,7 @@ bool ConnectFour::isBufferFull()
 	return false;
 }
 
-void ConnectFour::gameLoop()
+bool ConnectFour::checkStart()
 {
 	if (_turn == 0 && _input == "!start")
 	{
@@ -200,13 +233,20 @@ void ConnectFour::gameLoop()
 		displayGame();
 		_buffer += "\n" "\x03" "4" "Player 1 turn\nInput a column number (1-7):";
 		_turn++;
-		return;
+		return true;
 	}
 	else if (_turn == 0)
 	{
 		_buffer.clear();
-		return;
+		return true;
 	}
+	return false;
+}
+
+void ConnectFour::gameLoop()
+{
+	if (checkStart())
+		return;
 	if (isBufferFull())
 		return;
 	if (!checkInput())

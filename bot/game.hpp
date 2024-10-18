@@ -32,18 +32,15 @@ class Game
 		void setPlayers(std::vector<std::string> players);
 		virtual void createRoom() = 0;
 
-		//virtual void	resetGameState() = 0;
+
 		virtual bool	winCondition() = 0;
 		virtual void	gameLoop() = 0;
-		bool			isFinished();
 
+		bool			isFinished();
 		std::string		getInput() const;
 		std::string		getBuffer() const;
-
 		void			cleanBuffer();
 		void			setInput(std::string input);
-		// virtual void newTurn() = 0;
-		
 };
 
 #endif
