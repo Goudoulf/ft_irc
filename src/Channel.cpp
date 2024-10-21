@@ -1,4 +1,5 @@
 #include "Channel.hpp"
+#include "debug.h"
 #include <string>
 #include <iostream>
 
@@ -110,6 +111,7 @@ bool	Channel::keyIsValid(std::string &key)
 bool	Channel::InChannel(std::string client)
 {
 	for (std::map<Client, bool>::iterator it = _users.begin(); it != _users.end(); it++) {
+		log(DEBUG,"InChannel: user=" + it->first.GetNickname());
 		if (it->first.GetNickname() == client)
 			return (true);
 	}

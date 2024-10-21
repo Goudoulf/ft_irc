@@ -8,5 +8,5 @@ class InviteCommand : public Command {
 public:
 
     InviteCommand() {}
-    void execute(Client *client, std::map<std::string, std::vector<std::string>>& params);
+    void execute(Client *client, const std::map<std::string, std::vector<std::string>>& params);
 };

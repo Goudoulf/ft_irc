@@ -1,22 +1,26 @@
 #include "TemplateBuilder.hpp"
+#include "CommandParser.hpp"
+#include "DefaultCommandParser.hpp"
 #include "ParamTemplate.hpp"
 #include "cmds.h"
 #include "reply.h"
 #include <string>
 #include <utility>
 #include "debug.h"
+#include <map>
 #include <sstream>
 
-TemplateBuilder::TemplateBuilder(const std::string& name, CmdLevel level, const std::vector<std::pair<std::string, const ParamTemplate*>>& params , Command *command)
+TemplateBuilder::TemplateBuilder(const std::string& name, CmdLevel level, const std::vector<std::pair<std::string, const ParamTemplate*>>& params , Command *command, CommandParser *parser)
 {
 	_name = name;
 	_command = command;
 	_levelNeeded = level;
+	_parser = parser;
 	for (std::vector<std::pair<std::string, const ParamTemplate*>>::const_iterator it = params.begin(); it != params.end(); it++)
 		this->_params.push_back(std::make_pair(it->first, it->second));
 }
 
-TemplateBuilder::Builder::Builder()
+TemplateBuilder::Builder::Builder(): _parser(new DefaultCommandParser())
 {}
 
 TemplateBuilder::Builder& TemplateBuilder::Builder::name(std::string name)
@@ -48,9 +52,15 @@ TemplateBuilder::Builder& TemplateBuilder::Builder::command(Command *command)
 	return *this;
 }
 
-const TemplateBuilder *TemplateBuilder::Builder::build() const
+TemplateBuilder::Builder& TemplateBuilder::Builder::parser(CommandParser *parser)
 {
-	return new TemplateBuilder(_name, _level, _params, _command);
+	this->_parser = parser;
+	return *this;
+}
+
+TemplateBuilder *TemplateBuilder::Builder::build()
+{
+	return new TemplateBuilder(_name, _level, _params, _command, _parser);
 }
 
 const std::string TemplateBuilder::getName()const
@@ -67,24 +77,18 @@ bool    TemplateBuilder::check_level(Client *client)const
 	return false;
 }
 
-void    TemplateBuilder::fill_param(Client *client, std::vector<std::string>& param)const
+bool	TemplateBuilder::fill_param(Client *client, std::vector<std::vector<std::string>> param)
 {
 	log(INFO, "Filling param for " + this->_name);
-	if (!check_level(client))
-	{
-		rpl_send(client->GetSocket(), ERR_NOTREGISTERED());
-		return ;
-	}
-	std::map<std::string, std::string> final;
-	std::vector<std::pair<std::string, const ParamTemplate*>>::const_iterator it = _params.begin();
-	std::vector<std::string>::iterator it2 = param.begin();
+	std::vector<std::pair<std::string, const ParamTemplate*>>::iterator it = _params.begin();
+	std::vector<std::vector<std::string>>::iterator it2 = param.begin();
 	while ((it != _params.end()))
 	{
 		log(INFO, "Param = " + it->first);
 		if (it->second->_isOptional == false && it2 == param.end())
 		{
 			rpl_send(client->GetSocket(), ERR_NEEDMOREPARAMS(this->getName()));
-			return ;
+			return false;
 		}
 		if (it->second->_isOptional == true && it2 == param.end())
 		{
@@ -92,13 +96,30 @@ void    TemplateBuilder::fill_param(Client *client, std::vector<std::string>& pa
 			continue ;
 		}
 		if (it->second && !it->second->checkParam(client, (*it2)))
-			return ;
-		final.insert(std::pair<std::string, std::string>(it->first, *it2));
+			return false;
+		this->_parsedParams.insert(std::make_pair(it->first, *it2));
 		it++;
 		if (it2 != param.end())
 			it2++;
 	}
-	_command->execute(client, final);
+	return true;
+}
+
+void    TemplateBuilder::executeCommand(Client *client, const std::string &input)
+{
+	(void)client;
+	log(DEBUG, "input =" + input + "|");
+	std::vector<std::vector<std::string>> params;
+	if (!_parser->parse(input, params))
+		return;
+	if (!check_level(client))
+	{
+		rpl_send(client->GetSocket(), ERR_NOTREGISTERED());
+		return ;
+	}
+	if (!fill_param(client, params))
+		return;
+	_command->execute(client, _parsedParams);
 }
 
 TemplateBuilder::~TemplateBuilder() {}

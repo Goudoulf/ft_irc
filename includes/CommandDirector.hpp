@@ -8,11 +8,11 @@ class CommandDirector {
 
 	public:
 	
-		void	addCommand(const TemplateBuilder *command);
+		void	addCommand(TemplateBuilder *command);
 		void	parseCommand(Client* client, std::string buffer);
 		~CommandDirector();
 
 	private:
 		
-		std::map<std::string, const TemplateBuilder *> _commandList;
+		std::map<std::string, TemplateBuilder *> _commandList;
 };

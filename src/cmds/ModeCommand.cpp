@@ -130,11 +130,10 @@
 // 	return (tokens.end());
 // }
 
-void ModeCommand::execute(Client *client, std::map<std::string, std::vector<std::string>>& params)
+void ModeCommand::execute(Client *client, const std::map<std::string, std::vector<std::string>>& params)
 {
-	(void)server;
-	(void)client_fd;
 	(void)params;
+	(void)client;
 	//    Client* client = (server.getClients()->find(client_fd))->second;
 	// std::map<std::string, void (*)(bool, std::vector<std::string>, Client&, IRCServer&)> mapFunc;
 	// mapModeInit(mapFunc);

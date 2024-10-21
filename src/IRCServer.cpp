@@ -57,7 +57,7 @@ void my_exit(std::string error, int code)
 IRCServer*	IRCServer::getInstance()
 {
     if (_instance == nullptr)
-        return new IRCServer();
+        _instance = new IRCServer();
     return _instance;
 }
 

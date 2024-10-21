@@ -4,11 +4,10 @@
 #include "debug.h"
 #include "reply.h"
 
-void UserCommand::execute(Client *client, std::map<std::string, std::vector<std::string>>& params)
+void UserCommand::execute(Client *client, const std::map<std::string, std::vector<std::string>>& params)
 {
-	Client* client = (server.getClients()->find(client_fd))->second;
 	log(INFO,"_____user command_____");
-	client->SetUsername(params.find("user")->second);
+	client->SetUsername(*params.find("user")->second.begin());
 	if (client->GetUsername().size() != 0 && client->GetNickname().size() != 0)
 	{
 		client->SetPrefix();
@@ -19,6 +18,7 @@ void UserCommand::execute(Client *client, std::map<std::string, std::vector<std:
 		reply_server("003", *client, ":This server was created 07/29/2024");
 		reply_server("004", *client, ":NetTwerkers_v0.1 - itkol");
 		client->SetLevel(REGISTERED);
+		log(DEBUG,"_____user command_____ user=" + client->GetUsername() + " nick=" + client->GetNickname());
 	}
 
 }

@@ -15,6 +15,7 @@ void	joinChannel2(std::string channel, std::string key, Client *client, IRCServe
 		chan = server->create_channel(channel, *client, key);
 	if (chan->InChannel(client->GetNickname()) == false)
 	{
+		log(DEBUG, "Not in channel adding client"); 
 		if (!chan->keyIsValid(key))
 		{
 			log(ERROR, "Wrong Channel Key " + channel);
@@ -34,7 +35,7 @@ void	joinChannel2(std::string channel, std::string key, Client *client, IRCServe
 
 }
 
-void JoinCommand::execute(Client *client, std::map<std::string, std::vector<std::string>>& params)
+void JoinCommand::execute(Client *client, const std::map<std::string, std::vector<std::string>>& params)
 {
 	log(INFO, "cmd");
         IRCServer *server = IRCServer::getInstance();

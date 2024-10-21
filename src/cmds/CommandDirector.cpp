@@ -6,7 +6,7 @@
 #include <map>
 #include <vector>
 
-void	CommandDirector::addCommand(const TemplateBuilder *command)
+void	CommandDirector::addCommand(TemplateBuilder *command)
 {
 	_commandList.insert(std::make_pair(command->getName(), command));
 }
@@ -69,22 +69,6 @@ void	CommandDirector::parseCommand(Client* client, std::string buffer)
 	log(ERROR, "Can't find command " + command);
 	return;
     }
-    std::vector<std::string> parsedParams;
-    std::string param;
-
-    while (iss >> param)
-    {
-	if (param[0] == ':')
-	{
-	    std::string trailing;
-	    std::getline(iss, trailing);
-	    parsedParams.push_back(param.substr(1) + trailing);
-	    break;
-	} 
-	parsedParams.push_back(param);
-    }
-    if (command == "MODE")
-	    parsedParams = parseMode(parsedParams);
     log(INFO, "Director fill param");
-    _commandList.find(command)->second->fill_param(client, parsedParams);
+    _commandList.find(command)->second->executeCommand(client, trimmedMessage);
 }

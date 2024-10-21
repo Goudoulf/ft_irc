@@ -19,7 +19,7 @@ SRCS_FILE = Channel.cpp client_checker.cpp Client.cpp cmds/CapCommand.cpp cmds/C
 			cmds/UserCommand.cpp cmds/utils/find_cmd.cpp cmds/utils/reply.cpp\
 			cmds/utils/split.cpp cmds/utils/tokenize.cpp cmds/WhoCommand.cpp cmds/WhoisCommand.cpp debug/debug.cpp \
 			cmds/ParamTemplate.cpp cmds/Checker.cpp\
-			IRCServer.cpp main.cpp 
+			IRCServer.cpp main.cpp cmds/DefaultCommandParser.cpp
 DIR_SRC := src/
 DIR_OBJ := .object/
 
