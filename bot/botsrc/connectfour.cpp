@@ -21,26 +21,30 @@ void ConnectFour::createRoom()
 
 bool ConnectFour::checkDirection(int deltaX, int deltaY)
 {
-	for (int startX = 0; startX < 7; ++startX) {
-		for (int startY = 0; startY < 6; ++startY) {
+	for (int startX = 0; startX < 7; startX++)
+	{
+		for (int startY = 0; startY < 6; startY++)
+		{
 			char past = _gameState[startY][startX];
-			if (past == ' ') continue;
-
+			if (past == ' ')
+				continue;
 			int connected = 1;
 			int x = startX, y = startY;
 
-			while (true) {
+			while (true)
+			{
 				x += deltaX;
 				y += deltaY;
-
-				if (x < 0 || x >= 7 || y < 0 || y >= 6) break;
-
-				if (_gameState[y][x] == past) {
-					connected++;
-					if (connected == 4) return true;
-				} else {
+				if (x < 0 || x >= 7 || y < 0 || y >= 6)
 					break;
+				if (_gameState[y][x] == past)
+				{
+					connected++;
+					if (connected == 4)
+						return true;
 				}
+				else
+					break;
 			}
 		}
 	}
@@ -51,125 +55,6 @@ bool ConnectFour::winCondition()
 {
 	return checkDirection(0, 1) || checkDirection(1, 0) || checkDirection(1, 1) || checkDirection(1, -1);
 }
-
-/*bool ConnectFour::winCondition()
-{
-	int connected;
-	char past;
-
-	//Vertical Check
-	for (int i = 0; i < 7; i++)
-	{
-		for (int j = 0; j < 6; j++)
-		{
-			if (j != 0 && _gameState[j][i] == past && past != ' ')
-			{
-				connected++;
-				if (connected == 4)
-					return true;
-			}
-			else
-				connected = 1;
-			past = _gameState[j][i];
-		}
-	}
-
-	//Horizontal Check
-	for (int i = 0; i < 6; i++)
-	{
-		for (int j = 0; j < 7; j++)
-		{
-			if (j != 0 && _gameState[i][j] == past && past != ' ')
-			{
-				connected++;
-				if (connected == 4)
-					return true;
-			}
-			else
-				connected = 1;
-			past = _gameState[i][j];
-		}
-	}
-
-	//Diagonal Check
-	for (int i = 0; i < 7; i++)
-	{
-		int k;
-		if (i <= 3)
-		{
-			past = ' ';
-			k = i;
-			for (int j = 0; j < 6 && k < 7; j++)
-			{
-				if (j != 0 && _gameState[j][k] == past && past != ' ')
-				{
-					connected++;
-					if (connected == 4)
-						return true;
-				}
-				else
-					connected = 1;
-				past = _gameState[j][k];
-				k++;
-			}
-		}
-		if (i >= 3)
-		{
-			past = ' ';
-			k = i;
-			for (int j = 0; j < 6 && k < 7; j++)
-			{
-				if (j != 0 && _gameState[j][k] == past && past != ' ')
-				{
-					connected++;
-					if (connected == 4)
-						return true;
-				}
-				else
-					connected = 1;
-				past = _gameState[j][k];
-				k--;
-			}
-		}
-	}
-
-	for (int i = 1; i < 3; i++)
-	{
-		int k = i;
-		for (int j = 0; j < 7 && k < 6; j++)
-		{
-			if (j != 0 && _gameState[k][j] == past && past != ' ')
-			{
-				connected++;
-				if (connected == 4)
-					return true;
-			}
-			else
-				connected = 1;
-			past = _gameState[k][j];
-			k++;
-		}
-	}
-
-	for (int i = 1; i < 3; i++)
-	{
-		int k = i;
-		for (int j = 6; j >= 0 && k < 6; j--)
-		{
-			if (j != 0 && _gameState[k][j] == past && past != ' ')
-			{
-				connected++;
-				if (connected == 4)
-					return true;
-			}
-			else
-				connected = 1;
-			past = _gameState[k][j];
-			k++;
-		}
-	}
-	return false;
-}*/
 
 bool ConnectFour::checkInput()
 {
@@ -224,6 +109,7 @@ bool ConnectFour::isBufferFull()
 		return true;
 	return false;
 }
+
 
 bool ConnectFour::checkStart()
 {

@@ -18,6 +18,7 @@ class Game
 		std::string	_input;
 		std::string	_buffer;
 		std::string	*_gameState;
+		bool		_start;
 		bool		_finished;
 
 	public:
@@ -33,6 +34,10 @@ class Game
 		virtual void createRoom() = 0;
 
 
+		virtual void	displayGame() = 0;
+		virtual bool	checkInput() = 0;
+		virtual bool	isBufferFull() = 0;
+		virtual bool	checkStart() = 0;
 		virtual bool	winCondition() = 0;
 		virtual void	gameLoop() = 0;
 

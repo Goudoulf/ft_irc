@@ -106,7 +106,7 @@ void Bot::readData (std::string buffer)
 	else
 	{
 		Game *actualGame = findGame(channel);
-		if (actualGame != NULL)
+		if (actualGame != NULL && !actualGame->isFinished())
 		{
 			std::cout << "INPUT = " << game << std::endl;
 			std::cout << "play the game" << std::endl;

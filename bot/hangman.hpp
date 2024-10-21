@@ -13,15 +13,13 @@ class HangMan : public Game
 		~HangMan();
 		void createRoom();
 
-		void	resetGameState();
 		void	displayGame();
 		bool	checkInput();
 		bool	winCondition();
 		bool	isBufferFull();
 		bool	checkStart();
-		void	setNewWordToGuess();
 		void	gameLoop();
-		void	cleanBuffer();
+		void	setNewWordToGuess();
 		// HangMan(const HangMan& myHangMan);
 		// const HangMan& operator=(const HangMan& myHangMan);
 		// void newTurn();
@@ -32,8 +30,6 @@ class HangMan : public Game
 		std::vector<std::string> _wordsTried;
 		std::string	_lettersGuessed;
 		std::string	_wordToGuess;
-		char		_c;
-		bool		_start;
 };
 
 #endif

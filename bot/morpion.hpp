@@ -10,13 +10,11 @@ class Morpion: public Game
 		~Morpion();
 		void createRoom();
 
-		void	resetGameState();
 		void	displayGame();
 		bool	checkInput();
 		bool	winCondition();
 		bool	isBufferFull();
 		bool	checkStart();
-		void	cleanBuffer();
 		void	gameLoop();
 
 	private:

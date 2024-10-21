@@ -14,7 +14,6 @@ class ConnectFour : public Game
 		~ConnectFour();
 		void createRoom();
 
-		void	resetGameState();
 		void	displayGame();
 		bool	checkInput();
 		bool	winCondition();

@@ -6,7 +6,6 @@ HangMan::HangMan(std::string type, std::vector<std::string> players) : Game()
 	_chanName = "#" + type + generateChanId();
 	std::cout << "HangMan game created" << std::endl;
 	_attempt = 0;
-	_c = 0;
 	_gameState = new std::string[8] {
 										"_______\n |    |\n |    o\n |   /|\\\n |   / \\\n_|_______",
 										"_______\n |    |\n |    o\n |   /|\\\n |   / \n_|_______",
@@ -18,8 +17,6 @@ HangMan::HangMan(std::string type, std::vector<std::string> players) : Game()
 										""
 										};
 	setNewWordToGuess();
-	_finished = false;
-	_start = false;
 }
 
 HangMan::~HangMan()
@@ -32,16 +29,13 @@ void HangMan::createRoom()
 	std::cout << "create room" << std::endl;
 }
 
-void	HangMan::cleanBuffer()
-{
-	_buffer.clear();
-}
-
 void HangMan::displayGame()
 {
 	_buffer += _gameState[7 - _attempt] + "\n";
 	_buffer += "\x03" "3" + _lettersGuessed + "\n";
-	_buffer += "\x03" "4" + _lettersTried + " | ";
+	_buffer += "\x03" "4" + _lettersTried;
+	if (!_wordsTried.empty())
+		_buffer += " | ";
 	for (std::vector<std::string>::iterator it = _wordsTried.begin(); it != _wordsTried.end(); it++)
 	{
 		if (it != _wordsTried.begin())
@@ -68,17 +62,19 @@ bool HangMan::checkInput()
 
 bool HangMan::winCondition()
 {
-	return true;
+	if (_input == _wordToGuess || _lettersGuessed == _wordToGuess)
+		return true;
+	return false;
 }
 
 bool HangMan::isBufferFull()
 {
-	if (_attempt >= 7 || _finished)
+	if (_attempt >= 7 || winCondition())
 	{
 		if (_attempt >= 7)
 			_buffer += "Oh no! You didn't guess the word " + _wordToGuess;
 		else
-			_buffer += "Well play! You guess the word"  + _wordToGuess;
+			_buffer += "Well play! You guess the word "  + _wordToGuess;
 		_finished = true;
 		return true;
 	}
@@ -95,7 +91,7 @@ bool HangMan::isBufferFull()
 
 bool HangMan::checkStart()
 {
-	if (!_start == 0 && _input == "!start")
+	if (_start == false && _input == "!start")
 	{
 		_buffer = "-------------------\n|     HANGMAN     |\n-------------------\n";
 		displayGame();
@@ -103,7 +99,7 @@ bool HangMan::checkStart()
 		_start = true;
 		return true;
 	}
-	else if (!_start == 0)
+	else if (_start == false)
 	{
 		_buffer.clear();
 		return true;
@@ -120,30 +116,26 @@ void HangMan::gameLoop()
 	if (!checkInput())
 		return;
 
-	_c = _input[0];
+	char c = _input[0];
 	if (_input.length() == 1)
 	{
-		if (_lettersTried.find(_c, 0) != std::string::npos)
+		if (_lettersTried.find(c, 0) != std::string::npos)
 		{
 			_buffer += "This letter has been already put\nInput a letter or a word: ";
 			return;
 		}
-		_lettersTried += _c;
+		_lettersTried += c;
 		size_t pos = 0;
-		if (_wordToGuess.find(_c, pos) == std::string::npos)
+		if (_wordToGuess.find(c, pos) == std::string::npos)
 			_attempt++;
 		else
-			while ((pos = _wordToGuess.find(_c, pos)) != std::string::npos)
+			while ((pos = _wordToGuess.find(c, pos)) != std::string::npos)
 			{
 				_lettersGuessed[pos] = _wordToGuess[pos];
 				pos++;
 			}
-		if (_lettersGuessed.find("-", 0) == std::string::npos)
-		{
-			_buffer += "\x03" "3" + _lettersGuessed;
-			_finished = true;
+		if (isBufferFull())
 			return;
-		}
 	}
 	else if (_input != _wordToGuess)
 	{
@@ -158,12 +150,8 @@ void HangMan::gameLoop()
 		_wordsTried.push_back(_input);
 		_attempt++;
 	}
-	else
-	{
-		_finished = true;
-		if (isBufferFull())
-			return;
-	}
+	else if (isBufferFull())
+		return;
 	displayGame();
 	_input.clear();
 	if (isBufferFull())

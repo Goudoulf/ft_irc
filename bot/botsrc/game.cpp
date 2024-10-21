@@ -1,6 +1,10 @@
 #include "../game.hpp"
 
-Game::Game(){}
+Game::Game()
+{
+	_start = false;
+	_finished = false;
+}
 
 // Game::Game(std::vector<std::string> params) {}
 
@@ -38,9 +42,7 @@ std::string Game::generateChanId()
 
 bool Game::isFinished()
 {
-	if (_finished == true)
-		return true;
-	return false;
+	return _finished;
 }
 
 std::string Game::getInput() const

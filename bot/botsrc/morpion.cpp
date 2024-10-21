@@ -22,18 +22,6 @@ void Morpion::createRoom()
 	std::cout << "create room" << std::endl;
 }
 
-void Morpion::cleanBuffer()
-{
-	_buffer.clear();
-}
-
-void Morpion::resetGameState()
-{
-	_gameState[0] = "   ";
-	_gameState[1] = "   ";
-	_gameState[2] = "   ";
-}
-
 bool Morpion::checkInput()
 {
 	if (_input.length() != 2 || _input[0] > '3' || _input[0] < '1' || _input[1] > 'C' || _input[1] < 'A')
@@ -135,9 +123,9 @@ void Morpion::gameLoop()
 	if (!checkInput())
 		return;
 
-
 	_x = _input[0] - '0' - 1;
 	_y = _input[1] - 'A';
+	
 	if (_gameState[_x][_y] != ' ')
 	{
 		_buffer += "Coordinate are already used\nPut coordinates (ex: 1A, 3B, ...):";
@@ -148,7 +136,6 @@ void Morpion::gameLoop()
 	else
 		_gameState[_x][_y] = 'o';
 	_turn++;
-
 
 	displayGame();
 	_input.clear();
