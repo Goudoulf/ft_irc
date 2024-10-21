@@ -7,38 +7,6 @@
 #include <string>
 #include "reply.h"
 
-
-/**
- * if chan not exist
- * {
- *  send invite
- * }
- * !!!
- * {
- *  if client is on chan
- *  {
- *     if +i enabled
- *      {
- *          if client is op on chan
- *          {
- *              send invite
- *          }
- *          !!!
- *          {
- *              ERR_CHANOPRIVSNEEDED
- *          }
- *      }
- *      !!!
- *      {
- *          send invite
- *      }
- *  }
- *  !!!
- *  {
- *     ERR_NOTONCHANNEL
- *  }
- * }
- */
 bool    isValidInvite(const std::string param, int fd, IRCServer &server)
 {
     Channel *channel = server.find_channel(param);
@@ -48,7 +16,7 @@ bool    isValidInvite(const std::string param, int fd, IRCServer &server)
     {
         if (isOnChannel(param, fd, server))
         {
-            if (channel->getIsInviteForOp())
+            if (channel->getInviteOnly())
             {
                 if (channel->IsOp((server.getClients()->find(fd))->second->GetNickname()))
                     return (true);
@@ -158,7 +126,7 @@ bool	isValidChannel(const std::string param, int fd , IRCServer& server)
     for (std::vector<std::string>::iterator it = channels.begin(); it != channels.end(); it++)
     {
 	char firstChar = (*it)[0];
-	if (firstChar != '#')
+	if (firstChar != '#' && firstChar != '!' && firstChar != '&' && firstChar != '+')
 	{
 	    rpl_send(fd, ERR_NOSUCHCHANNEL(*it));
 	    return false;
@@ -174,6 +142,21 @@ bool	isValidChannel(const std::string param, int fd , IRCServer& server)
 	}
     }
     return true;
+}
+
+bool    isInLimits(const std::string param, int fd, IRCServer& server)
+{
+    Channel *channel = server.find_channel(param);
+    if (!channel)
+        return (true);
+    if (channel->getIsLimited())
+        if (channel->getUsersMap().size() >= channel->getLimitSize())
+        {
+            rpl_send(fd, ERR_CHANNELISFULL(param));
+            return (false);
+        }
+    return (true);
+
 }
 
 bool	isConnected(const std::string param, int fd , IRCServer& server)
@@ -200,4 +183,40 @@ bool	isAlphaNum(const std::string param, int fd , IRCServer& server)
 	}
     }
     return true;
+}
+
+bool    isTmodeOn(const std::string param, int fd, IRCServer& server) //ONLY FOR SETUP
+{
+    Channel *channel = server.find_channel(param);
+    Client* client = (server.getClients()->find(fd))->second;
+
+    if (channel->getIsTopicForOp())
+    {
+        if (!channel->IsOp(client->GetNickname()))
+        {
+            rpl_send(fd, ERR_CHANOPRIVSNEEDED(param));
+            return (false);
+        }
+    }
+    return (true);
+}
+
+bool   isInvited(const std::string param, int fd, IRCServer& server)
+{
+    Channel *channel = server.find_channel(param);
+    if (!channel)
+        return (true);
+    Client* client = (server.getClients()->find(fd))->second;
+    if (channel->getInviteOnly())
+    {
+        std::vector<Client *> invitationList = channel->getInvitationList();
+        for(std::vector<Client *>::iterator it = invitationList.begin(); it != invitationList.end(); it++)
+        {
+            if ((*it) == client)
+                return (true);
+        }
+        rpl_send(fd, ERR_INVITEONLYCHAN(channel->getChannelName()));
+        return (false);
+    }
+    return (true);
 }

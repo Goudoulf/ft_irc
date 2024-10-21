@@ -40,3 +40,6 @@ bool	ChannelExist(const std::string param, int fd , IRCServer& server);
 bool	isOnChannel(const std::string param, int fd , IRCServer& server);
 bool	nickExist(const std::string param, int fd , IRCServer& server);
 bool    isValidInvite(const std::string param, int fd, IRCServer& server);
+bool    isInLimits(const std::string param, int fd, IRCServer& server);
+bool    isTmodeOn(const std::string param, int fd, IRCServer& server);
+bool    isInvited(const std::string param, int fd, IRCServer& server);

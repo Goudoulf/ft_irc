@@ -2,21 +2,6 @@
 #include <string>
 #include <iostream>
 
-// TODO: Add fucntion to add new client to channel
-bool	validName(std::string name)
-{
-	if (name.length() >= 50
-		|| !(name.at(0) == '&'
-			|| name.at(0) == '+'
-			|| name.at(0) == '!'
-			|| name.at(0) == '#')
-		|| name.find(",") != (size_t)-1
-		|| name.find(";") != (size_t)-1
-		|| name.find("\a") != (size_t)-1)
-		return (false);
-	return (true);
-}
-
 channelMode	selectMode(std::string name)
 {
 	char tab[4] = {'&', '+', '!', '#'};
@@ -61,10 +46,15 @@ Channel::Channel(const std::string &name, const Client &creator, const std::stri
 		std::cout << "time: " << timestamp << std::endl;
 		std::cout << "channelID: " << createChannelId(timestamp) << std::endl;
 	}
-	_users.insert(std::pair<Client, bool>(creator, true));
+	bool creatorOp = true;
+	if (_mode == noMode)
+		creatorOp = false;
+	_users.insert(std::pair<Client, bool>(creator, creatorOp));
 	_password = key;
 	_isEmpty = false;
-	_isInviteForOp = false;
+	_InviteOnly = true;
+	_isTopicForOp = false;
+	_isLimited = false;
 }
 
 Channel::~Channel()
@@ -152,6 +142,27 @@ void	Channel::remove_client(Client &client)
 		_isEmpty = true;
 }
 
-void	Channel::setIsInviteForOp(bool sign) {_isInviteForOp = sign;}
+void	Channel::setInviteOnly(bool sign) {_InviteOnly = sign;}
 
-bool	Channel::getIsInviteForOp(void) {return _isInviteForOp;}
+bool	Channel::getInviteOnly(void) {return _InviteOnly;}
+
+void	Channel::setIsTopicForOp(bool sign) {_isTopicForOp = sign;}
+
+bool	Channel::getIsTopicForOp(void) {return _isTopicForOp;}
+
+void	Channel::setIsLimited(bool sign) {_isLimited = sign;}
+
+bool	Channel::getIsLimited(void) {return _isLimited;}
+
+void	Channel::setLimitSize(unsigned int limit) {_limitSize = limit;}
+
+unsigned int		Channel::getLimitSize(void) {return _limitSize;}
+
+std::map<Client, bool> Channel::getUsersMap(void) {return _users;}
+
+std::vector<Client *>	Channel::getInvitationList(){return _invited;}
+
+void	Channel::addInvitation(Client &client)
+{
+	_invited.push_back(&client);
+}

@@ -7,6 +7,8 @@ void InviteCommand::execute(int client_fd, std::map<std::string, std::string>& p
     Client* clientTarget = server.findClient(target);
     std::string prefixSend = server.getClients()->find(client_fd)->second->GetPrefix();
 
+    server.find_channel(channelTarget)->addInvitation(*clientTarget);
+
     rpl_send(client_fd, RPL_INVITING(channelTarget, target));
     rpl_send(clientTarget->GetSocket(), RPL_INVITED(channelTarget, target, prefixSend));
 }
