@@ -169,3 +169,4 @@ Deathrolling (un jeu de de ou roll entre 0-1000 et le premier a 0  a gagner)
 Bon je sais pas si on peu tout faire mais, faut voir avant de faire le jeu comment faire un systeme en cpp ou peu l'adapter sur different jeu avec 1 bot. Si sa te chauffe bien sur.. 
 tu me dis (modifié)
 
+tutu

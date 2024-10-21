@@ -1,36 +1,44 @@
 #pragma once
+#include <functional>
 #include <string>
 #include <vector>
+#include "reply.h"
+#include "IRCServer.hpp"
 
 class ParamTemplate {
 
 public:
 
     ~ParamTemplate();
-    const std::string getName()const;
+    const std::string getValidity()const;
 
     class Builder {
 
     public: 
 
         Builder();
-        Builder& param(std::string param, std::vector<std::string> parser(std::string));
-        
+        Builder& addChecker(bool (*ptr)(const std::string, int fd , IRCServer& server));
+        Builder& isOptional();
         const ParamTemplate *build() const;
 
     private:
 
-        std::vector<std::string> _params;
+        // bool (Builder::*pmf)(const std::vector<std::string&>);
+        std::vector<bool (*)(const std::string, int fd , IRCServer& server)> _paramChecker;
+        bool _isOptional;
     };
 
 protected:
 
-    ParamTemplate(const std::vector<std::string>& params);
+    ParamTemplate(std::vector<bool (*)(const std::string, int fd , IRCServer& server)> checker, bool optional);
 
 private:
 
     friend class CommandDirector;
-    std::string _name;
-    std::vector<std::string> _params;
-    // void    fill_param(int fd, std::vector<std::string>& param, IRCServer& server)const;
+    friend class TemplateBuilder;
+    bool    _isValid;
+    bool _isOptional;
+    std::vector<std::string>    _param;
+    std::vector<bool (*)(const std::string, int fd , IRCServer& server)> _paramCheckers;
+    bool    checkParam(int fd, const std::string& param, IRCServer& server)const;
     };

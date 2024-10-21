@@ -1,20 +1,6 @@
 #include "Channel.hpp"
 #include <string>
-
-// TODO: Add fucntion to add new client to channel
-bool	validName(std::string name)
-{
-	if (name.length() >= 50
-		|| !(name.at(0) == '&'
-			|| name.at(0) == '+'
-			|| name.at(0) == '!'
-			|| name.at(0) == '#')
-		|| name.find(",") != (size_t)-1
-		|| name.find(";") != (size_t)-1
-		|| name.find("\a") != (size_t)-1)
-		return (false);
-	return (true);
-}
+#include <iostream>
 
 channelMode	selectMode(std::string name)
 {
@@ -52,8 +38,6 @@ std::string	createChannelId(time_t timestamp)
 
 Channel::Channel(const std::string &name, const Client &creator, const std::string &key)
 {
-	if (!validName(name))
-		throw InvalidName();
 	_name = name;
 	_mode = selectMode(name);
 	if (_mode == safe)
@@ -62,10 +46,15 @@ Channel::Channel(const std::string &name, const Client &creator, const std::stri
 		std::cout << "time: " << timestamp << std::endl;
 		std::cout << "channelID: " << createChannelId(timestamp) << std::endl;
 	}
-	_operators.push_back(creator);
-	_users.push_back(creator);
+	bool creatorOp = true;
+	if (_mode == noMode)
+		creatorOp = false;
+	_users.insert(std::pair<Client, bool>(creator, creatorOp));
 	_password = key;
 	_isEmpty = false;
+	_InviteOnly = true;
+	_isTopicForOp = false;
+	_isLimited = false;
 }
 
 Channel::~Channel()
@@ -82,17 +71,21 @@ channelMode Channel::getChannelMode()
 	return _mode;
 }
 
+std::string Channel::getPassword()
+{
+	return _password;
+}
+
 std::string Channel::getUsers()
 {
 	std::string temp;
-	std::vector<Client>::iterator it;
-	for (it = _users.begin(); it != _users.end(); it++) {
-		if (IsOp(it->GetUsername()) == true)
-			temp = temp + "@" + it->GetNickname();
+	for (std::map<Client, bool>::iterator it = _users.begin(); it != _users.end(); it++) {
+		if (it != _users.begin())
+			temp += " ";
+		if (IsOp(it->first.GetNickname()) == true)
+			temp += "@" + it->first.GetNickname();
 		else
-			temp = temp + it->GetNickname();
-		if (it->GetUsername() != _users.back().GetUsername())
-			temp = temp + " ";
+			temp += it->first.GetNickname();
 	}
 	return temp;
 }
@@ -106,9 +99,8 @@ bool	Channel::keyIsValid(std::string &key)
 
 bool	Channel::InChannel(std::string client)
 {
-	std::vector<Client>::iterator it;
-	for (it = _users.begin(); it != _users.end(); it++) {
-		if (it->GetUsername() == client)
+	for (std::map<Client, bool>::iterator it = _users.begin(); it != _users.end(); it++) {
+		if (it->first.GetNickname() == client)
 			return (true);
 	}
 	return (false);
@@ -116,9 +108,8 @@ bool	Channel::InChannel(std::string client)
 
 bool	Channel::IsOp(std::string client)
 {
-	std::vector<Client>::iterator it;
-	for (it = _operators.begin(); it != _operators.end(); it++) {
-		if (it->GetUsername() == client)
+	for (std::map<Client, bool>::iterator it = _users.begin(); it != _users.end(); it++) {
+		if (it->first.GetNickname() == client && it->second == true)
 			return (true);
 	}
 	return (false);
@@ -136,23 +127,42 @@ std::string		Channel::getTopic()
 
 void	Channel::add_client(Client &client)
 {
-	_users.push_back(client);	
+	_users.insert(std::pair<Client, bool>(client, false));	
 }
 
 void	Channel::remove_client(Client &client)
 {
-	for (std::vector<Client>::iterator it = _operators.begin(); it != _operators.end();) {
-		if (it->GetUsername() == client.GetUsername())
-			it = _operators.erase(it);
+	for (std::map<Client, bool>::iterator it = _users.begin(); it != _users.end();) {
+		if (it->first.GetNickname() == client.GetNickname())
+			it = _users.erase(it);
 		else
 			++it;
 	}
-	for (std::vector<Client>::iterator it = _users.begin(); it != _users.end();) {
-		if (it->GetUsername() == client.GetUsername())
-			 it = _users.erase(it);
-		else
-			++it;
-	}
-	if (_users.empty() && _operators.empty())
+	if (_users.empty())
 		_isEmpty = true;
+}
+
+void	Channel::setInviteOnly(bool sign) {_InviteOnly = sign;}
+
+bool	Channel::getInviteOnly(void) {return _InviteOnly;}
+
+void	Channel::setIsTopicForOp(bool sign) {_isTopicForOp = sign;}
+
+bool	Channel::getIsTopicForOp(void) {return _isTopicForOp;}
+
+void	Channel::setIsLimited(bool sign) {_isLimited = sign;}
+
+bool	Channel::getIsLimited(void) {return _isLimited;}
+
+void	Channel::setLimitSize(unsigned int limit) {_limitSize = limit;}
+
+unsigned int		Channel::getLimitSize(void) {return _limitSize;}
+
+std::map<Client, bool> Channel::getUsersMap(void) {return _users;}
+
+std::vector<Client *>	Channel::getInvitationList(){return _invited;}
+
+void	Channel::addInvitation(Client &client)
+{
+	_invited.push_back(&client);
 }

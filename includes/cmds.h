@@ -1,12 +1,9 @@
-#ifndef CMDS_H
-#define CMDS_H
+#pragma once
 
 #include "Client.hpp"
-#include "ircserv.h"
-#include <map>
-#include <iostream>
 #include <vector>
 #include <string>
+#include <iostream>
 
 class IRCServer;
 class Client;
@@ -33,5 +30,16 @@ void	invite();
 void	mode(IRCServer &server, int fd, std::vector<std::string>& params);
 void	cap(IRCServer &server, int fd, std::vector<std::string>& params);
 
-
-#endif
+bool	isAlphaNum(const std::string param, int fd , IRCServer& server);
+bool	isConnected(const std::string param, int fd , IRCServer& server);
+bool	isValidNick(const std::string param, int fd , IRCServer& server);
+bool	isValidPassword(const std::string param, int fd , IRCServer& server);
+bool	isEmpty(const std::string param, int fd , IRCServer& server);
+bool	isValidChannel(const std::string param, int fd , IRCServer& server);
+bool	ChannelExist(const std::string param, int fd , IRCServer& server);
+bool	isOnChannel(const std::string param, int fd , IRCServer& server);
+bool	nickExist(const std::string param, int fd , IRCServer& server);
+bool    isValidInvite(const std::string param, int fd, IRCServer& server);
+bool    isInLimits(const std::string param, int fd, IRCServer& server);
+bool    isTmodeOn(const std::string param, int fd, IRCServer& server);
+bool    isInvited(const std::string param, int fd, IRCServer& server);

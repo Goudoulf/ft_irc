@@ -135,7 +135,7 @@ void ModeCommand::execute(int client_fd, std::map<std::string, std::string>& par
 	(void)server;
 	(void)client_fd;
 	(void)params;
-    //Client* client = (server.getClients()->find(client_fd))->second;
+	//    Client* client = (server.getClients()->find(client_fd))->second;
 	// std::map<std::string, void (*)(bool, std::vector<std::string>, Client&, IRCServer&)> mapFunc;
 	// mapModeInit(mapFunc);
 	// for (std::map<std::string, std::string>::iterator it = params.begin(); it != params.end(); it++)
