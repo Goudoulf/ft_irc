@@ -7,6 +7,8 @@
 class ConnectFour : public Game
 {
 	private:
+		std::string _player1;
+		std::string _player2;
 		size_t	_turn;
 
 	public:

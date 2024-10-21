@@ -21,6 +21,8 @@ class Morpion: public Game
 		size_t		_turn;
 		int			_x;
 		int			_y;
+		std::string _player1;
+		std::string _player2;
 
 };
 

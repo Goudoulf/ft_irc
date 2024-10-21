@@ -80,6 +80,11 @@ void Bot::run()
 	}
 }
 
+std::vector<std::string> getPlayers()
+{
+	send();
+}
+
 void Bot::readData (std::string buffer)
 {
 	std::istringstream iss(buffer);
@@ -109,8 +114,14 @@ void Bot::readData (std::string buffer)
 		if (actualGame != NULL && !actualGame->isFinished())
 		{
 			std::cout << "INPUT = " << game << std::endl;
+			std::cout << "PREFIX = " << prefix << std::endl;
 			std::cout << "play the game" << std::endl;
 			actualGame->setInput(game);
+			if (game == "!start")
+			{
+				std::string
+				actualGame->setPlayers();
+			}
 			actualGame->gameLoop();
 			std::cout << actualGame->getBuffer() << std::endl;
 			std::vector<std::string> message = split(actualGame->getBuffer(), '\n');
