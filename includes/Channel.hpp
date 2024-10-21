@@ -36,11 +36,20 @@ class Channel
 		bool	IsOp(std::string client);
 		bool	keyIsValid(std::string &key);
 		void	add_client(Client &client);
+		void	addInvitation(Client &client);
 		void	remove_client(Client &client);
 		void	setTopic(std::string topic);
 		std::string	getTopic();
-		void	setIsInviteForOp(bool sign);
-		bool	getIsInviteForOp(void);
+		void	setInviteOnly(bool sign);
+		bool	getInviteOnly(void);
+		void	setIsTopicForOp(bool signe);
+		bool	getIsTopicForOp(void);
+		void	setIsLimited(bool sign);
+		bool	getIsLimited(void);
+		void	setLimitSize(unsigned int limit);
+		unsigned int		getLimitSize(void);
+		std::map<Client, bool> getUsersMap(void);
+		std::vector<Client *>	getInvitationList();
 		
 	private:
 		std::string _name; //beginning with a &#+! length of 50 max char, case insensitive
@@ -48,12 +57,18 @@ class Channel
 		//container of users, maybe a map <client, bool isOp> ?
 		
 		std::map<Client, bool> _users;
+		std::vector<Client *> _invited;
 		// std::vector<Client> _users;
 		// std::vector<Client> _operators;
 		std::string			_topic;
 		std::string			_password;
 		bool				_isEmpty;
-		bool				_isInviteForOp;
+		bool				_InviteOnly;
+		bool				_isTopicForOp;
+		bool				_isLimited;
+
+		
+		unsigned int					_limitSize;
 		channelMode _mode;//channel mode, depending on name prefix
 		//stack of strings to make a message history if needed.
 

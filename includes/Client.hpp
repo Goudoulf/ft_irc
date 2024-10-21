@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cassie <cassie@student.42lyon.fr>          +#+  +:+       +#+        */
+/*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 10:10:52 by cassie            #+#    #+#             */
-/*   Updated: 2024/09/06 10:11:00 by cassie           ###   ########.fr       */
+/*   Updated: 2024/10/21 11:06:43 by lvallini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,9 @@ class Client
 		std::string	GetBufferString();
 		bool		GetIsConnected();
 		bool		GetIsRegistered();
+		time_t		getSignOnTime();
+		time_t		getLastActivity();
+		void		setLastActivity(time_t newActivity);
 
 	private:
 		std::string	_nickname; // 9 char and unique ; name which appears for other users
@@ -62,6 +65,8 @@ class Client
 		std::string	_realname; // name of the host ; just additional information about you
 		std::string	_hostname;
 		std::string _prefix;
+		time_t		_signOnTime;
+		time_t		_lastActivity;
 		bool		_isconnected;
 		bool		_isRegistered;
 		CmdLevel	_level;

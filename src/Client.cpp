@@ -14,7 +14,7 @@ Client::Client(const int &socket, struct sockaddr_in address, IRCServer* server)
 	char test[1024];
 	_buffer = new char[1024];
 	_nickname = "default";
-	_realname = "realname";
+	_realname = "";
 	if (server->getpasswordIsSet())
 		_level = NONE;
 	else
@@ -22,6 +22,8 @@ Client::Client(const int &socket, struct sockaddr_in address, IRCServer* server)
 	_server = server;
 	getnameinfo((sockaddr*)&address, sizeof(address), test, 1024, NULL, 0, 0);
 	_hostname = test;
+	_signOnTime = time(NULL);
+	_lastActivity = _signOnTime;
 	log(INFO, "CLient creation " + _hostname);
 }
 
@@ -187,3 +189,9 @@ Client		*Client::GetClient()
 {
 	return this;
 }
+
+time_t	Client::getSignOnTime() {return _signOnTime;}
+
+time_t	Client::getLastActivity() {return _lastActivity;}
+
+void	Client::setLastActivity(time_t newActivity) {_lastActivity = newActivity;}

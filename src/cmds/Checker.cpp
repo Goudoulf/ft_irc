@@ -7,39 +7,7 @@
 #include <string>
 #include "reply.h"
 
-
-/**
- * if chan not exist
- * {
- *  send invite
- * }
- * !!!
- * {
- *  if client is on chan
- *  {
- *     if +i enabled
- *      {
- *          if client is op on chan
- *          {
- *              send invite
- *          }
- *          !!!
- *          {
- *              ERR_CHANOPRIVSNEEDED
- *          }
- *      }
- *      !!!
- *      {
- *          send invite
- *      }
- *  }
- *  !!!
- *  {
- *     ERR_NOTONCHANNEL
- *  }
- * }
- */
-bool    isValidInvite(const std::string param, Client *client)
+bool isValidInvite(const std::string param, Client *client)
 {
     IRCServer *server = IRCServer::getInstance();
     Channel *channel = server->find_channel(param);
@@ -49,7 +17,7 @@ bool    isValidInvite(const std::string param, Client *client)
     {
         if (isOnChannel(param, client))
         {
-            if (channel->getIsInviteForOp())
+            if (channel->getInviteOnly())
             {
                 if (channel->IsOp((server->getClients()->find(client->GetSocket()))->second->GetNickname()))
                     return (true);
@@ -165,7 +133,7 @@ bool	isValidChannel(const std::string param, Client *client)
     for (std::vector<std::string>::iterator it = channels.begin(); it != channels.end(); it++)
     {
 	char firstChar = (*it)[0];
-	if (firstChar != '#')
+	if (firstChar != '#' && firstChar != '!' && firstChar != '&' && firstChar != '+')
 	{
 	    rpl_send(client->GetSocket(), ERR_NOSUCHCHANNEL(*it));
 	    return false;
@@ -181,6 +149,22 @@ bool	isValidChannel(const std::string param, Client *client)
 	}
     }
     return true;
+}
+
+bool    isInLimits(const std::string param, Client *client)
+{
+    IRCServer *server = IRCServer::getInstance();
+    Channel *channel = server->find_channel(param);
+    if (!channel)
+        return (true);
+    if (channel->getIsLimited())
+        if (channel->getUsersMap().size() >= channel->getLimitSize())
+        {
+            rpl_send(client->GetSocket(), ERR_CHANNELISFULL(param));
+            return (false);
+        }
+    return (true);
+
 }
 
 bool	isConnected(const std::string param, Client *client)
@@ -207,4 +191,39 @@ bool	isAlphaNum(const std::string param, Client *client)
 	}
     }
     return true;
+}
+
+bool    isTmodeOn(const std::string param, Client *client) //ONLY FOR SETUP
+{
+    IRCServer *server = IRCServer::getInstance();
+    Channel *channel = server->find_channel(param);
+    if (channel->getIsTopicForOp())
+    {
+        if (!channel->IsOp(client->GetNickname()))
+        {
+            rpl_send(client->GetSocket(), ERR_CHANOPRIVSNEEDED(param));
+            return (false);
+        }
+    }
+    return (true);
+}
+
+bool   isInvited(const std::string param, Client *client)
+{
+    IRCServer *server = IRCServer::getInstance();
+    Channel *channel = server->find_channel(param);
+    if (!channel)
+        return (true);
+    if (channel->getInviteOnly())
+    {
+        std::vector<Client *> invitationList = channel->getInvitationList();
+        for(std::vector<Client *>::iterator it = invitationList.begin(); it != invitationList.end(); it++)
+        {
+            if ((*it) == client)
+                return (true);
+        }
+        rpl_send(client->GetSocket(), ERR_INVITEONLYCHAN(channel->getChannelName()));
+        return (false);
+    }
+    return (true);
 }

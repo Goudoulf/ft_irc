@@ -2,9 +2,9 @@
 #include "Command.hpp"
 #include <string>
 
-class JoinCommand : public Command {
+class NamesCommand : public Command {
 
 public:
-    JoinCommand() {}
+    NamesCommand() {}
     void execute(Client *client, const std::map<std::string, std::vector<std::string>>& params);
 };

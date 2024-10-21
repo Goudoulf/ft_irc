@@ -6,7 +6,7 @@
 /*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 08:21:58 by cassie            #+#    #+#             */
-/*   Updated: 2024/10/16 15:14:34 by lvallini         ###   ########.fr       */
+/*   Updated: 2024/10/21 14:30:03 by lvallini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 #include "InviteCommand.hpp"
 #include "KickCommand.hpp"
 #include "PrivmsgCommand.hpp"
+#include "NamesCommand.hpp"
 #include "WhoCommand.hpp"
 #include "WhoisCommand.hpp"
 #include "PingCommand.hpp"
@@ -313,7 +314,7 @@ void    IRCServer::setCommandTemplate()
                           .name("NICK")
                           .level(CONNECTED)
                           .param("nick", ParamTemplate::Builder()
-                                 .addChecker(&isEmpty)
+                                 .addChecker(&isEmpty) 
                                  .addChecker(&isValidNick)
                                  .build()
                                  )
@@ -345,6 +346,8 @@ void    IRCServer::setCommandTemplate()
                           .level(REGISTERED)
                           .param("channel", ParamTemplate::Builder()
                                  .addChecker(&isValidChannel)
+                                 .addChecker(&isInLimits)
+                                 .addChecker(&isInvited)
                                  .build()
                                  )
                           .param("key", ParamTemplate::Builder()
@@ -402,6 +405,7 @@ void    IRCServer::setCommandTemplate()
                           .param("channel", ParamTemplate::Builder()
                                  .addChecker(&ChannelExist)
                                  .addChecker(&isOnChannel)
+                                 .addChecker(&isTmodeOn)
                                  .build()
                                  )
                           .trailing("topic", ParamTemplate::Builder()
@@ -436,7 +440,7 @@ void    IRCServer::setCommandTemplate()
                           .param("user", ParamTemplate::Builder()
                                  .build()
                                  )
-                          .trailing("comment",  ParamTemplate::Builder()
+                          .trailing("comment", ParamTemplate::Builder()
                                  .build()
                                  )
 
@@ -509,6 +513,16 @@ void    IRCServer::setCommandTemplate()
                                  .build()
                                  )
                           .command(new PongCommand())
+                          .build()
+                          );
+
+    _director->addCommand(TemplateBuilder::Builder()
+                          .name("NAMES")
+                          .level(REGISTERED)
+                          .param("channels", ParamTemplate::Builder()
+                                 .build()
+                                 )
+                          .command(new NamesCommand())
                           .build()
                           );
 }

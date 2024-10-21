@@ -40,3 +40,6 @@ bool	ChannelExist(const std::string param, Client * client);
 bool	isOnChannel(const std::string param, Client * client);
 bool	nickExist(const std::string param, Client * client);
 bool    isValidInvite(const std::string param, Client *client);
+bool    isInLimits(const std::string param, Client *client);
+bool    isTmodeOn(const std::string param, Client *client);
+bool    isInvited(const std::string param, Client *client);
