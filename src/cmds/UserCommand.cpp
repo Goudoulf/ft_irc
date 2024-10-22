@@ -6,8 +6,8 @@
 
 void UserCommand::execute(Client *client, const std::map<std::string, std::vector<std::string>>& params)
 {
-	log(INFO,"_____user command_____");
-	client->SetUsername(*params.find("user")->second.begin());
+	log(INFO,"_____user command_____"+ params.find("user")->second.begin()[0]);
+	client->SetUsername(params.find("user")->second.begin()[0]);
 	if (client->GetUsername().size() != 0 && client->GetNickname().size() != 0)
 	{
 		client->SetPrefix();

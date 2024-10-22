@@ -37,7 +37,7 @@ std::string	createChannelId(time_t timestamp)
 	return (res);
 }
 
-Channel::Channel(const std::string &name, const Client &creator, const std::string &key)
+Channel::Channel(const std::string &name, Client *creator, const std::string &key)
 {
 	_name = name;
 	_mode = selectMode(name);
@@ -50,7 +50,7 @@ Channel::Channel(const std::string &name, const Client &creator, const std::stri
 	bool creatorOp = true;
 	if (_mode == noMode)
 		creatorOp = false;
-	_users.insert(std::pair<Client, bool>(creator, creatorOp));
+	_users.insert(std::pair<Client*, bool>(creator, creatorOp));
 	_password = key;
 	_isEmpty = false;
 	_InviteOnly = false;
@@ -80,13 +80,13 @@ std::string Channel::getPassword()
 std::string Channel::getUsers()
 {
 	std::string temp;
-	for (std::map<Client, bool>::iterator it = _users.begin(); it != _users.end(); it++) {
+	for (std::map<Client*, bool>::iterator it = _users.begin(); it != _users.end(); it++) {
 		if (it != _users.begin())
 			temp += " ";
-		if (IsOp(it->first.GetNickname()) == true)
-			temp += "@" + it->first.GetNickname();
+		if (IsOp(it->first->GetNickname()) == true)
+			temp += "@" + it->first->GetNickname();
 		else
-			temp += it->first.GetNickname();
+			temp += it->first->GetNickname();
 	}
 	return temp;
 }
@@ -100,9 +100,9 @@ bool	Channel::keyIsValid(std::string &key)
 
 bool	Channel::InChannel(std::string client)
 {
-	for (std::map<Client, bool>::iterator it = _users.begin(); it != _users.end(); it++) {
-		log(DEBUG,"InChannel: user=" + it->first.GetNickname());
-		if (it->first.GetNickname() == client)
+	for (std::map<Client*, bool>::iterator it = _users.begin(); it != _users.end(); it++) {
+		log(DEBUG,"InChannel: user=" + it->first->GetNickname());
+		if (it->first->GetNickname() == client)
 			return (true);
 	}
 	return (false);
@@ -110,8 +110,8 @@ bool	Channel::InChannel(std::string client)
 
 bool	Channel::IsOp(std::string client)
 {
-	for (std::map<Client, bool>::iterator it = _users.begin(); it != _users.end(); it++) {
-		if (it->first.GetNickname() == client && it->second == true)
+	for (std::map<Client*, bool>::iterator it = _users.begin(); it != _users.end(); it++) {
+		if (it->first->GetNickname() == client && it->second == true)
 			return (true);
 	}
 	return (false);
@@ -127,15 +127,15 @@ std::string		Channel::getTopic()
 	return _topic;
 }
 
-void	Channel::add_client(Client &client)
+void	Channel::add_client(Client *client)
 {
-	_users.insert(std::pair<Client, bool>(client, false));	
+	_users.insert(std::pair<Client*, bool>(client, false));	
 }
 
-void	Channel::remove_client(Client &client)
+void	Channel::remove_client(Client *client)
 {
-	for (std::map<Client, bool>::iterator it = _users.begin(); it != _users.end();) {
-		if (it->first.GetNickname() == client.GetNickname())
+	for (std::map<Client*, bool>::iterator it = _users.begin(); it != _users.end();) {
+		if (it->first->GetNickname() == client->GetNickname())
 			it = _users.erase(it);
 		else
 			++it;
@@ -160,11 +160,30 @@ void	Channel::setLimitSize(unsigned int limit) {_limitSize = limit;}
 
 unsigned int		Channel::getLimitSize(void) {return _limitSize;}
 
-std::map<Client, bool> Channel::getUsersMap(void) {return _users;}
+std::map<Client*, bool> Channel::getUsersMap(void) {return _users;}
 
 std::vector<Client *>	Channel::getInvitationList(){return _invited;}
 
-void	Channel::addInvitation(Client &client)
+void	Channel::sendMessage(Client *sender, std::string message)
 {
-	_invited.push_back(&client);
+	for (std::map<Client*, bool>::iterator it = _users.begin(); it != _users.end(); it++)
+	{
+		if (it->first)
+			sender->sendMessage(it->first->GetSocket(), message);
+	}
+}
+
+void	Channel::sendReply(std::string message)
+{
+	IRCServer *server = IRCServer::getInstance();
+	for (std::map<Client*, bool>::iterator it = _users.begin(); it != _users.end(); it++)
+	{
+		if (it->first)
+			server->sendReply(it->first->GetSocket(), message);
+	}
+}
+
+void	Channel::addInvitation(Client *client)
+{
+	_invited.push_back(client);
 }

@@ -10,7 +10,7 @@ void	quitServer2(std::string channel, std::string message, Client *client, IRCSe
 		if (it->second && chan->InChannel(it->second->GetNickname()))
 			message_server("", "QUIT", *client, message, it->second->GetSocket());
 	}
-	chan->remove_client(*client);
+	chan->remove_client(client);
 }
 
 void QuitCommand::execute(Client *client, const std::map<std::string, std::vector<std::string>>& params)

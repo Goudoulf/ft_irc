@@ -47,13 +47,14 @@ class IRCServer
 		void	initialize(std::string port, std::string password);
 			
 		~IRCServer(void);
+		void					sendReply(int target, std::string message);
 		void					setCommandTemplate();
 		IRCServer*				getIRCServer();
 		void					stopServer();
 		int						run(void);
 		void					accept_connection(fd_set *all_sockets);
 		void					read_data(int i);
-		Channel					*create_channel(std::string channel, Client &client, std::string key);
+		Channel					*create_channel(std::string channel, Client *client, std::string key);
 		Channel					*find_channel(std::string channel);
 		bool					checkNick(const std::string& Nick);
 		void					remove_client(Client &client);

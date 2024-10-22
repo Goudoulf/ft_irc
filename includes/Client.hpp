@@ -30,6 +30,8 @@ class Client
 		~Client();
 		bool operator <(const Client& toComp) const;
 
+		void		replyServer(std::string message);
+		void		sendMessage(int target, std::string message);
 		void		SetClient();
 		void		findnick(const char *buffer);
 		void		finduser(const char *buffer);

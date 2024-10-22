@@ -75,8 +75,8 @@
 #define RPL_STATSCOMMAND(command, count, byte_count, remote_count) (":localhost 212 " + command + " " + count + " " + byte_count + " " + remote_count+ "\r\n")
 #define RPL_ENDOFSTATS(stats_letter) (":localhost 219 " + stats_letter + " :End of STATS report"+ "\r\n")
 #define RPL_STATSUPTIME(days, hours, minutes, seconds) (":localhost 242 :Server Up " + days + " days " + hours + ":" + minutes + ":" + seconds+ "\r\n")
+#define RPL_JOIN(prefix, channel ) (":" + prefix + " JOIN " + channel + "\r\n")
 
-//#define RPL_STATS
 #define ERR_NOTONCHANNEL(channel) (":localhost 442 " + channel + " :You're not on that channel\r\n")
 #define ERR_BADCHANNELKEY(channel) (":localhost 475 " + channel + " :Cannot join channel (+k) \r\n")
 #define ERR_NOSUCHNICK(nickname) (":localhost 401 " + nickname + " :No such nick/channel\r\n")

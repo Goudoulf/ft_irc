@@ -12,22 +12,23 @@ void	joinChannel2(std::string channel, std::string key, Client *client, IRCServe
 	log(CMD, channel + " key=" + key); 
 	Channel *chan;
 	if (!(chan = server->find_channel(channel)))
-		chan = server->create_channel(channel, *client, key);
+		chan = server->create_channel(channel, client, key);
 	if (chan->InChannel(client->GetNickname()) == false)
 	{
 		log(DEBUG, "Not in channel adding client"); 
 		if (!chan->keyIsValid(key))
 		{
 			log(ERROR, "Wrong Channel Key " + channel);
-			rpl_send(client->GetSocket(), ERR_BADCHANNELKEY(channel));
+			client->replyServer(ERR_BADCHANNELKEY(channel));
 			return ;
 		}
-		chan->add_client(*client);
+		chan->add_client(client);
 	}
-	for (std::map<int, Client*>::iterator it = server->getClients()->begin(); it != server->getClients()->end(); it++) {
-		if (it->second != NULL && chan->InChannel(it->second->GetNickname()))
-			message_server("", "JOIN", *client, chan->getChannelName(), it->first);
-	}
+	// for (std::map<int, Client*>::iterator it = server->getClients()->begin(); it != server->getClients()->end(); it++) {
+	// 	if (it->second != NULL && chan->InChannel(it->second->GetNickname()))
+	// 		message_server("", "JOIN", *client, chan->getChannelName(), it->first);
+	// }
+	chan->sendReply(RPL_JOIN(client->GetPrefix(), channel));
 	if (!chan->getTopic().empty())
 		reply_server("332", *client, " " + chan->getChannelName() + " :" + chan->getTopic());
 	reply_server("353", *client, "= " + channel + " :" + chan->getUsers());

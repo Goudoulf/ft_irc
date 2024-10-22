@@ -27,7 +27,7 @@ void	partChannel(std::string channel, std::string message, Client *client)
 			message_server(chan->getChannelName(), "PART", *client , ":" + message, it->first);
 	}
 	if (chan->InChannel(client->GetNickname()) == true)
-		chan->remove_client(*client);
+		chan->remove_client(client);
 }
 
 void PartCommand::execute(Client *client, const std::map<std::string, std::vector<std::string>>& params)

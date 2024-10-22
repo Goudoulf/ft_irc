@@ -30,6 +30,17 @@ Client::Client(const int &socket, struct sockaddr_in address, IRCServer* server)
 Client::~Client()
 {}
 
+void    Client::replyServer(std::string message)
+{
+	_server->sendReply(this->_socket, message);
+}
+
+void	Client::sendMessage(int target, std::string message)
+{
+	log(DEBUG, "Client Reply :" + message);
+	send(target, message.c_str(), message.size(), 0);
+}
+
 bool Client::operator<(const Client &toComp) const
 {
 	return _socket < toComp._socket;

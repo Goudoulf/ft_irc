@@ -242,7 +242,13 @@ bool    IRCServer::getpasswordIsSet()
     return _passwordIsSet;
 }
 
-Channel *IRCServer::create_channel(std::string channel, Client &client, std::string key)
+void    IRCServer::sendReply(int target, std::string message)
+{
+	log(DEBUG, "REPLY SERVER :" + message);
+	send(target, message.c_str(), message.size(), 0);
+}
+
+Channel *IRCServer::create_channel(std::string channel, Client *client, std::string key)
 {
     _channels.push_back(new Channel(channel, client, key));
     return (_channels.back());

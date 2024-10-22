@@ -26,7 +26,7 @@ class Client;
 class Channel
 {
 	public:
-		Channel(const std::string &name, const Client &creator, const std::string &key);
+		Channel(const std::string &name, Client *creator, const std::string &key);
 		~Channel();
 		std::string getChannelName();
 		std::string getUsers();
@@ -35,9 +35,9 @@ class Channel
 		bool	InChannel(std::string client);
 		bool	IsOp(std::string client);
 		bool	keyIsValid(std::string &key);
-		void	add_client(Client &client);
-		void	addInvitation(Client &client);
-		void	remove_client(Client &client);
+		void	add_client(Client *client);
+		void	addInvitation(Client *client);
+		void	remove_client(Client *client);
 		void	setTopic(std::string topic);
 		std::string	getTopic();
 		void	setInviteOnly(bool sign);
@@ -47,8 +47,10 @@ class Channel
 		void	setIsLimited(bool sign);
 		bool	getIsLimited(void);
 		void	setLimitSize(unsigned int limit);
+		void	sendMessage(Client *sender, std::string message);
+		void	sendReply(std::string message);
 		unsigned int		getLimitSize(void);
-		std::map<Client, bool> getUsersMap(void);
+		std::map<Client*, bool> getUsersMap(void);
 		std::vector<Client *>	getInvitationList();
 		
 	private:
@@ -56,7 +58,7 @@ class Channel
 							// no spaces or control G (ASCII 7), no ',' or ':', can't be reused
 		//container of users, maybe a map <client, bool isOp> ?
 		
-		std::map<Client, bool> _users;
+		std::map<Client*, bool> _users;
 		std::vector<Client *> _invited;
 		// std::vector<Client> _users;
 		// std::vector<Client> _operators;

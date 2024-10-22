@@ -6,13 +6,13 @@ void NamesCommand::execute(Client *client, const std::map<std::string, std::vect
 {
 	IRCServer *server = IRCServer::getInstance();
 	Channel *channel = server->find_channel(params.find("channels")->second[0]);
-	std::map<Client, bool> clients = channel->getUsersMap();
+	std::map<Client*, bool> clients = channel->getUsersMap();
 	std::string clientsList;
-	for (std::map<Client, bool>::iterator it = clients.begin(); it != clients.end(); it++)
+	for (std::map<Client*, bool>::iterator it = clients.begin(); it != clients.end(); it++)
 	{
 		if ((*it).second)
 			clientsList += "@";
-		clientsList += (*it).first.GetNickname() + " ";
+		clientsList += (*it).first->GetNickname() + " ";
 	}
 	std::string channelName = "= " + channel->getChannelName();
 	std::string clientName = (server->getClients()->find(client->GetSocket())->second)->GetNickname();
