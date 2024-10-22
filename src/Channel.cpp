@@ -164,7 +164,18 @@ std::map<Client, bool> Channel::getUsersMap(void) {return _users;}
 
 std::vector<Client *>	Channel::getInvitationList(){return _invited;}
 
-void	Channel::addInvitation(Client &client)
+void	Channel::addInvitation(Client &client) {_invited.push_back(&client);}
+
+void	Channel::setPassword(std::string newPassword) {_password = newPassword;}
+
+void	Channel::setOp(Client &client, bool sign)
 {
-	_invited.push_back(&client);
+	for (std::map<Client, bool>::iterator it = _users.begin(); it != _users.end(); it++)
+	{
+		if (it->first.GetNickname() == client.GetNickname())
+		{
+			it->second = sign;
+			return;
+		}
+	}
 }

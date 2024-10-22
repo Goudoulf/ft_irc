@@ -49,6 +49,8 @@ class Channel
 		void	setLimitSize(unsigned int limit);
 		unsigned int		getLimitSize(void);
 		std::map<Client, bool> getUsersMap(void);
+		void	setOp(Client &client, bool sign);
+		void	setPassword(std::string newPassword);
 		std::vector<Client *>	getInvitationList();
 		
 	private:
@@ -66,7 +68,7 @@ class Channel
 		bool				_InviteOnly;
 		bool				_isTopicForOp;
 		bool				_isLimited;
-
+		
 		
 		unsigned int					_limitSize;
 		channelMode _mode;//channel mode, depending on name prefix

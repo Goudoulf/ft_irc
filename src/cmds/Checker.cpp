@@ -19,17 +19,12 @@ bool isValidInvite(const std::string param, Client *client)
         {
             if (channel->getInviteOnly())
             {
-                if (channel->IsOp((server->getClients()->find(client->GetSocket()))->second->GetNickname()))
+                if (isOp(param, client))
                     return (true);
-                else
-                    rpl_send(client->GetSocket(), ERR_CHANOPRIVSNEEDED(param));
             }
             else
                 return (true);
         }
-        else
-            rpl_send(client->GetSocket(), ERR_NOTONCHANNEL(param));
-
     }
     return (false);
 }
@@ -53,8 +48,8 @@ bool	isOnChannel(const std::string param, Client *client)
 
     if (channel && !channel->InChannel(client->GetNickname()))
     {
-	rpl_send(client->GetSocket(), ERR_NOTONCHANNEL(param));
-	return false;
+        rpl_send(client->GetSocket(), ERR_NOTONCHANNEL(param));
+        return false;
     }
     return true;
 }
@@ -64,8 +59,8 @@ bool	ChannelExist(const std::string param, Client *client)
     IRCServer *server = IRCServer::getInstance();
     if (!server->find_channel(param))
     {
-	rpl_send(client->GetSocket(), ERR_NOSUCHCHANNEL(param));
-	return false;
+        rpl_send(client->GetSocket(), ERR_NOSUCHCHANNEL(param));
+        return false;
     }
     return true;
 }
@@ -74,9 +69,11 @@ bool	isValidPassword(const std::string param, Client *client)
 {
     IRCServer *server = IRCServer::getInstance();
     if (server->getPassword() == param)
+    {
+        rpl_send(client->GetSocket(), ERR_PASSWDMISMATCH());
+        return false;
+    }
 	return true;
-    rpl_send(client->GetSocket(), ERR_PASSWDMISMATCH());
-    return false;
 }
 
 bool	isEmpty(const std::string param, Client *client)
@@ -85,7 +82,7 @@ bool	isEmpty(const std::string param, Client *client)
     (void)server;
     if (param.empty())
     {
-	rpl_send(client->GetSocket(), ERR_NONICKNAMEGIVEN());
+	    rpl_send(client->GetSocket(), ERR_NONICKNAMEGIVEN());
         return false;
     }
     return true;
@@ -199,11 +196,8 @@ bool    isTmodeOn(const std::string param, Client *client) //ONLY FOR SETUP
     Channel *channel = server->find_channel(param);
     if (channel->getIsTopicForOp())
     {
-        if (!channel->IsOp(client->GetNickname()))
-        {
-            rpl_send(client->GetSocket(), ERR_CHANOPRIVSNEEDED(param));
+        if (isOp(param, client))
             return (false);
-        }
     }
     return (true);
 }
@@ -224,6 +218,32 @@ bool   isInvited(const std::string param, Client *client)
         }
         rpl_send(client->GetSocket(), ERR_INVITEONLYCHAN(channel->getChannelName()));
         return (false);
+    }
+    return (true);
+}
+
+bool    isOp(const std::string param, Client *client)
+{
+    IRCServer *server = IRCServer::getInstance();
+    Channel *channel = server->find_channel(param);
+    if (channel->IsOp((server->getClients()->find(client->GetSocket()))->second->GetNickname()))
+        return (true);
+    rpl_send(client->GetSocket(), ERR_CHANOPRIVSNEEDED(param));
+    return(false);
+}
+
+bool    isValidMode(const std::string param, Client *client)
+{
+    std::vector<std::string> modesSplit = split(param, ' ');
+    std::string modes = modesSplit.front();
+    std::string validModes = "itkol";
+    for (unsigned int i = 1; i < modes.length(); i++)
+    {
+        if (validModes.find(modes.at(i)) > 5)
+        {
+            rpl_send(client->GetSocket(), ERR_UNKNOWNMODE(modes.substr(i, 1)));
+            return (false);
+        }
     }
     return (true);
 }

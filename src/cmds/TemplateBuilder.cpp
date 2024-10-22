@@ -121,6 +121,7 @@ void    TemplateBuilder::executeCommand(Client *client, const std::string &input
 	if (!fill_param(client, params))
 		return;
 	_command->execute(client, _parsedParams);
+	_parsedParams.clear();
 }
 
 TemplateBuilder::~TemplateBuilder() {}
