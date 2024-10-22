@@ -45,6 +45,11 @@ bool Game::isFinished()
 	return _finished;
 }
 
+bool Game::isStarted()
+{
+	return _start;
+}
+
 std::string Game::getInput() const
 {
 	return _input;
@@ -63,4 +68,9 @@ void Game::cleanBuffer()
 void Game::setInput(std::string input)
 {
 	_input = input;
+}
+
+void Game::setCurrentPlayer(std::string client)
+{
+	_currentPlayer = client;
 }

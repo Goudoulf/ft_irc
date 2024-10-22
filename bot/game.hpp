@@ -18,6 +18,7 @@ class Game
 		std::string	_input;
 		std::string	_buffer;
 		std::string	*_gameState;
+		std::string	_currentPlayer;
 		bool		_start;
 		bool		_finished;
 
@@ -42,10 +43,12 @@ class Game
 		virtual void	gameLoop() = 0;
 
 		bool			isFinished();
+		bool			isStarted();
 		std::string		getInput() const;
 		std::string		getBuffer() const;
 		void			cleanBuffer();
 		void			setInput(std::string input);
+		void			setCurrentPlayer(std::string client);
 };
 
 #endif

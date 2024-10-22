@@ -91,7 +91,7 @@ bool HangMan::isBufferFull()
 
 bool HangMan::checkStart()
 {
-	if (_start == false && _input == "!start")
+	if (!_start && _input == "!start")
 	{
 		_buffer = "-------------------\n|     HANGMAN     |\n-------------------\n";
 		displayGame();
@@ -99,7 +99,7 @@ bool HangMan::checkStart()
 		_start = true;
 		return true;
 	}
-	else if (_start == false)
+	else if (!_start)
 	{
 		_buffer.clear();
 		return true;

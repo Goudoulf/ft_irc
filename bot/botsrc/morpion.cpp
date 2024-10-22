@@ -10,13 +10,6 @@ Morpion::Morpion(std::string type, std::vector<std::string> players) : Game()
 	_y = 0;
 	_turn = 0;
 	_gameState = new std::string[3] {"   ", "   ", "   "}; 
-	if (_players.size() != 2)
-		_finished = true;
-	else
-	{
-		_player1 = _players[0];
-		_player2 = _players[1];
-	}
 }
 
 Morpion::~Morpion()
@@ -105,15 +98,23 @@ bool Morpion::isBufferFull()
 
 bool Morpion::checkStart()
 {
-	if (_turn == 0 && _input == "!start")
+	if (!_start && _input == "!start")
 	{
+		if (_players.size() < 2)
+		{
+			_buffer = "Not enough player, please wait for another player!";
+			return true;
+		}
+		_player1 = _players[0];
+		_player2 = _players[1];
 		_buffer = "---------------\n|   MORPION   |\n---------------\n";
 		displayGame();
 		_buffer += "\n" "\x03" "4" + _player1 + " turn\nPut coordinates (ex: 1A, 3B, ...):";
 		_turn++;
+		_start = true;
 		return true;
 	}
-	else if (_turn == 0)
+	else if (!_start)
 	{
 		_buffer.clear();
 		return true;
@@ -125,6 +126,12 @@ void Morpion::gameLoop()
 {
 	if (checkStart())
 		return;
+
+	if (_turn % 2 && _currentPlayer != _player1)
+		return;
+	else if (!(_turn % 2) && _currentPlayer != _player2)
+		return;
+
 	if (isBufferFull())
 		return;
 	if (!checkInput())

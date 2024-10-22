@@ -32,6 +32,7 @@ class Bot
 		Game *findGame(std::string toFind);
 		void addGame(std::string game, std::vector<std::string> params);
 		std::vector<Game*> getGames();
+		std::vector<std::string> getPlayersList(std::string chanName);
 		void run();
 		void readData(std::string buffer);
 };

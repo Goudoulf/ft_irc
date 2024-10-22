@@ -80,9 +80,35 @@ void Bot::run()
 	}
 }
 
-std::vector<std::string> getPlayers()
+std::vector<std::string> Bot::getPlayersList(std::string chanName)
 {
-	send();
+	char buffer[1024];
+	std::string toSend(":bot!bot@localhost NAMES " + chanName +"\r\n");
+	send(_socketFd, toSend.c_str(), toSend.length(), 0);
+	bzero(buffer, 1024);
+	recv(_socketFd, buffer, 1024, 0);
+	std::vector<std::string> list;
+	std::string line(buffer);
+	line.erase(line.find_first_of('\r'), std::string::npos);
+	line.erase(0, 1);
+	std::istringstream iss(line);
+	std::string param;
+
+	while (iss >> param)
+	{
+		if (param[0] == ':')
+		{
+			if (param != ":@bot" && param != ":bot")
+			{
+				param.erase(0);
+				list.push_back(param);
+			}
+			while (iss >> param)
+				list.push_back(param);
+		}
+	}
+	
+	return list;
 }
 
 void Bot::readData (std::string buffer)
@@ -113,15 +139,12 @@ void Bot::readData (std::string buffer)
 		Game *actualGame = findGame(channel);
 		if (actualGame != NULL && !actualGame->isFinished())
 		{
-			std::cout << "INPUT = " << game << std::endl;
-			std::cout << "PREFIX = " << prefix << std::endl;
-			std::cout << "play the game" << std::endl;
+			std::string client(prefix);
+			client.erase(client.find('!'), std::string::npos);
+			actualGame->setCurrentPlayer(client);
 			actualGame->setInput(game);
-			if (game == "!start")
-			{
-				std::string
-				actualGame->setPlayers();
-			}
+			if (game == "!start" && !actualGame->isStarted())
+				actualGame->setPlayers(getPlayersList(actualGame->getChanName()));
 			actualGame->gameLoop();
 			std::cout << actualGame->getBuffer() << std::endl;
 			std::vector<std::string> message = split(actualGame->getBuffer(), '\n');
