@@ -55,6 +55,7 @@ TemplateBuilder::Builder& TemplateBuilder::Builder::command(Command *command)
 TemplateBuilder::Builder& TemplateBuilder::Builder::parser(CommandParser *parser)
 {
 	this->_parser = parser;
+	// TODO: deep copy to clean delete
 	return *this;
 }
 

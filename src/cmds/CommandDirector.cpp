@@ -11,37 +11,6 @@ void	CommandDirector::addCommand(TemplateBuilder *command)
 	_commandList.insert(std::make_pair(command->getName(), command));
 }
 
-std::vector<std::string> parseMode(std::vector<std::string> parsedParams)
-{
-    std::vector<std::string> parsedMode;
-    
-    std::string temp;
-    for (std::vector<std::string>::iterator it = parsedParams.begin(); it != parsedParams.end(); ++it)
-    {
-	if (it == parsedParams.begin())
-	{
-	    temp = *it;
-	}
-	else if ((*it)[0] == '+' || (*it)[0] == '-')
-	{
-	    parsedMode.push_back(temp);
-	    temp.clear();
-	    temp = *it;
-	}
-	else if ((*it)[0] != '+' && (*it)[0] != '-')
-	    temp += " " + *it;
-	if ((it + 1) == parsedParams.end())
-	    parsedMode.push_back(temp);
-    }
-    std::cout << "MODE PARAM {" << std::endl;
-    for (std::vector<std::string>::iterator it = parsedMode.begin(); it != parsedMode.end(); it++)
-    {
-	 std::cout << *it << std::endl;
-    }
-    std::cout << "}" << std::endl;
-    return parsedMode;
-}
-
 void	CommandDirector::parseCommand(Client* client, std::string buffer)
 {
     log(INFO, "Director Parsing");

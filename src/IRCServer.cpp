@@ -25,6 +25,7 @@
 #include "NickCommand.hpp"
 #include "QuitCommand.hpp"
 #include "ModeCommand.hpp"
+#include "ModeCommandParser.hpp"
 #include "TopicCommand.hpp"
 #include "InviteCommand.hpp"
 #include "KickCommand.hpp"
@@ -396,6 +397,7 @@ void    IRCServer::setCommandTemplate()
                                  .build()
                                  )
                           .command(new ModeCommand())
+                          .parser(new ModeCommandParser())
                           .build()
                           );
 
