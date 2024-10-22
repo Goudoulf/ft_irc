@@ -76,6 +76,7 @@
 #define RPL_ENDOFSTATS(stats_letter) (":localhost 219 " + stats_letter + " :End of STATS report"+ "\r\n")
 #define RPL_STATSUPTIME(days, hours, minutes, seconds) (":localhost 242 :Server Up " + days + " days " + hours + ":" + minutes + ":" + seconds+ "\r\n")
 #define RPL_JOIN(prefix, channel ) (":" + prefix + " JOIN " + channel + "\r\n")
+#define RPL_PRIVMSG(prefix, target, message) (":" + prefix + " PRIVMSG " + target + ":" + message + "\r\n")
 
 #define ERR_NOTONCHANNEL(channel) (":localhost 442 " + channel + " :You're not on that channel\r\n")
 #define ERR_BADCHANNELKEY(channel) (":localhost 475 " + channel + " :Cannot join channel (+k) \r\n")

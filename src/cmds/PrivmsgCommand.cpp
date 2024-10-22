@@ -8,9 +8,13 @@ void PrivmsgCommand::execute(Client *client, const std::map<std::string, std::ve
     log(CMD, client->GetNickname() + ":_____privmsg_____");
     IRCServer *server = IRCServer::getInstance();
     std::string msg(":" + client->GetPrefix() + " PRIVMSG " + params.find("msgtarget")->second[0] + " :" + params.find("message")->second[0] + "\r\n");
-    log(REPLY, msg);
-    for (std::map<int, Client*>::iterator it = server->getClients()->begin(); it != server->getClients()->end(); it++) {
-	if (it->second && it->second->GetSocket() != client->GetSocket())
-	    send(it->second->GetSocket(), msg.c_str(), msg.length(), 0);
+    std::string target = params.find("msgtarget")->second[0];
+    std::string message = params.find("message")->second[0];
+    if (target.at(0) == '&' || target.at(0) == '+' || target.at(0) == '!' || target.at(0) == '#')
+    {
+	Channel *channel = server->find_channel(target);
+	if (channel)
+	    channel->sendReply(RPL_PRIVMSG(client->GetPrefix(),target, message));
     }
+    log(REPLY, msg);
 }
