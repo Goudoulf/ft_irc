@@ -29,7 +29,10 @@
 #include <cstdio>
 #include <stdlib.h>
 #include <vector>
+#include <sys/epoll.h>
+#include <sys/socket.h>
 #include "cmds.h"
+#define MAX_EVENTS 10
 #include "CmdLevel.h"
 #define MAX_CLIENTS 30
 
@@ -52,12 +55,12 @@ class IRCServer
 		IRCServer*				getIRCServer();
 		void					stopServer();
 		int						run(void);
-		void					accept_connection(fd_set *all_sockets);
+		void					accept_connection();
 		void					read_data(int i);
 		Channel					*create_channel(std::string channel, Client *client, std::string key);
 		Channel					*find_channel(std::string channel);
 		bool					checkNick(const std::string& Nick);
-		void					remove_client(Client &client);
+		void					remove_client(Client *client);
 		std::map<int, Client*>	*getClients();
 		std::vector<Channel*>	*getChannels();
 		std::string				getCreationDate();
@@ -75,7 +78,7 @@ class IRCServer
 		IRCServer();
 
 
-		int server_fd, max_sd, sd, activity, valread, addrlen;
+		int server_fd, max_sd, sd, activity, valread, addrlen, epoll_fd;
 		fd_set					readfds;
 		fd_set					all_sockets;
 		u_int16_t				_port;
@@ -86,6 +89,7 @@ class IRCServer
 		std::string				_creation_date;
 		unsigned short			_client_count;
 		struct sockaddr_in		address;
+		struct epoll_event event, events[MAX_EVENTS];
 		std::map<int, Client*>	_clients;
 		CommandDirector			*_director;
 

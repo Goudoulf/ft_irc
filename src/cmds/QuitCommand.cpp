@@ -20,5 +20,5 @@ void QuitCommand::execute(Client *client, const std::map<std::string, std::vecto
 		if ((*_it)->InChannel(client->GetNickname()))
 			quitServer2((*_it)->getChannelName() , params.find("message")->second[0], client, server);
 	}
-	server->remove_client(*client);
+	server->remove_client(client);
 }
