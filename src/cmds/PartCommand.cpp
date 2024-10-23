@@ -11,7 +11,7 @@ void	partChannel(std::string channel, std::string message, Client *client)
 	if (!(chan = server->find_channel(channel)))
 	{
 		log(ERROR, "No channel :" + channel + "|");
-		rpl_send(client->GetSocket(), ERR_NOSUCHCHANNEL(channel));
+		rpl_send(client->GetSocket(), ERR_NOSUCHCHANNEL(client->GetNickname(), channel));
 		return ;
 
 	}

@@ -64,7 +64,7 @@ bool	ChannelExist(const std::string param, Client *client)
     IRCServer *server = IRCServer::getInstance();
     if (!server->find_channel(param))
     {
-	rpl_send(client->GetSocket(), ERR_NOSUCHCHANNEL(param));
+	rpl_send(client->GetSocket(), ERR_NOSUCHCHANNEL(client->GetNickname(), param));
 	return false;
     }
     return true;
@@ -135,7 +135,7 @@ bool	isValidChannel(const std::string param, Client *client)
 	char firstChar = (*it)[0];
 	if (firstChar != '#' && firstChar != '!' && firstChar != '&' && firstChar != '+')
 	{
-	    rpl_send(client->GetSocket(), ERR_NOSUCHCHANNEL(*it));
+	    rpl_send(client->GetSocket(), ERR_NOSUCHCHANNEL(client->GetNickname(), *it));
 	    return false;
 	}
 	for (size_t i = 1; i < (*it).length(); ++i) {
@@ -143,7 +143,7 @@ bool	isValidChannel(const std::string param, Client *client)
 	    if (!isalnum(c) && c != '-' && c != '[' && c != ']' &&
 		c != '\\' && c != '^' && c != '_' && c != '{' &&
 		c != '}' && c != '|') {
-		rpl_send(client->GetSocket(), ERR_NOSUCHCHANNEL(*it));
+		rpl_send(client->GetSocket(), ERR_NOSUCHCHANNEL(client->GetNickname(), *it));
 		return false;
 	    }
 	}

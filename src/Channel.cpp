@@ -168,7 +168,7 @@ void	Channel::sendMessage(Client *sender, std::string message)
 {
 	for (std::map<Client*, bool>::iterator it = _users.begin(); it != _users.end(); it++)
 	{
-		if (it->first)
+		if (it->first && it->first->GetNickname() != sender->GetNickname())
 			sender->sendMessage(it->first->GetSocket(), message);
 	}
 }

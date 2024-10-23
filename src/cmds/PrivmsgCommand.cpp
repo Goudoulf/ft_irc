@@ -14,7 +14,17 @@ void PrivmsgCommand::execute(Client *client, const std::map<std::string, std::ve
     {
 	Channel *channel = server->find_channel(target);
 	if (channel)
-	    channel->sendReply(RPL_PRIVMSG(client->GetPrefix(),target, message));
+	    channel->sendMessage(client, RPL_PRIVMSG(client->GetPrefix(),target, message));
+	else
+	    client->replyServer(ERR_NOSUCHCHANNEL(client->GetNickname(), target));
+    }
+    else
+    {
+	Client * target_client;
+	if ( (target_client = server->findClient(target)))
+	   client->sendMessage(target_client->GetSocket(), RPL_PRIVMSG(client->GetPrefix(), target, message));
+	else
+	    client->replyServer(ERR_NOSUCHNICK(target));
     }
     log(REPLY, msg);
 }
