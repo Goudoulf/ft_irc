@@ -30,6 +30,7 @@ class HangMan : public Game
 		std::vector<std::string> _wordsTried;
 		std::string	_lettersGuessed;
 		std::string	_wordToGuess;
+		std::vector<std::string>::iterator _itPlayer;
 };
 
 #endif

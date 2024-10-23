@@ -80,8 +80,7 @@ bool HangMan::isBufferFull()
 	}
 	if (_input.empty())
 	{
-		std::cout << "BUFFERFULL" << std::endl;
-		_buffer += "Input a letter or a word:";
+		_buffer += "\x02" "\x03" "2" + (*_itPlayer) + "\nInput a letter or a word:";
 		return true;
 	}
 	if (!checkInput())
@@ -95,7 +94,8 @@ bool HangMan::checkStart()
 	{
 		_buffer = "-------------------\n|     HANGMAN     |\n-------------------\n";
 		displayGame();
-		_buffer += "\nInput a letter or a word: ";
+		_itPlayer = _players.begin();
+		_buffer += "\x02" "\x03" "2" + (*_itPlayer) + "\nInput a letter or a word: ";
 		_start = true;
 		return true;
 	}
@@ -110,6 +110,8 @@ bool HangMan::checkStart()
 void HangMan::gameLoop()
 {
 	if (checkStart())
+		return;
+	if (_currentPlayer != (*_itPlayer))
 		return;
 	if (isBufferFull())
 		return;
@@ -154,6 +156,8 @@ void HangMan::gameLoop()
 		return;
 	displayGame();
 	_input.clear();
+	if (++_itPlayer == _players.end())
+		_itPlayer = _players.begin();
 	if (isBufferFull())
 		return;
 }
