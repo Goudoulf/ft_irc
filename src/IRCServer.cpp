@@ -6,7 +6,7 @@
 /*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 08:21:58 by cassie            #+#    #+#             */
-/*   Updated: 2024/10/21 14:30:03 by lvallini         ###   ########.fr       */
+/*   Updated: 2024/10/22 08:44:40 by lvallini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -530,9 +530,11 @@ void    IRCServer::setCommandTemplate()
                           .param("channel", ParamTemplate::Builder()
                                  .addChecker(&ChannelExist)
                                  .addChecker(&isOnChannel)
+                                 .addChecker(&isOp)
                                  .build()
                                  )
                           .param("modes",  ParamTemplate::Builder()
+                                 .addChecker(&isValidMode)
                                  .isOptional()
                                  .build()
                                  )

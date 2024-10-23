@@ -118,5 +118,7 @@
 #define ERR_CHANOPRIVSNEEDED(channel) (":localhost 482 " + channel + " :You're not channel operator\r\n")
 #define ERR_CANTKILLSERVER() (":localhost 483 :You can't kill a server!\r\n")
 #define ERR_NOOPERHOST() (":localhost 491 :No O-lines for your host\r\n")
+#define ERR_INVALIDMODEPARAM(client, target, modeChar, parameter, description) (client + " " + target + " " + modeChar + " " + parameter + " :" + description + "\r\n")
+#define ERR_INVALIDKEY(client, target) (client + " " + target + " :Key is not well-formed\r\n")
 
 void	rpl_send(int fd, std::string rpl);
