@@ -411,6 +411,20 @@ void	IRCServer::remove_client(Client *client)
     }
 }
 
+void	IRCServer::remove_channel(Channel *channel)
+{
+    std::vector<Channel*>::iterator it;
+    for (it = _channels.begin(); it != _channels.end(); it++)
+    {
+        if (*it && (*it) == channel)
+        {
+            delete (*it);
+            it = _channels.erase(it);
+            return ;
+        }
+    }
+}
+
 void    IRCServer::setCommandTemplate()
 {
     _director = new CommandDirector(); 

@@ -11,6 +11,9 @@ void	quitServer2(std::string channel, std::string message, Client *client, IRCSe
 			message_server("", "QUIT", *client, message, it->second->GetSocket());
 	}
 	chan->remove_client(client);
+	if (chan->getIsEmpty())
+		server->remove_channel(chan);
+
 }
 
 void QuitCommand::execute(Client *client, const std::map<std::string, std::vector<std::string>>& params)

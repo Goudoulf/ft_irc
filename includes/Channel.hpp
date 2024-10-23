@@ -46,6 +46,7 @@ class Channel
 		bool	getIsTopicForOp(void);
 		void	setIsLimited(bool sign);
 		bool	getIsLimited(void);
+		bool	getIsEmpty(void);
 		void	setLimitSize(unsigned int limit);
 		void	sendMessage(Client *sender, std::string message);
 		void	sendReply(std::string message);

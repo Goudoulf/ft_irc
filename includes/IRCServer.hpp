@@ -61,6 +61,7 @@ class IRCServer
 		Channel					*find_channel(std::string channel);
 		bool					checkNick(const std::string& Nick);
 		void					remove_client(Client *client);
+		void					remove_channel(Channel *channel);
 		std::map<int, Client*>	*getClients();
 		std::vector<Channel*>	*getChannels();
 		std::string				getCreationDate();

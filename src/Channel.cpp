@@ -127,6 +127,11 @@ std::string		Channel::getTopic()
 	return _topic;
 }
 
+bool	Channel::getIsEmpty(void)
+{
+	return _isEmpty;
+}
+
 void	Channel::add_client(Client *client)
 {
 	_users.insert(std::pair<Client*, bool>(client, false));	
