@@ -44,7 +44,7 @@ void	modeOpe(bool sign, std::vector<std::string> params, Client& client, Channel
 			rpl_send(client.GetSocket(), ERR_USERNOTINCHANNEL(*it, channel.getChannelName()));
 			return ;
 		}
-		channel.setOp(*server->findClient(*it), sign);
+		channel.setOp(server->findClient(*it), sign);
 	}
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rjacq <rjacq@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 08:21:58 by cassie            #+#    #+#             */
-/*   Updated: 2024/10/22 08:44:40 by lvallini         ###   ########.fr       */
+/*   Updated: 2024/10/21 15:47:47 by rjacq            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,8 +248,9 @@ void    IRCServer::read_data(int i)
     {
         log(DEBUG, client->GetBuffer());
         std::string& clientPartial = clientPartialBuffers[i];
-
+        std::cout << client->GetBuffer() << std::endl;
         std::string completeBuffer = clientPartial + client->GetBuffer();
+        std::cout << completeBuffer.length() << std::endl;
         if (completeBuffer.size() > MAX_BUFFER_SIZE) {
             log(ERROR, "Buffer overflow from client , disconnecting.");
             close(client_fd);
@@ -260,7 +261,6 @@ void    IRCServer::read_data(int i)
         std::string remainingPartial;
         log(DEBUG, "Spliting buffer=" + completeBuffer );
         std::vector<std::string> messages = splitBuffer(completeBuffer, remainingPartial);
-
         clientPartialBuffers[client_fd] = remainingPartial;
         log(DEBUG, "Loop director");
         for (std::vector<std::string>::iterator it = messages.begin(); it != messages.end(); it++)
@@ -315,6 +315,7 @@ void    IRCServer::accept_connection()
     int     new_socket;
     log(INFO, "Server accepting new connection");
     new_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen);
+    std::cout << new_socket << std::endl;
     if (new_socket < 0)
         my_exit("accept error", EXIT_FAILURE);
     setNonBlocking(new_socket);
