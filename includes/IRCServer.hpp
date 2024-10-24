@@ -46,7 +46,6 @@ class IRCServer
 	public:
 
 		static IRCServer*	getInstance();
-
 			
 		~IRCServer();
 		void					initialize(std::string port, std::string password);
@@ -74,12 +73,10 @@ class IRCServer
 
 	private:
 
-		static IRCServer* _instance;
-
 		IRCServer() {}
 
+		static IRCServer*		_instance;
 
-		int server_fd, valread, addrlen, epoll_fd;
 		u_int16_t				_port;
 		std::string				_port_string;
 		std::string				_password;
@@ -89,6 +86,7 @@ class IRCServer
 		struct sockaddr_in		address;
 		struct epoll_event		event, events[MAX_EVENTS];
 		std::map<int, Client*>	_clients;
-		CommandDirector			*_director;
+		CommandDirector*		_director;
+		int server_fd, valread, addrlen, epoll_fd;
 };
 

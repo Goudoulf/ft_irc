@@ -11,8 +11,8 @@
 
 Client::Client(const int &socket, struct sockaddr_in address): _socket(socket)
 {
-    IRCServer *server = IRCServer::getInstance();
-	char test[1024];
+	IRCServer *server = IRCServer::getInstance();
+	char temp[1024];
 	_buffer = new char[1024];
 	_nickname = "default";
 	_realname = "";
@@ -20,8 +20,8 @@ Client::Client(const int &socket, struct sockaddr_in address): _socket(socket)
 		_level = NONE;
 	else
 		_level = CONNECTED;
-	getnameinfo((sockaddr*)&address, sizeof(address), test, 1024, NULL, 0, 0);
-	_hostname = test;
+	getnameinfo((sockaddr*)&address, sizeof(address), temp, 1024, NULL, 0, 0);
+	_hostname = temp;
 	_signOnTime = time(NULL);
 	_lastActivity = _signOnTime;
 	log(INFO, "CLient creation " + _hostname);
@@ -32,7 +32,7 @@ Client::~Client()
 
 void    Client::replyServer(std::string message)
 {
-    IRCServer *server = IRCServer::getInstance();
+	IRCServer *server = IRCServer::getInstance();
 	server->sendReply(this->_socket, message);
 }
 

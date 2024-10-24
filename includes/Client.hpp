@@ -26,8 +26,10 @@ class IRCServer;
 class Client
 {
 	public:
+
 		Client(const int &socket, struct sockaddr_in address);
 		~Client();
+
 		bool operator <(const Client& toComp) const;
 
 		void		replyServer(std::string message);

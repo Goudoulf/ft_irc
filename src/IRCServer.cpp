@@ -32,8 +32,6 @@ const size_t MAX_BUFFER_SIZE = 512;
 
 IRCServer* IRCServer::_instance = nullptr;
 
-
-
 std::map<int, std::string> clientPartialBuffers;
 
 void my_exit(std::string error, int code)
@@ -246,7 +244,6 @@ void	IRCServer::removeChannel(Channel *channel)
     }
 }
 
-
 bool	IRCServer::checkNick(const std::string& nick)
 {
     for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); it++) {
@@ -256,7 +253,7 @@ bool	IRCServer::checkNick(const std::string& nick)
     return true;
 }
 
-std::string	IRCServer::getPassword()
+std::string IRCServer::getPassword()
 {
     return _password;
 }
