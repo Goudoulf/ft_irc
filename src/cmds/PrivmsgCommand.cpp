@@ -12,7 +12,7 @@ void PrivmsgCommand::execute(Client *client, const std::map<std::string, std::ve
     std::string message = params.find("message")->second[0];
     if (target.at(0) == '&' || target.at(0) == '+' || target.at(0) == '!' || target.at(0) == '#')
     {
-	Channel *channel = server->find_channel(target);
+	Channel *channel = server->findChannel(target);
 	if (channel)
 	    channel->sendMessage(client, RPL_PRIVMSG(client->GetPrefix(),target, message));
 	else

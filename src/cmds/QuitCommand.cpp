@@ -5,14 +5,14 @@
 
 void	quitServer2(std::string channel, std::string message, Client *client, IRCServer *server)
 {
-	Channel *chan = server->find_channel(channel);
+	Channel *chan = server->findChannel(channel);
 	for (std::map<int, Client*>::iterator it = server->getClients()->begin(); it != server->getClients()->end(); it++) {
 		if (it->second && chan->InChannel(it->second->GetNickname()))
 			message_server("", "QUIT", *client, message, it->second->GetSocket());
 	}
 	chan->remove_client(client);
 	if (chan->getIsEmpty())
-		server->remove_channel(chan);
+		server->removeChannel(chan);
 
 }
 
@@ -23,5 +23,5 @@ void QuitCommand::execute(Client *client, const std::map<std::string, std::vecto
 		if ((*_it)->InChannel(client->GetNickname()))
 			quitServer2((*_it)->getChannelName() , params.find("message")->second[0], client, server);
 	}
-	server->remove_client(client);
+	server->removeClient(client);
 }

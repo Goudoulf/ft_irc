@@ -11,8 +11,8 @@ void	joinChannel2(std::string channel, std::string key, Client *client, IRCServe
 	log(CMD, client->GetNickname() + ":_____join_____");
 	log(CMD, channel + " key=" + key); 
 	Channel *chan;
-	if (!(chan = server->find_channel(channel)))
-		chan = server->create_channel(channel, client, key);
+	if (!(chan = server->findChannel(channel)))
+		chan = server->createChannel(channel, client, key);
 	if (chan->InChannel(client->GetNickname()) == false)
 	{
 		log(DEBUG, "Not in channel adding client"); 
@@ -54,7 +54,7 @@ void JoinCommand::execute(Client *client, const std::map<std::string, std::vecto
 		Channel *chan;
 		std::string channel = channels[i];
 		std::string key = "";
-		if ((!server->find_channel(channel)) || ((chan = server->find_channel(channel)) && chan->getPassword().size()))
+		if ((!server->findChannel(channel)) || ((chan = server->findChannel(channel)) && chan->getPassword().size()))
 		{
 			key = (j < keys.size()) ? keys[j] : "";
 			j++;

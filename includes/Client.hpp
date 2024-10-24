@@ -26,7 +26,7 @@ class IRCServer;
 class Client
 {
 	public:
-		Client(const int &socket, struct sockaddr_in address, IRCServer* server);
+		Client(const int &socket, struct sockaddr_in address);
 		~Client();
 		bool operator <(const Client& toComp) const;
 
@@ -49,7 +49,6 @@ class Client
 		std::string	GetRealname() const;
 		std::string	GetHostname() const;
 		CmdLevel	GetLevel() const;
-		IRCServer*	getServer()const;
 		Client		*GetClient();
 		int			GetSocket() const;
 		std::string	GetPrefix() const;
@@ -75,7 +74,6 @@ class Client
 		char		*_buffer;
 		int			_socket;
 		std::map<int, std::string> _clientPartialBuffers;
-		IRCServer*	_server;
 };
 
 // #endif

@@ -9,17 +9,17 @@
 #include "debug.h"
 #include "IRCServer.hpp"
 
-Client::Client(const int &socket, struct sockaddr_in address, IRCServer* server): _socket(socket)
+Client::Client(const int &socket, struct sockaddr_in address): _socket(socket)
 {
+    IRCServer *server = IRCServer::getInstance();
 	char test[1024];
 	_buffer = new char[1024];
 	_nickname = "default";
 	_realname = "";
-	if (server->getpasswordIsSet())
+	if (server->getPasswordIsSet())
 		_level = NONE;
 	else
 		_level = CONNECTED;
-	_server = server;
 	getnameinfo((sockaddr*)&address, sizeof(address), test, 1024, NULL, 0, 0);
 	_hostname = test;
 	_signOnTime = time(NULL);
@@ -32,7 +32,8 @@ Client::~Client()
 
 void    Client::replyServer(std::string message)
 {
-	_server->sendReply(this->_socket, message);
+    IRCServer *server = IRCServer::getInstance();
+	server->sendReply(this->_socket, message);
 }
 
 void	Client::sendMessage(int target, std::string message)
@@ -159,11 +160,6 @@ std::string	Client::GetRealname() const
 CmdLevel	Client::GetLevel() const
 {
 	return _level;
-}
-
-IRCServer*	Client::getServer()const
-{
-	return _server;
 }
 
 int	Client::GetSocket() const

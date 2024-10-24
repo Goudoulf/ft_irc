@@ -64,22 +64,25 @@ IRCServer*	IRCServer::getInstance()
         _instance = new IRCServer();
     return _instance;
 }
-void setNonBlocking(int sockfd) {
-    int flags = fcntl(sockfd, F_GETFL, 0);
-    fcntl(sockfd, F_SETFL, flags | O_NONBLOCK);
-}
 
 void	IRCServer::initialize(std::string port, std::string password)
 {
     char *end;
     log(DEBUG, "IRC Server is setting up socket");
     memset(&address, 0, sizeof(address));
-    int test = 1;
     _port = static_cast<unsigned short>(std::strtod(port.c_str(), &end)); 
     _port_string = port;
     _password = password;
     _passwordIsSet = !_password.empty();
 
+
+    addrlen = sizeof(address);
+    _creation_date = getTime();
+}
+
+void  IRCServer::initSocket()
+{
+    int test = 1;
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
         my_exit("socket failed", EXIT_FAILURE);
 
@@ -107,7 +110,7 @@ void	IRCServer::initialize(std::string port, std::string password)
         close(server_fd);
         exit(EXIT_FAILURE);
     }
-    
+
     event.events = EPOLLIN; // Wait for incoming connections
     event.data.fd = server_fd;
     if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, server_fd, &event) == -1) {
@@ -116,51 +119,7 @@ void	IRCServer::initialize(std::string port, std::string password)
         close(epoll_fd);
         exit(EXIT_FAILURE);
     }
-
-    addrlen = sizeof(address);
     _clients.insert(std::pair<int, Client*>(server_fd, NULL));
-    _creation_date = set_time();
-}
-
-// void	IRCServer::initialize(std::string port, std::string password)
-// {
-//     char *end;
-//     log(DEBUG, "IRC Server is setting up socket");
-//     memset(&address, 0, sizeof(address));
-//     int test = 1;
-//     _port = static_cast<unsigned short>(std::strtod(port.c_str(), &end)); 
-//     _port_string = port;
-//     _password = password;
-//     _passwordIsSet = !_password.empty();
-//     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
-//         my_exit("socket failed", EXIT_FAILURE);
-//     if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &test, sizeof(test)))
-//         my_exit("setsockopt", EXIT_FAILURE);
-//     address.sin_family = AF_INET;
-//     address.sin_addr.s_addr = INADDR_ANY;
-//     address.sin_port = htons(_port);
-//     if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
-//     {
-//         log(ERROR, strerror(errno));
-//         my_exit("bind failed", EXIT_FAILURE);
-//     }
-//     if (listen(server_fd, 10) < 0)
-//         my_exit("listen error", EXIT_FAILURE);
-//     addrlen = sizeof(address);
-//     _clients.insert(std::pair<int, Client*>(server_fd, NULL));
-//     _creation_date = set_time();
-// }
-
-void print_client_list(std::map<int, Client*> client)
-{
-    for (std::map<int, Client*>::iterator it = client.begin(); it != client.end(); it++) {
-        if (it->second)
-            std::cout << "USER=" << it->second->GetNickname() << std::endl;
-    }
-}
-
-IRCServer::IRCServer(void)
-{
 }
 
 IRCServer::~IRCServer(void)
@@ -181,57 +140,15 @@ int     IRCServer::run(void)
             my_exit("epoll_wait failed", EXIT_FAILURE);
         for (int i = 0; i < event_count; i++) {
             if (events[i].data.fd == server_fd)
-                accept_connection();
+                acceptConnection();
             else
-                read_data(i);
+                readData(i);
         }
     }
     return 0;
 }
 
-// int     IRCServer::run(void)
-// {
-//     FD_ZERO(&readfds);
-//     FD_ZERO(&all_sockets);
-//     FD_SET(server_fd, &all_sockets);
-//     max_sd = server_fd;
-//     log(INFO, "IRC Server loop is starting");
-//     while (true) {
-//         readfds = all_sockets;
-//         timeout.tv_sec = 0;
-//         timeout.tv_usec = 0;
-//         activity = select(max_sd + 1, &readfds, NULL, NULL, &timeout);
-//         if ((activity < 0) && (errno != EINTR))
-//             my_exit("select error", EXIT_FAILURE);
-//         if (activity == 0)
-//         {
-//             if (stop == true)
-//             {
-//                 close(server_fd);
-//                 return 0;
-//             }
-//             continue;
-//         }
-//         print_client_list(this->_clients);
-//         log(INFO, "Server new socket activity");
-//         int i = 0;
-// 	for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); it++) {
-//             if (FD_ISSET(it->first, &readfds) == 1) // check if any fd i have data waiting 
-//             {
-//                 i = (it->first);
-//                 break;
-//             }    
-//         }
-//         log(DEBUG, "Server Ready");
-//         if (i == server_fd)
-//             accept_connection(&all_sockets);
-//         else
-//             read_data(i);
-//     }
-//     return 0;
-// }
-
-void    IRCServer::read_data(int i)
+void    IRCServer::readData(int i)
 {
     int client_fd = events[i].data.fd;
     Client* client = _clients.find(client_fd)->second;
@@ -239,7 +156,7 @@ void    IRCServer::read_data(int i)
     bzero(client->GetBuffer(), 1024);
     log(INFO, "Server reading data");
     if ((valread = recv(client_fd, client->GetBuffer(), 1024, 0)) <= 0) {
-        remove_client(client);
+        removeClient(client);
         log(WARN, "recv: socket closed");
         if (valread == -1)  
             log(ERROR, "recv: error");
@@ -248,69 +165,23 @@ void    IRCServer::read_data(int i)
     {
         log(DEBUG, client->GetBuffer());
         std::string& clientPartial = clientPartialBuffers[i];
-        std::cout << client->GetBuffer() << std::endl;
         std::string completeBuffer = clientPartial + client->GetBuffer();
-        std::cout << completeBuffer.length() << std::endl;
         if (completeBuffer.size() > MAX_BUFFER_SIZE) {
             log(ERROR, "Buffer overflow from client , disconnecting.");
-            close(client_fd);
+            removeClient(client);
             clientPartialBuffers.erase(client_fd);
             return;
         }
 
         std::string remainingPartial;
-        log(DEBUG, "Spliting buffer=" + completeBuffer );
         std::vector<std::string> messages = splitBuffer(completeBuffer, remainingPartial);
         clientPartialBuffers[client_fd] = remainingPartial;
-        log(DEBUG, "Loop director");
         for (std::vector<std::string>::iterator it = messages.begin(); it != messages.end(); it++)
             _director->parseCommand(client, *it);
-
-
     }
-    //processBuffer(*this, client->GetSocket(), client->GetBuffer());
 }
 
-// void    IRCServer::read_data(int i)
-// {
-//     Client* client = (_clients.find(i))->second;
-//     log(INFO, "Clear buffer");
-//     bzero(client->GetBuffer(), 1024);
-//     log(INFO, "Server reading data");
-//     if ((valread = recv(i, client->GetBuffer(), 1024, 0)) == 0) {
-//         close(sd);
-//         log(WARN, "recv: socket closed");
-//         if (valread == -1)  
-//             log(ERROR, "recv: error");
-//     }
-//     else
-//     {
-//         log(DEBUG, client->GetBuffer());
-//         std::string& clientPartial = clientPartialBuffers[i];
-//
-//         std::string completeBuffer = clientPartial + client->GetBuffer();
-//         if (completeBuffer.size() > MAX_BUFFER_SIZE) {
-//             log(ERROR, "Buffer overflow from client , disconnecting.");
-//             close(i);
-//             clientPartialBuffers.erase(i);
-//             return;
-//         }
-//
-//         std::string remainingPartial;
-//         log(DEBUG, "Spliting buffer=" + completeBuffer );
-//         std::vector<std::string> messages = splitBuffer(completeBuffer, remainingPartial);
-//
-//         clientPartialBuffers[i] = remainingPartial;
-//         log(DEBUG, "Loop director");
-//         for (std::vector<std::string>::iterator it = messages.begin(); it != messages.end(); it++)
-//             _director->parseCommand(client, *it);
-//
-//
-//     }
-//     //processBuffer(*this, client->GetSocket(), client->GetBuffer());
-// }
-
-void    IRCServer::accept_connection()
+void    IRCServer::acceptConnection()
 {
     int     new_socket;
     log(INFO, "Server accepting new connection");
@@ -326,9 +197,7 @@ void    IRCServer::accept_connection()
         log(ERROR, "epoll_ctl: new socket failed");
         close(new_socket);
     }
-    if (new_socket > max_sd)
-        max_sd = new_socket;
-    _clients.insert(std::pair<int, Client*>(new_socket, new Client(new_socket, address, getIRCServer())));
+    _clients.insert(std::pair<int, Client*>(new_socket, new Client(new_socket, address)));
 }
 
 std::string	IRCServer::getPassword()
@@ -351,17 +220,12 @@ std::string	IRCServer::getCreationDate()
     return _creation_date;
 }
 
-IRCServer*	IRCServer::getIRCServer()
-{
-    return  this;
-}
-
 std::string	IRCServer::getPort()
 {
     return _port_string;
 }
 
-bool    IRCServer::getpasswordIsSet()
+bool    IRCServer::getPasswordIsSet()
 {
     return _passwordIsSet;
 }
@@ -372,13 +236,13 @@ void    IRCServer::sendReply(int target, std::string message)
 	send(target, message.c_str(), message.size(), 0);
 }
 
-Channel *IRCServer::create_channel(std::string channel, Client *client, std::string key)
+Channel *IRCServer::createChannel(std::string channel, Client *client, std::string key)
 {
     _channels.push_back(new Channel(channel, client, key));
     return (_channels.back());
 }
 
-Channel	*IRCServer::find_channel(std::string channel)
+Channel	*IRCServer::findChannel(std::string channel)
 {
     std::vector<Channel*>::iterator it;
     for (it = _channels.begin(); it != _channels.end(); it++) {
@@ -398,7 +262,7 @@ Client	*IRCServer::findClient(std::string nickname)
     return (NULL);
 }
 
-void	IRCServer::remove_client(Client *client)
+void	IRCServer::removeClient(Client *client)
 {
     std::map<int, Client*>::iterator it = _clients.find(client->GetSocket());
     if (it != _clients.end() && it->second && it->second->GetNickname() == client->GetNickname())
@@ -412,7 +276,7 @@ void	IRCServer::remove_client(Client *client)
     }
 }
 
-void	IRCServer::remove_channel(Channel *channel)
+void	IRCServer::removeChannel(Channel *channel)
 {
     std::vector<Channel*>::iterator it;
     for (it = _channels.begin(); it != _channels.end(); it++)
@@ -679,14 +543,4 @@ bool	IRCServer::checkNick(const std::string& nick)
                     return false;
 	}
     return true;
-}
-
-std::string	IRCServer::set_time()
-{
-    time_t timestamp = time( NULL );
-    struct tm * pTime = localtime( & timestamp );
-
-    char buffer[80];
-    strftime( buffer, 80, "%d/%m/%Y %H:%M:%S", pTime );
-    return (buffer);
 }

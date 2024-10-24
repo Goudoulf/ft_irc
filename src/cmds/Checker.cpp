@@ -10,7 +10,7 @@
 bool isValidInvite(const std::string param, Client *client)
 {
     IRCServer *server = IRCServer::getInstance();
-    Channel *channel = server->find_channel(param);
+    Channel *channel = server->findChannel(param);
     if (!channel)
         return (true);
     else
@@ -44,7 +44,7 @@ bool	nickExist(const std::string param, Client *client)
 bool	isOnChannel(const std::string param, Client *client)
 {
     IRCServer *server = IRCServer::getInstance();
-    Channel *channel = server->find_channel(param);
+    Channel *channel = server->findChannel(param);
 
     if (channel && !channel->InChannel(client->GetNickname()))
     {
@@ -57,7 +57,7 @@ bool	isOnChannel(const std::string param, Client *client)
 bool	ChannelExist(const std::string param, Client *client)
 {
     IRCServer *server = IRCServer::getInstance();
-    if (!server->find_channel(param))
+    if (!server->findChannel(param))
     {
 	rpl_send(client->GetSocket(), ERR_NOSUCHCHANNEL(client->GetNickname(), param));
 	return false;
@@ -151,7 +151,7 @@ bool	isValidChannel(const std::string param, Client *client)
 bool    isInLimits(const std::string param, Client *client)
 {
     IRCServer *server = IRCServer::getInstance();
-    Channel *channel = server->find_channel(param);
+    Channel *channel = server->findChannel(param);
     if (!channel)
         return (true);
     if (channel->getIsLimited())
@@ -193,7 +193,7 @@ bool	isAlphaNum(const std::string param, Client *client)
 bool    isTmodeOn(const std::string param, Client *client) //ONLY FOR SETUP
 {
     IRCServer *server = IRCServer::getInstance();
-    Channel *channel = server->find_channel(param);
+    Channel *channel = server->findChannel(param);
     if (channel->getIsTopicForOp())
     {
         if (isOp(param, client))
@@ -205,7 +205,7 @@ bool    isTmodeOn(const std::string param, Client *client) //ONLY FOR SETUP
 bool   isInvited(const std::string param, Client *client)
 {
     IRCServer *server = IRCServer::getInstance();
-    Channel *channel = server->find_channel(param);
+    Channel *channel = server->findChannel(param);
     if (!channel)
         return (true);
     if (channel->getInviteOnly())
@@ -225,7 +225,7 @@ bool   isInvited(const std::string param, Client *client)
 bool    isOp(const std::string param, Client *client)
 {
     IRCServer *server = IRCServer::getInstance();
-    Channel *channel = server->find_channel(param);
+    Channel *channel = server->findChannel(param);
     if (channel->IsOp((server->getClients()->find(client->GetSocket()))->second->GetNickname()))
         return (true);
     rpl_send(client->GetSocket(), ERR_CHANOPRIVSNEEDED(param));

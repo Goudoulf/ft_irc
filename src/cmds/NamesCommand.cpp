@@ -5,7 +5,7 @@
 void NamesCommand::execute(Client *client, const std::map<std::string, std::vector<std::string>>& params)
 {
 	IRCServer *server = IRCServer::getInstance();
-	Channel *channel = server->find_channel(params.find("channels")->second[0]);
+	Channel *channel = server->findChannel(params.find("channels")->second[0]);
 	std::map<Client*, bool> clients = channel->getUsersMap();
 	std::string clientsList;
 	for (std::map<Client*, bool>::iterator it = clients.begin(); it != clients.end(); it++)

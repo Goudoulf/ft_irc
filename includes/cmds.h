@@ -45,3 +45,7 @@ bool    isTmodeOn(const std::string param, Client *client);
 bool    isInvited(const std::string param, Client *client);
 bool    isValidMode(const std::string param, Client *client);
 bool    isOp(const std::string param, Client *client);
+
+void print_client_list(std::map<int, Client*> client);
+void setNonBlocking(int sockfd);
+std::string	getTime();

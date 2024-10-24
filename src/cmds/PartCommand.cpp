@@ -8,7 +8,7 @@ void	partChannel(std::string channel, std::string message, Client *client)
         IRCServer *server = IRCServer::getInstance();
 	log(CMD, client->GetNickname() + ":_____part_____");
 	Channel *chan;
-	if (!(chan = server->find_channel(channel)))
+	if (!(chan = server->findChannel(channel)))
 	{
 		log(ERROR, "No channel :" + channel + "|");
 		rpl_send(client->GetSocket(), ERR_NOSUCHCHANNEL(client->GetNickname(), channel));
@@ -29,7 +29,7 @@ void	partChannel(std::string channel, std::string message, Client *client)
 	if (chan->InChannel(client->GetNickname()) == true)
 		chan->remove_client(client);
 	if (chan->getIsEmpty())
-		server->remove_channel(chan);
+		server->removeChannel(chan);
 }
 
 void PartCommand::execute(Client *client, const std::map<std::string, std::vector<std::string>>& params)

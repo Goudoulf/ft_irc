@@ -47,54 +47,49 @@ class IRCServer
 
 		static IRCServer*	getInstance();
 
-		void	initialize(std::string port, std::string password);
 			
-		~IRCServer(void);
-		void					sendReply(int target, std::string message);
+		~IRCServer();
+		void					initialize(std::string port, std::string password);
+		void					initSocket();
 		void					setCommandTemplate();
-		IRCServer*				getIRCServer();
+		int						run();
 		void					stopServer();
-		int						run(void);
-		void					accept_connection();
-		void					read_data(int i);
-		Channel					*create_channel(std::string channel, Client *client, std::string key);
-		Channel					*find_channel(std::string channel);
+
+		void					acceptConnection();
+		void					readData(int i);
+
+		void					sendReply(int target, std::string message);
+		Channel					*createChannel(std::string channel, Client *client, std::string key);
 		bool					checkNick(const std::string& Nick);
-		void					remove_client(Client *client);
-		void					remove_channel(Channel *channel);
-		std::map<int, Client*>	*getClients();
-		std::vector<Channel*>	*getChannels();
+		void					removeClient(Client *client);
+		void					removeChannel(Channel *channel);
+		Channel					*findChannel(std::string channel);
+		Client					*findClient(std::string nickname);
+
+		std::map<int, Client*>*	getClients();
+		std::vector<Channel*>*	getChannels();
 		std::string				getCreationDate();
 		std::string				getPort();
 		std::string				getPassword();
-		bool					getpasswordIsSet();
-		std::string				set_time();
-		struct timeval timeout;
-		Client					*findClient(std::string nickname);
+		bool					getPasswordIsSet();
 
 	private:
 
 		static IRCServer* _instance;
 
-		IRCServer();
+		IRCServer() {}
 
 
-		int server_fd, max_sd, sd, activity, valread, addrlen, epoll_fd;
-		fd_set					readfds;
-		fd_set					all_sockets;
+		int server_fd, valread, addrlen, epoll_fd;
 		u_int16_t				_port;
 		std::string				_port_string;
 		std::string				_password;
 		bool					_passwordIsSet;
 		std::vector<Channel*>	_channels;
 		std::string				_creation_date;
-		unsigned short			_client_count;
 		struct sockaddr_in		address;
-		struct epoll_event event, events[MAX_EVENTS];
+		struct epoll_event		event, events[MAX_EVENTS];
 		std::map<int, Client*>	_clients;
 		CommandDirector			*_director;
-
-		IRCServer(IRCServer&);
-		IRCServer& operator=(IRCServer&);
 };
 

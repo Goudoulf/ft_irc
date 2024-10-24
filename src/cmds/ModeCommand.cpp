@@ -83,7 +83,7 @@ void	mapModeInit(std::map<char, void (*)(bool, std::vector<std::string>, Client&
 void ModeCommand::execute(Client *client, const std::map<std::string, std::vector<std::string>>& params)
 {
 	IRCServer *server = IRCServer::getInstance();
-	Channel *channel = server->find_channel(params.find("channel")->second[0]);
+	Channel *channel = server->findChannel(params.find("channel")->second[0]);
 	std::vector<std::string> iter = params.find("modes")->second;
 	std::map<char, void(*)(bool, std::vector<std::string>, Client&, Channel&)> mapFunction;
 	mapModeInit(mapFunction);
