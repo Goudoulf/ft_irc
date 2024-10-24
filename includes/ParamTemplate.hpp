@@ -4,6 +4,9 @@
 #include <vector>
 #include "reply.h"
 #include "IRCServer.hpp"
+#include "Client.hpp"
+
+class Client;
 
 class ParamTemplate {
 

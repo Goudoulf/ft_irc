@@ -1,7 +1,9 @@
 #pragma once
 #include "TemplateBuilder.hpp"
+#include "Client.hpp"
 #include <map>
 
+class	Client;
 class TemplateBuilder;
 
 class CommandDirector {

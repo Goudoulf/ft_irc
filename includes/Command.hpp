@@ -1,9 +1,12 @@
 #pragma once
 #include <string>
 #include "IRCServer.hpp"
+#include "Client.hpp"
+#include <vector>
 #include "cmds.h"
 
 class IRCServer;
+class Client;
 
 class Command {
 public:

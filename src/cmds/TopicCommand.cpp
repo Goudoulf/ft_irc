@@ -21,7 +21,7 @@ void TopicCommand::execute(Client *client, const std::map<std::string, std::vect
 					rpl_send(client->GetSocket(), RPL_TOPIC(channel, client->GetNickname(), topic));
 			}
 			else
-			{
+		{
 				std::string nick = client->GetNickname();
 				if ((*_it)->IsOp(nick))
 				{
@@ -34,7 +34,7 @@ void TopicCommand::execute(Client *client, const std::map<std::string, std::vect
 					}
 				}
 				else
-					rpl_send(client->GetSocket(), ERR_CHANOPRIVSNEEDED(channel));
+				rpl_send(client->GetSocket(), ERR_CHANOPRIVSNEEDED(channel));
 			}
 		}
 	}

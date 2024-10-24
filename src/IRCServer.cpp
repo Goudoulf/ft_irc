@@ -17,25 +17,6 @@
 #include "debug.h"
 #include "cmds.h"
 #include "CommandDirector.hpp"
-#include "TemplateBuilder.hpp"
-#include "JoinCommand.hpp"
-#include "PartCommand.hpp"
-#include "PassCommand.hpp"
-#include "UserCommand.hpp"
-#include "NickCommand.hpp"
-#include "QuitCommand.hpp"
-#include "ModeCommand.hpp"
-#include "ModeCommandParser.hpp"
-#include "TopicCommand.hpp"
-#include "InviteCommand.hpp"
-#include "KickCommand.hpp"
-#include "PrivmsgCommand.hpp"
-#include "NamesCommand.hpp"
-#include "WhoCommand.hpp"
-#include "WhoisCommand.hpp"
-#include "PingCommand.hpp"
-#include "PongCommand.hpp"
-#include "CapCommand.hpp"
 #include <cmath>
 #include <cstring>
 #include <sys/select.h>
@@ -50,12 +31,19 @@ extern bool stop;
 const size_t MAX_BUFFER_SIZE = 512;
 
 IRCServer* IRCServer::_instance = nullptr;
+
+
+
 std::map<int, std::string> clientPartialBuffers;
 
 void my_exit(std::string error, int code)
 {
     log(ERROR, error);
     exit(code);
+}
+
+IRCServer::~IRCServer(void)
+{
 }
 
 IRCServer*	IRCServer::getInstance()
@@ -74,7 +62,8 @@ void	IRCServer::initialize(std::string port, std::string password)
     _port_string = port;
     _password = password;
     _passwordIsSet = !_password.empty();
-
+    _director = new CommandDirector();
+    setCommandTemplate(_director);
 
     addrlen = sizeof(address);
     _creation_date = getTime();
@@ -122,15 +111,6 @@ void  IRCServer::initSocket()
     _clients.insert(std::pair<int, Client*>(server_fd, NULL));
 }
 
-IRCServer::~IRCServer(void)
-{
-}
-
-void		IRCServer::stopServer()
-{
-        return;
-}
-
 int     IRCServer::run(void)
 {
     log(INFO, "IRC Server loop is starting");
@@ -146,6 +126,11 @@ int     IRCServer::run(void)
         }
     }
     return 0;
+}
+
+void		IRCServer::stopServer()
+{
+        return;
 }
 
 void    IRCServer::readData(int i)
@@ -200,35 +185,6 @@ void    IRCServer::acceptConnection()
     _clients.insert(std::pair<int, Client*>(new_socket, new Client(new_socket, address)));
 }
 
-std::string	IRCServer::getPassword()
-{
-    return _password;
-}
-
-std::map<int, Client*> *IRCServer::getClients()
-{
-    return &_clients;
-}
-
-std::vector<Channel*> *IRCServer::getChannels()
-{
-    return &_channels;
-}
-
-std::string	IRCServer::getCreationDate()
-{
-    return _creation_date;
-}
-
-std::string	IRCServer::getPort()
-{
-    return _port_string;
-}
-
-bool    IRCServer::getPasswordIsSet()
-{
-    return _passwordIsSet;
-}
 
 void    IRCServer::sendReply(int target, std::string message)
 {
@@ -290,251 +246,6 @@ void	IRCServer::removeChannel(Channel *channel)
     }
 }
 
-void    IRCServer::setCommandTemplate()
-{
-    _director = new CommandDirector(); 
-
-    _director->addCommand(TemplateBuilder::Builder()
-                          .name("CAP")
-                          .level(NONE)
-                          .param("toto", ParamTemplate::Builder()
-                                 .build()
-                                 )
-                          .command(new CapCommand())
-                          .build()
-                          );
-
-    _director->addCommand(TemplateBuilder::Builder()
-                          .name("PASS")
-                          .level(NONE)
-                          .param("password", ParamTemplate::Builder()
-                                 .addChecker(&isConnected)
-                                 .addChecker(&isValidPassword)
-                                 .build()
-                                 )
-                          .command(new PassCommand())
-                          .build()
-                          );
-
-    _director->addCommand(TemplateBuilder::Builder()
-                          .name("NICK")
-                          .level(CONNECTED)
-                          .param("nick", ParamTemplate::Builder()
-                                 .addChecker(&isEmpty) 
-                                 .addChecker(&isValidNick)
-                                 .build()
-                                 )
-                          .command(new NickCommand())
-                          .build()
-                          );
-
-    _director->addCommand(TemplateBuilder::Builder()
-                          .name("USER")
-                          .level(CONNECTED)
-                          .param("user", ParamTemplate::Builder()
-                                 .build()
-                                 )
-                          .param("mode", ParamTemplate::Builder()
-                                 .build()
-                                 )
-                          .param("unused", ParamTemplate::Builder()
-                                 .build()
-                                 )
-                          .trailing("realname", ParamTemplate::Builder()
-                                 .build()
-                                 )
-                          .command(new UserCommand())
-                          .build()
-                          );
-
-    _director->addCommand(TemplateBuilder::Builder()
-                          .name("JOIN")
-                          .level(REGISTERED)
-                          .param("channel", ParamTemplate::Builder()
-                                 .addChecker(&isValidChannel)
-                                 .addChecker(&isInLimits)
-                                 .addChecker(&isInvited)
-                                 .build()
-                                 )
-                          .param("key", ParamTemplate::Builder()
-                                 .isOptional()
-                                 .build()
-                                 )
-                          .command(new JoinCommand())
-                          .build()
-                          );
-
-    _director->addCommand(TemplateBuilder::Builder()
-                          .name("PART")
-                          .level(REGISTERED)
-                          .param("channel", ParamTemplate::Builder()
-                                 .build()
-                                 )
-                          .trailing("message", ParamTemplate::Builder()
-                                 .isOptional()
-                                 .build()
-                                 )
-                          .command(new PartCommand())
-                          .build()
-                          );
-
-    _director->addCommand(TemplateBuilder::Builder()
-                          .name("QUIT")
-                          .level(REGISTERED)
-                          .trailing("message",  ParamTemplate::Builder()
-                                 .isOptional()
-                                 .build()
-                                 )
-                          .command(new QuitCommand())
-                          .build()
-                          );
-    
-    _director->addCommand(TemplateBuilder::Builder()
-                          .name("MODE")
-                          .level(REGISTERED)
-                          .param("channel", ParamTemplate::Builder()
-                                 .addChecker(&ChannelExist)
-                                 .addChecker(&isOnChannel)
-                                 .addChecker(&isOp)
-                                 .build()
-                                 )
-                          .param("modes",  ParamTemplate::Builder()
-                                 .addChecker(&isValidMode)
-                                 .isOptional()
-                                 .build()
-                                 )
-                          .command(new ModeCommand())
-                          .parser(new ModeCommandParser())
-                          .build()
-                          );
-
-    _director->addCommand(TemplateBuilder::Builder()
-                          .name("TOPIC")
-                          .level(REGISTERED)
-                          .param("channel", ParamTemplate::Builder()
-                                 .addChecker(&ChannelExist)
-                                 .addChecker(&isOnChannel)
-                                 .addChecker(&isTmodeOn)
-                                 .build()
-                                 )
-                          .trailing("topic", ParamTemplate::Builder()
-                                 .isOptional()
-                                 .build()
-                                 )
-                          .command(new TopicCommand())
-                          .build()
-                          );
-
-    _director->addCommand(TemplateBuilder::Builder()
-                          .name("INVITE")
-                          .level(REGISTERED)
-                          .param("nickname", ParamTemplate::Builder()
-                                 .addChecker(&nickExist)
-                                 .build()
-                                 )
-                          .param("channel", ParamTemplate::Builder()
-                                 .addChecker(&isValidInvite)
-                                 .build()
-                                 )
-                          .command(new InviteCommand())
-                          .build()
-                          );
-
-    _director->addCommand(TemplateBuilder::Builder()
-                          .name("KICK")
-                          .level(REGISTERED)
-                          .param("channel", ParamTemplate::Builder()
-                                 .build()
-                                 )
-                          .param("user", ParamTemplate::Builder()
-                                 .build()
-                                 )
-                          .trailing("comment", ParamTemplate::Builder()
-                                 .build()
-                                 )
-
-                          .command(new KickCommand())
-                          .build()
-                          );
-
-    _director->addCommand(TemplateBuilder::Builder()
-                          .name("PRIVMSG")
-                          .level(REGISTERED)
-                          .param("msgtarget", ParamTemplate::Builder()
-                                 .build()
-                                 )
-                          .trailing("message",  ParamTemplate::Builder()
-                                 .build()
-                                 )
-
-                          .command(new PrivmsgCommand())
-                          .build()
-                          );
-
-    _director->addCommand(TemplateBuilder::Builder()
-                          .name("WHO")
-                          .level(REGISTERED)
-                          .param("mask", ParamTemplate::Builder()
-                                 .isOptional()
-                                 .build()
-                                 )
-                          .param("o", ParamTemplate::Builder()
-                                 .isOptional()
-                                 .build()
-                                 )
-                          .command(new WhoCommand())
-                          .build()
-                          );
-
-    _director->addCommand(TemplateBuilder::Builder()
-                          .name("WHOIS")
-                          .level(REGISTERED)
-                          .param("target", ParamTemplate::Builder()
-                                 .build()
-                                 )
-                          .param("mask", ParamTemplate::Builder()
-                                 .build()
-                                 )
-                          .command(new WhoisCommand())
-                          .build()
-                          );
-
-    _director->addCommand(TemplateBuilder::Builder()
-                          .name("PING")
-                          .level(REGISTERED)
-                          .param("server1", ParamTemplate::Builder()
-                                 .build()
-                                 )
-                          .param("server2", ParamTemplate::Builder()
-                                 .build()
-                                 )
-                          .command(new PingCommand())
-                          .build()
-                          );
-
-    _director->addCommand(TemplateBuilder::Builder()
-                          .name("PONG")
-                          .level(REGISTERED)
-                          .param("server1", ParamTemplate::Builder()
-                                 .build()
-                                 )
-                          .param("server2", ParamTemplate::Builder()
-                                 .build()
-                                 )
-                          .command(new PongCommand())
-                          .build()
-                          );
-
-    _director->addCommand(TemplateBuilder::Builder()
-                          .name("NAMES")
-                          .level(REGISTERED)
-                          .param("channels", ParamTemplate::Builder()
-                                 .build()
-                                 )
-                          .command(new NamesCommand())
-                          .build()
-                          );
-}
 
 bool	IRCServer::checkNick(const std::string& nick)
 {
@@ -543,4 +254,34 @@ bool	IRCServer::checkNick(const std::string& nick)
                     return false;
 	}
     return true;
+}
+
+std::string	IRCServer::getPassword()
+{
+    return _password;
+}
+
+std::map<int, Client*> *IRCServer::getClients()
+{
+    return &_clients;
+}
+
+std::vector<Channel*> *IRCServer::getChannels()
+{
+    return &_channels;
+}
+
+std::string	IRCServer::getCreationDate()
+{
+    return _creation_date;
+}
+
+std::string	IRCServer::getPort()
+{
+    return _port_string;
+}
+
+bool    IRCServer::getPasswordIsSet()
+{
+    return _passwordIsSet;
 }

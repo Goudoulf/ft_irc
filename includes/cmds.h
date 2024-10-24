@@ -1,5 +1,6 @@
 #pragma once
 
+#include "CommandDirector.hpp"
 #include "Client.hpp"
 #include <vector>
 #include <string>
@@ -7,6 +8,7 @@
 
 class IRCServer;
 class Client;
+class CommandDirector;
 
 std::vector<std::string> splitBuffer(const std::string& buffer, std::string& remainingPartial);
 void processBuffer(IRCServer& server, int client_fd, const std::string& buffer);
@@ -45,6 +47,8 @@ bool    isTmodeOn(const std::string param, Client *client);
 bool    isInvited(const std::string param, Client *client);
 bool    isValidMode(const std::string param, Client *client);
 bool    isOp(const std::string param, Client *client);
+
+void    setCommandTemplate(CommandDirector *director);
 
 void print_client_list(std::map<int, Client*> client);
 void setNonBlocking(int sockfd);

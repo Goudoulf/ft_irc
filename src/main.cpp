@@ -69,7 +69,6 @@ int main(int argc, char **argv)
         IRCServer *server = IRCServer::getInstance();
         server->initialize(argv[1], "");
         server->initSocket();
-        server->setCommandTemplate();
 	server->run();
     }
     return (0);

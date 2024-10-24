@@ -32,8 +32,8 @@
 #include <sys/epoll.h>
 #include <sys/socket.h>
 #include "cmds.h"
-#define MAX_EVENTS 10
 #include "CmdLevel.h"
+#define MAX_EVENTS 10
 #define MAX_CLIENTS 30
 
 class Client;
@@ -51,7 +51,6 @@ class IRCServer
 		~IRCServer();
 		void					initialize(std::string port, std::string password);
 		void					initSocket();
-		void					setCommandTemplate();
 		int						run();
 		void					stopServer();
 
