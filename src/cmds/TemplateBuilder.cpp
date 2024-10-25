@@ -71,9 +71,9 @@ const std::string TemplateBuilder::getName()const
 
 bool    TemplateBuilder::check_level(Client *client)const
 {
-	if (this->_name != "USER" && this->_name != "PASS" && client->GetLevel() >= _levelNeeded)
+	if (this->_name != "USER" && this->_name != "PASS" && client->getLevel() >= _levelNeeded)
 		return true;
-	if (client->GetLevel() == _levelNeeded)
+	if (client->getLevel() == _levelNeeded)
 		return true;
 	return false;
 }
@@ -88,7 +88,7 @@ bool	TemplateBuilder::fill_param(Client *client, std::vector<std::vector<std::st
 		log(INFO, "Param = " + it->first);
 		if (it->second->_isOptional == false && it2 == param.end())
 		{
-			rpl_send(client->GetSocket(), ERR_NEEDMOREPARAMS(this->getName()));
+			rpl_send(client->getSocket(), ERR_NEEDMOREPARAMS(this->getName()));
 			return false;
 		}
 		if (it->second->_isOptional == true && it2 == param.end())
@@ -115,7 +115,7 @@ void    TemplateBuilder::executeCommand(Client *client, const std::string &input
 		return;
 	if (!check_level(client))
 	{
-		rpl_send(client->GetSocket(), ERR_NOTREGISTERED());
+		rpl_send(client->getSocket(), ERR_NOTREGISTERED());
 		return ;
 	}
 	if (!fill_param(client, params))

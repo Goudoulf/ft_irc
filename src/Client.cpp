@@ -28,7 +28,9 @@ Client::Client(const int &socket, struct sockaddr_in address): _socket(socket)
 }
 
 Client::~Client()
-{}
+{
+	delete _buffer;
+}
 
 void    Client::replyServer(std::string message)
 {
@@ -88,117 +90,54 @@ void	Client::finduser(const char * buffer)
 	log(DEBUG, "New user username = " + _username);
 }
 
-void		Client::SetPrefix()
+void		Client::setPrefix()
 {
 	_prefix = _nickname + "!" + _username + "@" + _hostname;	
 }
 
-void	Client::SetClient()
-{
-}
+void	Client::setLevel(CmdLevel level) {_level = level;}
 
-void		Client::SetLevel(CmdLevel level)
-{
-	_level = level;	
-}
+void	Client::setNickname(std::string nickname) {_nickname = nickname;}
 
-void	Client::SetNickname(std::string nickname)
-{
-	_nickname = nickname;
-}
+void	Client::setHostname(std::string hostname) {_hostname = hostname;}
 
-void	Client::SetHostname(std::string hostname)
-{
-	_hostname = hostname;
-}
+void	Client::setUsername(std::string username) {_username = username;}
 
-void	Client::SetUsername(std::string username)
-{
-	_username = username;
-}
+void	Client::setSocket(int i) {_socket = i;}
 
-void	Client::SetSocket(int i)
-{
-	_socket = i;
-}
+void	Client::setBuffer(const char * string) {_buffer = strcpy(_buffer, string);}
 
-void	Client::SetBuffer(const char * string)
-{
-	_buffer = strcpy(_buffer, string);
-}
+void	Client::setIsConnected(bool isconnected) {_isconnected = isconnected;}
 
-void		Client::SetIsConnected(bool isconnected)
-{
-	_isconnected = isconnected;
-}
+void	Client::setIsRegistered(bool isregistered) {_isRegistered = isregistered;}
 
-void		Client::SetIsRegistered(bool isregistered)
-{
-	_isRegistered = isregistered;
-}
 
-std::string	Client::GetNickname() const
-{
-	return _nickname;
-}
+std::string	Client::getNickname() const {return _nickname;}
 
-std::string	Client::GetHostname() const
-{
-	return _hostname;
-}
+std::string	Client::getHostname() const {return _hostname;}
 
-std::string	Client::GetUsername() const
-{
-	return _username;
-}
+std::string	Client::getUsername() const {return _username;}
 
-std::string	Client::GetRealname() const
-{
-	return _realname;
-}
+std::string	Client::getRealname() const {return _realname;}
 
-CmdLevel	Client::GetLevel() const
-{
-	return _level;
-}
+CmdLevel	Client::getLevel() const {return _level;}
 
-int	Client::GetSocket() const
-{
-	return _socket;
-}
+int	Client::getSocket() const {return _socket;}
 
-char	*Client::GetBuffer()
-{
-	return _buffer;
-}
+char	*Client::getBuffer() {return _buffer;}
 
-std::string	Client::GetPrefix() const
-{
-	return _prefix;
-}
+std::string	Client::getPrefix() const {return _prefix;}
 
-std::string	Client::GetBufferString()
-{
-	return _buffer;
-}
+std::string	Client::getBufferString()const {return _buffer;}
 
-bool		Client::GetIsConnected()
-{
-	return _isconnected;
-}
+bool		Client::getIsConnected()const {return _isconnected;}
 
-bool		Client::GetIsRegistered()
-{
-	return _isRegistered;
-}
+bool		Client::getIsRegistered()const {return _isRegistered;}
 
-Client		*Client::GetClient()
-{
-	return this;
-}
+Client		*Client::getClient() {return this;}
 
-time_t	Client::getSignOnTime() {return _signOnTime;}
+time_t	Client::getSignOnTime()const {return _signOnTime;}
 
-time_t	Client::getLastActivity() {return _lastActivity;}
+time_t	Client::getLastActivity()const {return _lastActivity;}
 
 void	Client::setLastActivity(time_t newActivity) {_lastActivity = newActivity;}

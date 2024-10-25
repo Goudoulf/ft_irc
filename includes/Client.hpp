@@ -30,42 +30,45 @@ class Client
 		Client(const int &socket, struct sockaddr_in address);
 		~Client();
 
-		bool operator <(const Client& toComp) const;
-
 		void		replyServer(std::string message);
 		void		sendMessage(int target, std::string message);
-		void		SetClient();
 		void		findnick(const char *buffer);
 		void		finduser(const char *buffer);
-		void		SetNickname(std::string nickname);
-		void		SetHostname(std::string nickname);
-		void		SetUsername(std::string username);
-		void		SetLevel(CmdLevel level);
-		void		SetSocket(int i);
-		void		SetPrefix();
-		void		SetBuffer(const char * string);
-		void		SetIsConnected(bool isconnected);
-		void		SetIsRegistered(bool isregistered);
-		std::string	GetNickname() const;
-		std::string	GetUsername() const;
-		std::string	GetRealname() const;
-		std::string	GetHostname() const;
-		CmdLevel	GetLevel() const;
-		Client		*GetClient();
-		int			GetSocket() const;
-		std::string	GetPrefix() const;
-		char		*GetBuffer();
-		std::string	GetBufferString();
-		bool		GetIsConnected();
-		bool		GetIsRegistered();
-		time_t		getSignOnTime();
-		time_t		getLastActivity();
+
+
+		void		setNickname(std::string nickname);
+		void		setHostname(std::string nickname);
+		void		setUsername(std::string username);
+		void		setLevel(CmdLevel level);
+		void		setSocket(int i);
+		void		setPrefix();
+		void		setBuffer(const char * string);
+		void		setIsConnected(bool isconnected);
+		void		setIsRegistered(bool isregistered);
 		void		setLastActivity(time_t newActivity);
 
+		int			getSocket() const;
+		char		*getBuffer();
+		bool		getIsConnected()const;
+		bool		getIsRegistered()const;
+		time_t		getSignOnTime()const;
+		time_t		getLastActivity()const;
+		Client		*getClient();
+		CmdLevel	getLevel() const;
+		std::string	getPrefix() const;
+		std::string	getBufferString()const;
+		std::string	getNickname() const;
+		std::string	getUsername() const;
+		std::string	getRealname() const;
+		std::string	getHostname() const;
+
+		bool operator <(const Client& toComp) const;
+
 	private:
-		std::string	_nickname; // 9 char and unique ; name which appears for other users
-		std::string	_username; // username on the host ; name you use to login, allows system to identify you
-		std::string	_realname; // name of the host ; just additional information about you
+
+		std::string	_nickname; 
+		std::string	_username;
+		std::string	_realname;
 		std::string	_hostname;
 		std::string _prefix;
 		time_t		_signOnTime;

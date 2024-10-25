@@ -5,5 +5,5 @@
 void PongCommand::execute(Client *client, const std::map<std::string, std::vector<std::string>>& params)
 {
 	(void)params;
-	log(CMD, client->GetNickname() + ":_____pong_____");
+	log(CMD, client->getNickname() + ":_____pong_____");
 }

@@ -21,8 +21,6 @@
 
 void    setCommandTemplate(CommandDirector *director)
 {
-    director = new CommandDirector(); 
-
     director->addCommand(TemplateBuilder::Builder()
                           .name("CAP")
                           .level(NONE)

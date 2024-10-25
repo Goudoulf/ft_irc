@@ -16,17 +16,17 @@
 
 void	reply_server(std::string command,  Client &client, std::string message)
 {
-	int sd = client.GetSocket();
-	std::string nickname = client.GetNickname();
-	std::string rpl(":127.0.0.1 " + command + " " + client.GetNickname() + " " +  message +"\r\n");
-	log(REPLY, ":127.0.0.1 " + command + " " + client.GetNickname() + " " +  message);
+	int sd = client.getSocket();
+	std::string nickname = client.getNickname();
+	std::string rpl(":127.0.0.1 " + command + " " + client.getNickname() + " " +  message +"\r\n");
+	log(REPLY, ":127.0.0.1 " + command + " " + client.getNickname() + " " +  message);
 	send(sd, rpl.c_str(), rpl.length(), 0);
 }
 
 void	message_server(std::string target, std::string command, Client &client, std::string message, int sd)
 {
-	std::string rpl(":" + client.GetPrefix() + " " + command + " " + target + " " + message +"\r\n");
-	//std::cout << "Message to " << client.GetNickname() << " = " << rpl << std::endl;
+	std::string rpl(":" + client.getPrefix() + " " + command + " " + target + " " + message +"\r\n");
+	//std::cout << "Message to " << client.getNickname() << " = " << rpl << std::endl;
 	log(REPLY, rpl);
 	send(sd, rpl.c_str(), rpl.length(), 0);
 }
