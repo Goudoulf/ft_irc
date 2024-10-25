@@ -7,14 +7,14 @@ void WhoisCommand::execute(Client *client, const std::map<std::string, std::vect
     Client *target = server->findClient(params.find("target")->second[0]);
     std::string nickName = target->getNickname();
     //rpl_send(target_fd, RPL_WHOISUSER(nickName, target->getUsername(), target->getHostname(), target->getRealname()));
-    std::vector<Channel *> *channels = server->getChannels();
+    std::map<std::string, Channel *> *channels = server->getChannels();
     std::string channelsToSend;
-    for (std::vector<Channel *>::iterator it = channels->begin(); it != channels->end(); it++)
+    for (std::map<std::string, Channel *>::iterator it = channels->begin(); it != channels->end(); it++)
     {
-        if ((*it)->isOp(nickName) && (*it)->inChannel(nickName))
+        if (it->second->isOp(nickName) && it->second->inChannel(nickName))
             channelsToSend += "@";
-        if ((*it)->inChannel(nickName))
-            channelsToSend += (*it)->getChannelName() + " ";
+        if (it->second->inChannel(nickName))
+            channelsToSend += it->second->getChannelName() + " ";
     }
     //rpl_send(target_fd, RPL_WHOISCHANNELS(nickName, channelsToSend));
     std::stringstream ss, ss2;

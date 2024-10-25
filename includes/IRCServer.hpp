@@ -65,7 +65,7 @@ class IRCServer
 		Client					*findClient(std::string nickname);
 
 		std::map<int, Client*>*	getClients();
-		std::vector<Channel*>*	getChannels();
+		std::map<std::string, Channel*>*	getChannels();
 		std::string				getCreationDate();
 		std::string				getPort();
 		std::string				getPassword();
@@ -81,10 +81,11 @@ class IRCServer
 		std::string				_port_string;
 		std::string				_password;
 		bool					_passwordIsSet;
-		std::vector<Channel*>	_channels;
+		//std::vector<Channel*>	_channels;
 		std::string				_creation_date;
 		struct sockaddr_in		address;
 		struct epoll_event		event, events[MAX_EVENTS];
+		std::map<std::string, Channel*>	_channels;
 		std::map<int, Client*>	_clients;
 		CommandDirector*		_director;
 		int server_fd, valread, addrlen, epoll_fd;

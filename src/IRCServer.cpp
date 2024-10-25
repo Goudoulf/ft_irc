@@ -192,17 +192,15 @@ void    IRCServer::sendReply(int target, std::string message)
 
 Channel *IRCServer::createChannel(std::string channel, Client *client, std::string key)
 {
-    _channels.push_back(new Channel(channel, client, key));
-    return (_channels.back());
+    // _channels.push_back(new Channel(channel, client, key));
+    _channels[channel] = new Channel(channel, client, key);
+    return (_channels[channel]);
 }
 
 Channel	*IRCServer::findChannel(std::string channel)
 {
-    std::vector<Channel*>::iterator it;
-    for (it = _channels.begin(); it != _channels.end(); it++) {
-        if ((*it)->getChannelName() == channel)
-            return (*it);
-    }
+    if (_channels.find(channel) != _channels.end())
+        return _channels[channel];
     return (NULL);
 }
 
@@ -232,15 +230,11 @@ void	IRCServer::removeClient(Client *client)
 
 void	IRCServer::removeChannel(Channel *channel)
 {
-    std::vector<Channel*>::iterator it;
-    for (it = _channels.begin(); it != _channels.end(); it++)
+    std::map<std::string, Channel*>::iterator it;
+    if ((it = _channels.find(channel->getChannelName())) != _channels.end())
     {
-        if (*it && (*it) == channel)
-        {
-            delete (*it);
-            it = _channels.erase(it);
-            return ;
-        }
+        delete _channels[channel->getChannelName()];
+        it = _channels.erase(it);
     }
 }
 
@@ -263,7 +257,7 @@ std::map<int, Client*> *IRCServer::getClients()
     return &_clients;
 }
 
-std::vector<Channel*> *IRCServer::getChannels()
+std::map<std::string, Channel*> *IRCServer::getChannels()
 {
     return &_channels;
 }

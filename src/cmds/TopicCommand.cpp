@@ -8,14 +8,14 @@ void TopicCommand::execute(Client *client, const std::map<std::string, std::vect
 	if (params.size() > 1)
 		topic = params.find("topic")->second[0];
 	std::string channel = params.find("channel")->second[0];
-	for (std::vector<Channel*>::iterator _it = server->getChannels()->begin(); _it != server->getChannels()->end(); _it++)
+	for (std::map<std::string, Channel*>::iterator _it = server->getChannels()->begin(); _it != server->getChannels()->end(); _it++)
 	{
 
-		if ((*_it)->getChannelName() == channel)
+		if ((_it)->second->getChannelName() == channel)
 		{
 			if (topic.empty())
 			{
-				if ((topic = (*_it)->getTopic()).empty())
+				if ((topic = _it->second->getTopic()).empty())
 					rpl_send(client->getSocket(), RPL_NOTOPIC(channel));
 				else
 					rpl_send(client->getSocket(), RPL_TOPIC(channel, client->getNickname(), topic));
@@ -23,13 +23,13 @@ void TopicCommand::execute(Client *client, const std::map<std::string, std::vect
 			else
 		{
 				std::string nick = client->getNickname();
-				if ((*_it)->isOp(nick))
+				if (_it->second->isOp(nick))
 				{
-					(*_it)->setTopic(topic);
-					std::string rpl = ":" + client->getPrefix() + " TOPIC " + (*_it)->getChannelName() + " :" + (*_it)->getTopic() + "\r\n";
+					_it->second->setTopic(topic);
+					std::string rpl = ":" + client->getPrefix() + " TOPIC " + _it->second->getChannelName() + " :" + _it->second->getTopic() + "\r\n";
 					for (std::map<int, Client*>::iterator it = server->getClients()->begin(); it != server->getClients()->end(); it++)
 					{
-						if (it->second && (*_it)->inChannel(it->second->getNickname()))
+						if (it->second && _it->second->inChannel(it->second->getNickname()))
 							send(it->second->getSocket(), rpl.c_str(), rpl.length(), 0);
 					}
 				}
