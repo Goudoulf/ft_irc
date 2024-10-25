@@ -21,8 +21,6 @@
 
 void    setCommandTemplate(CommandDirector *director)
 {
-    director = new CommandDirector(); 
-
     director->addCommand(TemplateBuilder::Builder()
                           .name("CAP")
                           .level(NONE)
@@ -173,15 +171,18 @@ void    setCommandTemplate(CommandDirector *director)
                           .name("KICK")
                           .level(REGISTERED)
                           .param("channel", ParamTemplate::Builder()
+                                 .addChecker(&ChannelExist)
+                                 .addChecker(&isOnChannel)
+                                 .addChecker(&isOp)
                                  .build()
                                  )
                           .param("user", ParamTemplate::Builder()
                                  .build()
                                  )
                           .trailing("comment", ParamTemplate::Builder()
+                                 .isOptional()
                                  .build()
                                  )
-
                           .command(new KickCommand())
                           .build()
                           );

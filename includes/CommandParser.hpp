@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "cmds.h"
 #include <vector>
 
 class CommandParser
