@@ -12,10 +12,10 @@ void NamesCommand::execute(Client *client, const std::map<std::string, std::vect
 	{
 		if ((*it).second)
 			clientsList += "@";
-		clientsList += (*it).first->GetNickname() + " ";
+		clientsList += (*it).first->getNickname() + " ";
 	}
 	std::string channelName = "= " + channel->getChannelName();
-	std::string clientName = (server->getClients()->find(client->GetSocket())->second)->GetNickname();
-	rpl_send(client->GetSocket(), RPL_NAMREPLY(clientName, channelName, clientsList)
+	std::string clientName = (server->getClients()->find(client->getSocket())->second)->getNickname();
+	rpl_send(client->getSocket(), RPL_NAMREPLY(clientName, channelName, clientsList)
 				+ RPL_ENDOFNAMES(clientName, channel->getChannelName()));
 }

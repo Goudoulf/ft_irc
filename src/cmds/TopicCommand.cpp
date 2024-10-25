@@ -16,25 +16,25 @@ void TopicCommand::execute(Client *client, const std::map<std::string, std::vect
 			if (topic.empty())
 			{
 				if ((topic = (*_it)->getTopic()).empty())
-					rpl_send(client->GetSocket(), RPL_NOTOPIC(channel));
+					rpl_send(client->getSocket(), RPL_NOTOPIC(channel));
 				else
-					rpl_send(client->GetSocket(), RPL_TOPIC(channel, client->GetNickname(), topic));
+					rpl_send(client->getSocket(), RPL_TOPIC(channel, client->getNickname(), topic));
 			}
 			else
 		{
-				std::string nick = client->GetNickname();
-				if ((*_it)->IsOp(nick))
+				std::string nick = client->getNickname();
+				if ((*_it)->isOp(nick))
 				{
 					(*_it)->setTopic(topic);
-					std::string rpl = ":" + client->GetPrefix() + " TOPIC " + (*_it)->getChannelName() + " :" + (*_it)->getTopic() + "\r\n";
+					std::string rpl = ":" + client->getPrefix() + " TOPIC " + (*_it)->getChannelName() + " :" + (*_it)->getTopic() + "\r\n";
 					for (std::map<int, Client*>::iterator it = server->getClients()->begin(); it != server->getClients()->end(); it++)
 					{
-						if (it->second && (*_it)->InChannel(it->second->GetNickname()))
-							send(it->second->GetSocket(), rpl.c_str(), rpl.length(), 0);
+						if (it->second && (*_it)->inChannel(it->second->getNickname()))
+							send(it->second->getSocket(), rpl.c_str(), rpl.length(), 0);
 					}
 				}
 				else
-				rpl_send(client->GetSocket(), ERR_CHANOPRIVSNEEDED(channel));
+				rpl_send(client->getSocket(), ERR_CHANOPRIVSNEEDED(channel));
 			}
 		}
 	}

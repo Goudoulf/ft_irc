@@ -27,7 +27,7 @@ void	modeKey(bool sign, std::vector<std::string> params, Client& client, Channel
 	{
 		if ((*it).find(' '))
 		{
-			rpl_send(client.GetSocket(), ERR_INVALIDKEY(client.GetNickname(), channel.getChannelName()));
+			rpl_send(client.getSocket(), ERR_INVALIDKEY(client.getNickname(), channel.getChannelName()));
 			return ;
 		}
 		channel.setPassword(*it);
@@ -39,9 +39,9 @@ void	modeOpe(bool sign, std::vector<std::string> params, Client& client, Channel
 	IRCServer *server = IRCServer::getInstance();
 	for (std::vector<std::string>::iterator it = params.begin() + 1; it != params.end() && params.size() < 5; it++)
 	{
-		if (!channel.InChannel(*it))
+		if (!channel.inChannel(*it))
 		{
-			rpl_send(client.GetSocket(), ERR_USERNOTINCHANNEL(*it, channel.getChannelName()));
+			rpl_send(client.getSocket(), ERR_USERNOTINCHANNEL(*it, channel.getChannelName()));
 			return ;
 		}
 		channel.setOp(server->findClient(*it), sign);
@@ -64,7 +64,7 @@ void	modeLimit(bool sign, std::vector<std::string> params, Client& client, Chann
 		stream >> newLimit;
 		if (stream.fail())
 		{
-			rpl_send(client.GetSocket(), ERR_INVALIDMODEPARAM(client.GetNickname(), channel.getChannelName(), "l", *it, "invalid limit"));
+			rpl_send(client.getSocket(), ERR_INVALIDMODEPARAM(client.getNickname(), channel.getChannelName(), "l", *it, "invalid limit"));
 			return ;
 		}
 		channel.setLimitSize(newLimit);

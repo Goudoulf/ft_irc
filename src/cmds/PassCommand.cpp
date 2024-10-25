@@ -7,6 +7,6 @@ void PassCommand::execute(Client *client, const std::map<std::string, std::vecto
 {
 	(void)params;
 	log(INFO,"_____pass_____");
-	client->SetLevel(CONNECTED);
+	client->setLevel(CONNECTED);
 	return ;
 }

@@ -32,8 +32,6 @@ const size_t MAX_BUFFER_SIZE = 512;
 
 IRCServer* IRCServer::_instance = nullptr;
 
-
-
 std::map<int, std::string> clientPartialBuffers;
 
 void my_exit(std::string error, int code)
@@ -138,9 +136,9 @@ void    IRCServer::readData(int i)
     int client_fd = events[i].data.fd;
     Client* client = _clients.find(client_fd)->second;
     log(INFO, "Clear buffer");
-    bzero(client->GetBuffer(), 1024);
+    bzero(client->getBuffer(), 1024);
     log(INFO, "Server reading data");
-    if ((valread = recv(client_fd, client->GetBuffer(), 1024, 0)) <= 0) {
+    if ((valread = recv(client_fd, client->getBuffer(), 1024, 0)) <= 0) {
         removeClient(client);
         log(WARN, "recv: socket closed");
         if (valread == -1)  
@@ -148,9 +146,9 @@ void    IRCServer::readData(int i)
     }
     else
     {
-        log(DEBUG, client->GetBuffer());
+        log(DEBUG, client->getBuffer());
         std::string& clientPartial = clientPartialBuffers[i];
-        std::string completeBuffer = clientPartial + client->GetBuffer();
+        std::string completeBuffer = clientPartial + client->getBuffer();
         if (completeBuffer.size() > MAX_BUFFER_SIZE) {
             log(ERROR, "Buffer overflow from client , disconnecting.");
             removeClient(client);
@@ -212,7 +210,7 @@ Client	*IRCServer::findClient(std::string nickname)
 {
     std::map<int, Client*>::iterator it;
     for (it = _clients.begin(); it != _clients.end(); it++) {
-        if (it->second && it->second->GetNickname() == nickname)
+        if (it->second && it->second->getNickname() == nickname)
             return it->second;
     }
     return (NULL);
@@ -220,14 +218,14 @@ Client	*IRCServer::findClient(std::string nickname)
 
 void	IRCServer::removeClient(Client *client)
 {
-    std::map<int, Client*>::iterator it = _clients.find(client->GetSocket());
-    if (it != _clients.end() && it->second && it->second->GetNickname() == client->GetNickname())
+    std::map<int, Client*>::iterator it = _clients.find(client->getSocket());
+    if (it != _clients.end() && it->second && it->second->getNickname() == client->getNickname())
     {
-        log(DEBUG, it->second->GetNickname() + " is deleted");
+        log(DEBUG, it->second->getNickname() + " is deleted");
         if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, it->first, nullptr) == -1)
             perror("epoll_ctl: EPOLL_CTL_DEL failed");
         close(it->first);
-        delete ((it->second->GetClient()));
+        delete ((it->second->getClient()));
         it = _clients.erase(it);
     }
 }
@@ -246,17 +244,16 @@ void	IRCServer::removeChannel(Channel *channel)
     }
 }
 
-
 bool	IRCServer::checkNick(const std::string& nick)
 {
     for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); it++) {
-		if (it->second && it->second->GetNickname() == nick)
+		if (it->second && it->second->getNickname() == nick)
                     return false;
 	}
     return true;
 }
 
-std::string	IRCServer::getPassword()
+std::string IRCServer::getPassword()
 {
     return _password;
 }

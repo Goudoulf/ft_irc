@@ -34,10 +34,10 @@ bool	nickExist(const std::string param, Client *client)
         IRCServer *server = IRCServer::getInstance();
 	for (std::map<int, Client*>::iterator it = server->getClients()->begin(); it != server->getClients()->end(); it++)
 	{
-	    if (it->second && it->second->GetNickname() == param)
+	    if (it->second && it->second->getNickname() == param)
 		return true;
 	}
-	rpl_send(client->GetSocket(), ERR_NOSUCHNICK(param));
+	rpl_send(client->getSocket(), ERR_NOSUCHNICK(param));
 	return false;
 }
 
@@ -46,9 +46,9 @@ bool	isOnChannel(const std::string param, Client *client)
     IRCServer *server = IRCServer::getInstance();
     Channel *channel = server->findChannel(param);
 
-    if (channel && !channel->InChannel(client->GetNickname()))
+    if (channel && !channel->inChannel(client->getNickname()))
     {
-        rpl_send(client->GetSocket(), ERR_NOTONCHANNEL(param));
+        rpl_send(client->getSocket(), ERR_NOTONCHANNEL(param));
         return false;
     }
     return true;
@@ -59,7 +59,7 @@ bool	ChannelExist(const std::string param, Client *client)
     IRCServer *server = IRCServer::getInstance();
     if (!server->findChannel(param))
     {
-	rpl_send(client->GetSocket(), ERR_NOSUCHCHANNEL(client->GetNickname(), param));
+	rpl_send(client->getSocket(), ERR_NOSUCHCHANNEL(client->getNickname(), param));
 	return false;
     }
     return true;
@@ -70,7 +70,7 @@ bool	isValidPassword(const std::string param, Client *client)
     IRCServer *server = IRCServer::getInstance();
     if (server->getPassword() == param)
     {
-        rpl_send(client->GetSocket(), ERR_PASSWDMISMATCH());
+        rpl_send(client->getSocket(), ERR_PASSWDMISMATCH());
         return false;
     }
 	return true;
@@ -82,7 +82,7 @@ bool	isEmpty(const std::string param, Client *client)
     (void)server;
     if (param.empty())
     {
-	    rpl_send(client->GetSocket(), ERR_NONICKNAMEGIVEN());
+	    rpl_send(client->getSocket(), ERR_NONICKNAMEGIVEN());
         return false;
     }
     return true;
@@ -93,14 +93,14 @@ bool	isValidNick(const std::string param, Client *client)
     IRCServer *server = IRCServer::getInstance();
     if (param.length() > 9)
     {
-	rpl_send(client->GetSocket(), ERR_ERRONEUSNICKNAME(param));
+	rpl_send(client->getSocket(), ERR_ERRONEUSNICKNAME(param));
         return false;
     }
     char firstChar = param[0];
     if (!isalpha(firstChar) && firstChar != '-' && firstChar != '[' && firstChar != ']' &&
         firstChar != '\\' && firstChar != '^' && firstChar != '_' && firstChar != '{' &&
         firstChar != '}' && firstChar != '|') {
-	rpl_send(client->GetSocket(), ERR_ERRONEUSNICKNAME(param));
+	rpl_send(client->getSocket(), ERR_ERRONEUSNICKNAME(param));
         return false;
     }
     for (size_t i = 1; i < param.length(); ++i) {
@@ -108,13 +108,13 @@ bool	isValidNick(const std::string param, Client *client)
         if (!isalnum(c) && c != '-' && c != '[' && c != ']' &&
             c != '\\' && c != '^' && c != '_' && c != '{' &&
             c != '}' && c != '|') {
-	    rpl_send(client->GetSocket(), ERR_ERRONEUSNICKNAME(param));
+	    rpl_send(client->getSocket(), ERR_ERRONEUSNICKNAME(param));
             return false;
         }
     }
     if (!server->checkNick(param))
     {
-	rpl_send(client->GetSocket(), ERR_NICKNAMEINUSE(param));
+	rpl_send(client->getSocket(), ERR_NICKNAMEINUSE(param));
 	return false;
     }
     return true;
@@ -132,7 +132,7 @@ bool	isValidChannel(const std::string param, Client *client)
 	char firstChar = (*it)[0];
 	if (firstChar != '#' && firstChar != '!' && firstChar != '&' && firstChar != '+')
 	{
-	    rpl_send(client->GetSocket(), ERR_NOSUCHCHANNEL(client->GetNickname(), *it));
+	    rpl_send(client->getSocket(), ERR_NOSUCHCHANNEL(client->getNickname(), *it));
 	    return false;
 	}
 	for (size_t i = 1; i < (*it).length(); ++i) {
@@ -140,7 +140,7 @@ bool	isValidChannel(const std::string param, Client *client)
 	    if (!isalnum(c) && c != '-' && c != '[' && c != ']' &&
 		c != '\\' && c != '^' && c != '_' && c != '{' &&
 		c != '}' && c != '|') {
-		rpl_send(client->GetSocket(), ERR_NOSUCHCHANNEL(client->GetNickname(), *it));
+		rpl_send(client->getSocket(), ERR_NOSUCHCHANNEL(client->getNickname(), *it));
 		return false;
 	    }
 	}
@@ -157,7 +157,7 @@ bool    isInLimits(const std::string param, Client *client)
     if (channel->getIsLimited())
         if (channel->getUsersMap().size() >= channel->getLimitSize())
         {
-            rpl_send(client->GetSocket(), ERR_CHANNELISFULL(param));
+            rpl_send(client->getSocket(), ERR_CHANNELISFULL(param));
             return (false);
         }
     return (true);
@@ -167,9 +167,9 @@ bool    isInLimits(const std::string param, Client *client)
 bool	isConnected(const std::string param, Client *client)
 {
     (void) param;
-    if (client->GetLevel() >= CONNECTED)
+    if (client->getLevel() >= CONNECTED)
     {
-	rpl_send(client->GetSocket(), ERR_NOTREGISTERED());
+	rpl_send(client->getSocket(), ERR_NOTREGISTERED());
 	return (false);
     }
     return true;
@@ -183,7 +183,7 @@ bool	isAlphaNum(const std::string param, Client *client)
     {
 	if (!isalnum((*it2)))
 	{
-	    rpl_send(client->GetSocket(), ERR_NOTREGISTERED());
+	    rpl_send(client->getSocket(), ERR_NOTREGISTERED());
 	    return false;
 	}
     }
@@ -216,7 +216,7 @@ bool   isInvited(const std::string param, Client *client)
             if ((*it) == client)
                 return (true);
         }
-        rpl_send(client->GetSocket(), ERR_INVITEONLYCHAN(channel->getChannelName()));
+        rpl_send(client->getSocket(), ERR_INVITEONLYCHAN(channel->getChannelName()));
         return (false);
     }
     return (true);
@@ -226,9 +226,9 @@ bool    isOp(const std::string param, Client *client)
 {
     IRCServer *server = IRCServer::getInstance();
     Channel *channel = server->findChannel(param);
-    if (channel->IsOp((server->getClients()->find(client->GetSocket()))->second->GetNickname()))
+    if (channel->isOp((server->getClients()->find(client->getSocket()))->second->getNickname()))
         return (true);
-    rpl_send(client->GetSocket(), ERR_CHANOPRIVSNEEDED(param));
+    rpl_send(client->getSocket(), ERR_CHANOPRIVSNEEDED(param));
     return(false);
 }
 
@@ -241,7 +241,7 @@ bool    isValidMode(const std::string param, Client *client)
     {
         if (validModes.find(modes.at(i)) > 5)
         {
-            rpl_send(client->GetSocket(), ERR_UNKNOWNMODE(modes.substr(i, 1)));
+            rpl_send(client->getSocket(), ERR_UNKNOWNMODE(modes.substr(i, 1)));
             return (false);
         }
     }
