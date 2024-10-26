@@ -4,11 +4,17 @@ void InviteCommand::execute(Client *client, const std::map<std::string, std::vec
 {
     IRCServer *server = IRCServer::getInstance();
     std::string target = params.find("nickname")->second[0];
-    std::string channelTarget = params.find("channel")->second[0];
+    std::string channelTargetName = params.find("channel")->second[0];
+    Channel *channel = server->findChannel(channelTargetName);
     Client* clientTarget = server->findClient(target);
-    std::string prefixSend = server->getClients()->find(client->getSocket())->second->getPrefix();
+    std::string prefixSend = client->getPrefix();
 
-    rpl_send(client->getSocket(), RPL_INVITING(channelTarget, target));
-    server->findChannel(channelTarget)->addInvitation(clientTarget);
-    rpl_send(clientTarget->getSocket(), RPL_INVITED(channelTarget, target, prefixSend));
+    if (channel->inChannel(target))
+    {
+        rpl_send(client->getSocket(), ERR_USERONCHANNEL(target, channelTargetName));
+        return ;
+    }
+    rpl_send(client->getSocket(), RPL_INVITING(client->getNickname(), target, channelTargetName));
+    server->findChannel(channelTargetName)->addInvitation(clientTarget);
+    rpl_send(clientTarget->getSocket(), RPL_INVITED(channelTargetName, target, prefixSend));
 }

@@ -8,7 +8,7 @@ void	modeInvite(bool sign, std::vector<std::string> params, Client& client, Chan
 	(void)params;
 	(void)client;
 }
-//
+
 void	modeTopic(bool sign, std::vector<std::string> params, Client& client, Channel& channel)
 {
 	channel.setIsTopicForOp(sign);
@@ -62,7 +62,7 @@ void	modeLimit(bool sign, std::vector<std::string> params, Client& client, Chann
 		unsigned int newLimit;
 		stream << (*it);
 		stream >> newLimit;
-		if (stream.fail())
+		if (stream.fail() || newLimit == 0)
 		{
 			rpl_send(client.getSocket(), ERR_INVALIDMODEPARAM(client.getNickname(), channel.getChannelName(), "l", *it, "invalid limit"));
 			return ;
@@ -95,4 +95,5 @@ void ModeCommand::execute(Client *client, const std::map<std::string, std::vecto
 		for (unsigned int i = 1; i < modes.length(); i++)
 			(mapFunction.find(modes.at(i)))->second(sign, toProcess, *client, *channel);
 	}
+	//TODO: NAMEREPLY
 }
