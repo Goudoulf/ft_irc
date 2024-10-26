@@ -11,6 +11,7 @@
 #include "TopicCommand.hpp"
 #include "InviteCommand.hpp"
 #include "KickCommand.hpp"
+#include "KickCommandParser.hpp"
 #include "PrivmsgCommand.hpp"
 #include "NamesCommand.hpp"
 #include "WhoCommand.hpp"
@@ -95,9 +96,11 @@ void    setCommandTemplate(CommandDirector *director)
                           .name("PART")
                           .level(REGISTERED)
                           .param("channel", ParamTemplate::Builder()
+                                 .addChecker(&ChannelExist)
+                                 .addChecker(&isOnChannel)
                                  .build()
                                  )
-                          .trailing("message", ParamTemplate::Builder()
+                          .trailing("comment", ParamTemplate::Builder()
                                  .isOptional()
                                  .build()
                                  )
@@ -171,16 +174,20 @@ void    setCommandTemplate(CommandDirector *director)
                           .name("KICK")
                           .level(REGISTERED)
                           .param("channel", ParamTemplate::Builder()
+                                 .addChecker(&ChannelExist)
+                                 .addChecker(&isOnChannel)
+                                 .addChecker(&isOp)
                                  .build()
                                  )
                           .param("user", ParamTemplate::Builder()
                                  .build()
                                  )
                           .trailing("comment", ParamTemplate::Builder()
+                                 .isOptional()
                                  .build()
                                  )
-
                           .command(new KickCommand())
+                          .parser(new KickCommandParser())
                           .build()
                           );
 

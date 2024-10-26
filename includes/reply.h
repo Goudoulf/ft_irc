@@ -1,8 +1,6 @@
 #pragma once
 #include <string>
 
-#define DATETIME "31/07/2024"
-
 #define idd(nickname, username, host) (nickname + "!" + username + "@" + host)
 #define RPL_WELCOME(idd, nickname) ( idd + " " + nickname + ":Welcome to the Internet Relay Network, " + nickname + "!\r\n")
 #define RPL_YOURHOST(servername, version) (":localhost 002 Your host is " + servername + ", running version " + version + "\r\n")
@@ -98,7 +96,7 @@
 #define ERR_NONICKNAMEGIVEN() (":localhost 431 :No nickname given\r\n")
 #define ERR_ERRONEUSNICKNAME(nickname) (":localhost 432 " + nickname + " :Erroneous nickname\r\n")
 #define ERR_NICKNAMEINUSE(nickname) (":localhost 433 " + nickname + " :Nickname is already in use\r\n")
-#define ERR_USERNOTINCHANNEL(nickname, channel) (":localhost 441 " + nickname + " " + channel + " :They aren't on that channel\r\n")
+#define ERR_USERNOTINCHANNEL(nickname, channel) (":localhost 441 " + channel + " " + nickname + " :They aren't on that channel\r\n")
 #define ERR_NOTONCHANNEL(channel) (":localhost 442 " + channel + " :You're not on that channel\r\n")
 #define ERR_USERONCHANNEL(nickname, channel) (":localhost 443 " + nickname + " " + channel + " :is already on channel\r\n")
 #define ERR_NOLOGIN(nickname) (":localhost 444 " + nickname + " :User not logged in\r\n")

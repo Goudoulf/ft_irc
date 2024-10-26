@@ -22,21 +22,22 @@ void	CommandDirector::parseCommand(Client* client, std::string buffer)
     trimmedMessage.erase(trimmedMessage.find_last_not_of(" \r\n") + 1);
 
     if (trimmedMessage.empty())
-	return;
-    if (trimmedMessage[0] == ':'){
-	iss >> prefix;  
-	prefix = prefix.substr(1);
+	    return;
+    if (trimmedMessage[0] == ':')
+    {
+	    iss >> prefix;  
+	    prefix = prefix.substr(1);
     }
     iss >> command;
     if (command.empty())
     {
-	log(ERROR, "Received an invalid IRC message with no command.");
-	return;
+	    log(ERROR, "Received an invalid IRC message with no command.");
+	    return;
     }
     if ((_commandList.find(command)) == _commandList.end())
     {
-	log(ERROR, "Can't find command " + command);
-	return;
+	    log(ERROR, "Can't find command " + command);
+	    return;
     }
     log(INFO, "Director fill param");
     _commandList.find(command)->second->executeCommand(client, trimmedMessage);

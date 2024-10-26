@@ -6,7 +6,7 @@
 /*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 10:10:52 by cassie            #+#    #+#             */
-/*   Updated: 2024/10/21 11:06:43 by lvallini         ###   ########.fr       */
+/*   Updated: 2024/10/25 16:01:15 by lvallini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ class Client
 		std::string	_hostname;
 		std::string _prefix;
 		time_t		_signOnTime;
-		time_t		_lastActivity;
+		time_t		_lastActivity; //TODO: update on privmsg 
 		bool		_isconnected;
 		bool		_isRegistered;
 		CmdLevel	_level;
