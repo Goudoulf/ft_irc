@@ -157,7 +157,7 @@ bool    isInLimits(const std::string param, Client *client)
     if (channel->getIsLimited())
         if (channel->getUsersMap().size() >= channel->getLimitSize())
         {
-            rpl_send(client->getSocket(), ERR_CHANNELISFULL(param));
+            rpl_send(client->getSocket(), ERR_CHANNELISFULL(client->getNickname(), param));
             return (false);
         }
     return (true);
@@ -190,18 +190,6 @@ bool	isAlphaNum(const std::string param, Client *client)
     return true;
 }
 
-bool    isTmodeOn(const std::string param, Client *client) //ONLY FOR SETUP
-{
-    IRCServer *server = IRCServer::getInstance();
-    Channel *channel = server->findChannel(param);
-    if (channel->getIsTopicForOp())
-    {
-        if (isOp(param, client))
-            return (false);
-    }
-    return (true);
-}
-
 bool   isInvited(const std::string param, Client *client)
 {
     IRCServer *server = IRCServer::getInstance();
@@ -216,7 +204,7 @@ bool   isInvited(const std::string param, Client *client)
             if ((*it) == client)
                 return (true);
         }
-        rpl_send(client->getSocket(), ERR_INVITEONLYCHAN(channel->getChannelName()));
+        rpl_send(client->getSocket(), ERR_INVITEONLYCHAN(client->getNickname(), channel->getChannelName()));
         return (false);
     }
     return (true);
@@ -228,7 +216,7 @@ bool    isOp(const std::string param, Client *client)
     Channel *channel = server->findChannel(param);
     if (channel->isOp((server->getClients()->find(client->getSocket()))->second->getNickname()))
         return (true);
-    rpl_send(client->getSocket(), ERR_CHANOPRIVSNEEDED(param));
+    rpl_send(client->getSocket(), ERR_CHANOPRIVSNEEDED(client->getNickname(), channel->getChannelName()));
     return(false);
 }
 
