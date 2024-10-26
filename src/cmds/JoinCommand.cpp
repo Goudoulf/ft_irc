@@ -34,10 +34,13 @@ void	joinChannel2(std::string channel, std::string key, Client *client, IRCServe
 void JoinCommand::execute(Client *client, const std::map<std::string, std::vector<std::string>>& params)
 {
 	log(CMD, client->getNickname() + ":_____join_____");
-
         IRCServer *server = IRCServer::getInstance();
 	std::vector<std::string> channels = params.find("channel")->second;
-	std::vector<std::string> keys = params.find("key")->second;
+
+	std::vector<std::string> keys;
+	if (params.find("key") != params.end() && !params.find("key")->second.empty()) {
+		keys = params.find("key")->second;
+	}
 
 	size_t j = 0;
 	for (size_t i = 0; i < channels.size(); i++)
@@ -53,3 +56,4 @@ void JoinCommand::execute(Client *client, const std::map<std::string, std::vecto
 		joinChannel2(channel, key, client, server);
 	}
 }
+
