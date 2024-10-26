@@ -23,9 +23,10 @@ void	modeKey(bool sign, std::vector<std::string> params, Client& client, Channel
 		channel.setPassword("");
 		return ;
 	}
-	for (std::vector<std::string>::iterator it = params.begin(); it != params.end(); it++)
+	for (std::vector<std::string>::iterator it = params.begin() + 1; it != params.end(); it++)
 	{
-		if ((*it).find(' '))
+		std::cout << (*it) << std::endl;
+		if ((*it).find(' ') <= (*it).length())
 		{
 			rpl_send(client.getSocket(), ERR_INVALIDKEY(client.getNickname(), channel.getChannelName()));
 			return ;
