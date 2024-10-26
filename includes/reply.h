@@ -37,7 +37,7 @@
 #define RPL_VERSION(version, debug_level, server, comments) (":localhost 351 " + version + "." + debug_level + " " + server + " :" + comments+ "\r\n")
 #define RPL_WHOREPLY(channel, user, host, server, nickname, flags, hopcount, real_name) (":localhost 352 " + channel + " " + user + " " + host + " " + server + " " + nickname + " " + flags + " :" + hopcount + " " + real_name+ "\r\n")
 #define RPL_ENDOFWHO(name) (":localhost 315 " + name + " :End of WHO list"+ "\r\n")
-#define RPL_NAMREPLY(client, channel, nicknames) (":localhost 353 " + client + " " + channel + " :" + nicknames+ "\r\n")   
+#define RPL_NAMREPLY(client, channel, nicknames) (":localhost 353 " + client + " = " + channel + " :" + nicknames+ "\r\n")   
 #define RPL_ENDOFNAMES(client, channel) (":localhost 366 " + client + " " + channel + " :End of NAMES list"+ "\r\n")
 #define RPL_LINKS(mask, server, hopcount, server_info) (":localhost 364 " + mask + " " + server + " :" + hopcount + " " + server_info+ "\r\n")
 #define RPL_ENDOFLINKS(mask) (":localhost 365 " + mask + " :End of LINKS list"+ "\r\n")
@@ -74,6 +74,7 @@
 #define RPL_ENDOFSTATS(stats_letter) (":localhost 219 " + stats_letter + " :End of STATS report"+ "\r\n")
 #define RPL_STATSUPTIME(days, hours, minutes, seconds) (":localhost 242 :Server Up " + days + " days " + hours + ":" + minutes + ":" + seconds+ "\r\n")
 #define RPL_JOIN(prefix, channel ) (":" + prefix + " JOIN " + channel + "\r\n")
+#define RPL_PART(prefix, channel, message) (":" + prefix + " PART " + channel + " :" + message + "\r\n")
 #define RPL_PRIVMSG(prefix, target, message) (":" + prefix + " PRIVMSG " + target + " :" + message + "\r\n")
 
 #define ERR_NOSUCHCHANNEL(nickname, channel) (":localhost 403 " + nickname + " " +  channel + " :No such channel" + "\r\n")

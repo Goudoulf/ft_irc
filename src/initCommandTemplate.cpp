@@ -1,6 +1,7 @@
 #include "CommandDirector.hpp"
 #include "TemplateBuilder.hpp"
 #include "JoinCommand.hpp"
+#include "JoinCommandParser.hpp"
 #include "PartCommand.hpp"
 #include "PassCommand.hpp"
 #include "UserCommand.hpp"
@@ -89,6 +90,7 @@ void    setCommandTemplate(CommandDirector *director)
                                  .build()
                                  )
                           .command(new JoinCommand())
+                          .parser(new JoinCommandParser())
                           .build()
                           );
 

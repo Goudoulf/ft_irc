@@ -8,8 +8,7 @@
 void	joinChannel2(std::string channel, std::string key, Client *client, IRCServer *server)
 {
 
-	log(CMD, client->getNickname() + ":_____join_____");
-	log(CMD, channel + " key=" + key); 
+	log(DEBUG, channel + " key=" + key); 
 	Channel *chan;
 	if (!(chan = server->findChannel(channel)))
 		chan = server->createChannel(channel, client, key);
@@ -26,15 +25,15 @@ void	joinChannel2(std::string channel, std::string key, Client *client, IRCServe
 	}
 	chan->sendReply(RPL_JOIN(client->getPrefix(), channel));
 	if (!chan->getTopic().empty())
-		reply_server("332", *client, " " + chan->getChannelName() + " :" + chan->getTopic());
-	reply_server("353", *client, "= " + channel + " :" + chan->getUsers());
-	reply_server("366", *client, channel + " :End of NAMES list");
+		client->replyServer(RPL_TOPIC(channel, client->getNickname(), chan->getTopic()));
+	client->replyServer(RPL_NAMREPLY(client->getNickname() , channel, chan->getUsers()));
+	client->replyServer(RPL_ENDOFNAMES(client->getNickname(), channel));
 
 }
 
 void JoinCommand::execute(Client *client, const std::map<std::string, std::vector<std::string>>& params)
 {
-	log(INFO, "cmd");
+	log(CMD, client->getNickname() + ":_____join_____");
         IRCServer *server = IRCServer::getInstance();
 	std::vector<std::string> channels = params.find("channel")->second;
 
@@ -57,4 +56,3 @@ void JoinCommand::execute(Client *client, const std::map<std::string, std::vecto
 		joinChannel2(channel, key, client, server);
 	}
 }
-

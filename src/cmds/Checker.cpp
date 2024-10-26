@@ -48,7 +48,7 @@ bool	isOnChannel(const std::string param, Client *client)
 
     if (channel && !channel->inChannel(client->getNickname()))
     {
-        rpl_send(client->getSocket(), ERR_NOTONCHANNEL(param));
+	client->replyServer(ERR_NOTONCHANNEL(param));
         return false;
     }
     return true;
