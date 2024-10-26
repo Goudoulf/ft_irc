@@ -36,17 +36,17 @@ void	signal_handling(void)
 bool isValidPassword(const std::string& password) {
     if (password.length() < 1 || password.length() > 23)
         return false;
-    for (char c : password) {
-        unsigned char uc = static_cast<unsigned char>(c);
-
-        if (!((uc >= 0x01 && uc <= 0x05) ||
-              (uc >= 0x07 && uc <= 0x08) ||
-              (uc == 0x0C) ||
-              (uc >= 0x0E && uc <= 0x1F) ||
-              (uc >= 0x21 && uc <= 0x7F))) {
-            return false;
-        }
-    }
+    // for (char c : password) {
+    //     unsigned char uc = static_cast<unsigned char>(c);
+    //
+    //     if (!((uc >= 0x01 && uc <= 0x05) ||
+    //           (uc >= 0x07 && uc <= 0x08) ||
+    //           (uc == 0x0C) ||
+    //           (uc >= 0x0E && uc <= 0x1F) ||
+    //           (uc >= 0x21 && uc <= 0x7F))) {
+    //         return false;
+    //     }
+    // }
 
     return true; // All checks passed
 }

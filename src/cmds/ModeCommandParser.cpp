@@ -3,7 +3,7 @@
 #include <vector>
 #include <iostream>
 
-bool ModeCommandParser::parse(const std::string &input, std::vector<std::vector<std::string>>& params)
+bool ModeCommandParser::parse(const std::string &input, std::vector<std::vector<std::string> >& params)
 {
     std::istringstream iss(input);
     std::string token, target, tempString;

@@ -12,7 +12,7 @@ void	PartCommand::partChannel(Channel *channel, std::string message, Client *cli
 		server->removeChannel(channel);
 }
 
-void PartCommand::execute(Client *client, const std::map<std::string, std::vector<std::string>>& params)
+void PartCommand::execute(Client *client, const std::map<std::string, std::vector<std::string> >& params)
 {
 	log(CMD, client->getNickname() + ":_____part_____");
 	IRCServer *server = IRCServer::getInstance();

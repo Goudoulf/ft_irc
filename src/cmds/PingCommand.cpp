@@ -3,7 +3,7 @@
 #include "cmds.h"
 #include "debug.h"
 
-void PingCommand::execute(Client *client, const std::map<std::string, std::vector<std::string>>& params)
+void PingCommand::execute(Client *client, const std::map<std::string, std::vector<std::string> >& params)
 {
 	(void)params;
 	log(CMD, client->getNickname() + ":_____ping_____");

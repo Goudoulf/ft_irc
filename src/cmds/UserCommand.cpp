@@ -4,7 +4,7 @@
 #include "debug.h"
 #include "reply.h"
 
-void UserCommand::execute(Client *client, const std::map<std::string, std::vector<std::string>>& params)
+void UserCommand::execute(Client *client, const std::map<std::string, std::vector<std::string> >& params)
 {
 	log(INFO,"_____user command_____");
 	IRCServer *server = IRCServer::getInstance();

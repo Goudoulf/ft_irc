@@ -10,13 +10,13 @@
 #include <map>
 #include <sstream>
 
-TemplateBuilder::TemplateBuilder(const std::string& name, CmdLevel level, const std::vector<std::pair<std::string, const ParamTemplate*>>& params , Command *command, CommandParser *parser)
+TemplateBuilder::TemplateBuilder(const std::string& name, CmdLevel level, const std::vector<std::pair<std::string, const ParamTemplate*> >& params , Command *command, CommandParser *parser)
 {
 	_name = name;
 	_command = command;
 	_levelNeeded = level;
 	_parser = parser;
-	for (std::vector<std::pair<std::string, const ParamTemplate*>>::const_iterator it = params.begin(); it != params.end(); it++)
+	for (std::vector<std::pair<std::string, const ParamTemplate*> >::const_iterator it = params.begin(); it != params.end(); it++)
 		this->_params.push_back(std::make_pair(it->first, it->second));
 }
 
@@ -78,11 +78,11 @@ bool    TemplateBuilder::check_level(Client *client)const
 	return false;
 }
 
-bool	TemplateBuilder::fill_param(Client *client, std::vector<std::vector<std::string>> param)
+bool	TemplateBuilder::fill_param(Client *client, std::vector<std::vector<std::string> > param)
 {
 	log(INFO, "Filling param for " + this->_name);
-	std::vector<std::pair<std::string, const ParamTemplate*>>::iterator it = _params.begin();
-	std::vector<std::vector<std::string>>::iterator it2 = param.begin();
+	std::vector<std::pair<std::string, const ParamTemplate*> >::iterator it = _params.begin();
+	std::vector<std::vector<std::string> >::iterator it2 = param.begin();
 	while ((it != _params.end()))
 	{
 		log(INFO, "Param = " + it->first);
@@ -110,7 +110,7 @@ void    TemplateBuilder::executeCommand(Client *client, const std::string &input
 {
 	(void)client;
 	log(DEBUG, "input =" + input + "|");
-	std::vector<std::vector<std::string>> params;
+	std::vector<std::vector<std::string> > params;
 	if (!_parser->parse(input, params))
 		return;
 	if (!check_level(client))

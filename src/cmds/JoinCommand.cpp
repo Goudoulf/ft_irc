@@ -31,7 +31,7 @@ void	joinChannel2(std::string channel, std::string key, Client *client, IRCServe
 
 }
 
-void JoinCommand::execute(Client *client, const std::map<std::string, std::vector<std::string>>& params)
+void JoinCommand::execute(Client *client, const std::map<std::string, std::vector<std::string> >& params)
 {
 	log(CMD, client->getNickname() + ":_____join_____");
         IRCServer *server = IRCServer::getInstance();

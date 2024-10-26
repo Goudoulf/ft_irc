@@ -3,7 +3,7 @@
 #include <vector>
 #include <iostream>
 
-bool JoinCommandParser::parse(const std::string &input, std::vector<std::vector<std::string>>& params)
+bool JoinCommandParser::parse(const std::string &input, std::vector<std::vector<std::string> >& params)
 {
     std::istringstream iss(input);
     std::string token;

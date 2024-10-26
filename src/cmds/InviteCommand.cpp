@@ -1,6 +1,6 @@
 #include "InviteCommand.hpp"
 
-void InviteCommand::execute(Client *client, const std::map<std::string, std::vector<std::string>>& params)
+void InviteCommand::execute(Client *client, const std::map<std::string, std::vector<std::string> >& params)
 {
     IRCServer *server = IRCServer::getInstance();
     std::string target = params.find("nickname")->second[0];

@@ -37,24 +37,24 @@ public:
     CmdLevel        _level;
     Command         *_command;
     CommandParser *_parser;
-    std::vector<std::pair<std::string, const ParamTemplate *>> _params;
+    std::vector<std::pair<std::string, const ParamTemplate *> > _params;
   };
 
 protected:
         
         TemplateBuilder(const std::string &name, CmdLevel level,
-        const std::vector<std::pair<std::string, const ParamTemplate *>> &_params,
+        const std::vector<std::pair<std::string, const ParamTemplate *> > &_params,
         Command *command, CommandParser *parser);
 
 private:
   friend class CommandDirector;
   std::string     _name;
   CmdLevel        _levelNeeded;
-  std::map<std::string, std::vector<std::string>> _parsedParams;
+  std::map<std::string, std::vector<std::string> > _parsedParams;
   CommandParser *_parser;
-  std::vector<std::pair<std::string, const ParamTemplate *>> _params;
+  std::vector<std::pair<std::string, const ParamTemplate *> > _params;
   Command *_command;
   bool    check_level(Client *client)const;
-  bool    fill_param(Client *client, std::vector<std::vector<std::string>> params);
+  bool    fill_param(Client *client, std::vector<std::vector<std::string> > params);
   void    executeCommand(Client *client, const std::string &param);
 };

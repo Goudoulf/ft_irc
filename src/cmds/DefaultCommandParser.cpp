@@ -2,7 +2,7 @@
 #include <sstream>
 #include <vector>
 
-bool DefaultCommandParser::parse(const std::string &input, std::vector<std::vector<std::string>>& params)
+bool DefaultCommandParser::parse(const std::string &input, std::vector<std::vector<std::string> >& params)
 {
     std::istringstream iss(input);
     std::string token;

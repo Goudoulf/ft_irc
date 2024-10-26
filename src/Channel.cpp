@@ -86,7 +86,10 @@ void	Channel::remove_client(Client *client)
 {
 	for (std::map<Client*, bool>::iterator it = _users.begin(); it != _users.end();) {
 		if (it->first->getNickname() == client->getNickname())
-			it = _users.erase(it);
+		{
+			_users.erase(it);
+			return;
+		}
 		else
 			++it;
 	}

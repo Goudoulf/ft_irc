@@ -2,7 +2,7 @@
 #include "KickCommand.hpp"
 #include "PartCommand.hpp"
 
-void KickCommand::execute(Client *client, const std::map<std::string, std::vector<std::string>>& params)
+void KickCommand::execute(Client *client, const std::map<std::string, std::vector<std::string> >& params)
 {
     
     IRCServer *server = IRCServer::getInstance();

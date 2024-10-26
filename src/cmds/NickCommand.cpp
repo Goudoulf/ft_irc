@@ -4,7 +4,7 @@
 #include "debug.h"
 #include "reply.h"
 
-void NickCommand::execute(Client *client, const std::map<std::string, std::vector<std::string>>& params)
+void NickCommand::execute(Client *client, const std::map<std::string, std::vector<std::string> >& params)
 {
     log(INFO, "_____nick command_____");
     IRCServer *server = IRCServer::getInstance();

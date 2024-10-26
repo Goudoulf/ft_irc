@@ -7,5 +7,5 @@
 class ModeCommandParser: public CommandParser {
 
     public:
-	bool parse(const std::string &input, std::vector<std::vector<std::string>>& params);
+	bool parse(const std::string &input, std::vector<std::vector<std::string> >& params);
 };

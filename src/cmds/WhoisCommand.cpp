@@ -1,7 +1,7 @@
 #include "WhoisCommand.hpp"
 #include <sstream>
 
-void WhoisCommand::execute(Client *client, const std::map<std::string, std::vector<std::string>>& params)
+void WhoisCommand::execute(Client *client, const std::map<std::string, std::vector<std::string> >& params)
 {
     IRCServer *server = IRCServer::getInstance();
     Client *target = server->findClient(params.find("target")->second[0]);

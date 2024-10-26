@@ -9,5 +9,5 @@ public:
 
     PartCommand() {}
     static void partChannel(Channel *channel, std::string message, Client *client);
-    void execute(Client *client, const std::map<std::string, std::vector<std::string>>& params);
+    void execute(Client *client, const std::map<std::string, std::vector<std::string> >& params);
 };

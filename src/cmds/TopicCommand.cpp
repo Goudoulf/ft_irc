@@ -1,7 +1,7 @@
 #include "TopicCommand.hpp"
 #include "reply.h"
 
-void TopicCommand::execute(Client *client, const std::map<std::string, std::vector<std::string>> &params)
+void TopicCommand::execute(Client *client, const std::map<std::string, std::vector<std::string> > &params)
 {
 	IRCServer *server = IRCServer::getInstance();
 	std::string topic = "";

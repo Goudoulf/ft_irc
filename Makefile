@@ -32,7 +32,7 @@ SRCS = $(addprefix ${DIR_SRC},${SRCS_FILE})
 
 CC = c++
 MD := mkdir -p
-CFLAGS = -Wall -Wextra -Werror -I includes -g -MD #-std=c++98
+CFLAGS = -Wall -Wextra -Werror -I includes -g -MD -std=c++98
 
 RM = rm -rf
 

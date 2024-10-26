@@ -3,7 +3,7 @@
 #include <vector>
 #include <iostream>
 
-bool KickCommandParser::parse(const std::string &input, std::vector<std::vector<std::string>>& params)
+bool KickCommandParser::parse(const std::string &input, std::vector<std::vector<std::string> >& params)
 {
     std::istringstream iss(input);
     std::string token;

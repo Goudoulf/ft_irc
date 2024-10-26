@@ -31,7 +31,7 @@
 extern bool stop;
 const size_t MAX_BUFFER_SIZE = 512;
 
-IRCServer* IRCServer::_instance = nullptr;
+IRCServer* IRCServer::_instance = NULL;
 
 std::map<int, std::string> clientPartialBuffers;
 
@@ -47,7 +47,7 @@ IRCServer::~IRCServer(void)
 
 IRCServer*	IRCServer::getInstance()
 {
-    if (_instance == nullptr)
+    if (_instance == NULL)
         _instance = new IRCServer();
     return _instance;
 }
@@ -220,11 +220,11 @@ void	IRCServer::removeClient(Client *client)
     if (it != _clients.end() && it->second)
     {
         log(DEBUG, it->second->getNickname() + " is deleted");
-        if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, it->first, nullptr) == -1)
+        if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, it->first, NULL) == -1)
             log(ERROR,"epoll_ctl: EPOLL_CTL_DEL failed");
         close(it->first);
         delete ((it->second->getClient()));
-        it = _clients.erase(it);
+        _clients.erase(it);
     }
 }
 
@@ -234,7 +234,7 @@ void	IRCServer::removeChannel(Channel *channel)
     if ((it = _channels.find(channel->getChannelName())) != _channels.end())
     {
         delete _channels[channel->getChannelName()];
-        it = _channels.erase(it);
+        _channels.erase(it);
     }
 }
 
