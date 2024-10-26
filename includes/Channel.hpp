@@ -20,6 +20,7 @@ class Channel
 
 		void	sendMessage(Client *sender, std::string message);
 		void	sendReply(std::string message);
+		void	sendMessageWithSender(Client *sender, std::string message);
 		void	add_client(Client *client);
 		void	addInvitation(Client *client);
 		void	remove_client(Client *client);

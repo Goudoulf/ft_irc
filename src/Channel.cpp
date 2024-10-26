@@ -103,6 +103,15 @@ void	Channel::sendMessage(Client *sender, std::string message)
 	}
 }
 
+void	Channel::sendMessageWithSender(Client *sender, std::string message)
+{
+	for (std::map<Client*, bool>::iterator it = _users.begin(); it != _users.end(); it++)
+	{
+		if (it->first)
+			sender->sendMessage(it->first->getSocket(), message);
+	}
+}
+
 void	Channel::sendReply(std::string message)
 {
 	IRCServer *server = IRCServer::getInstance();

@@ -12,6 +12,7 @@
 
 #include "IRCServer.hpp"
 #include "CmdLevel.h"
+#include "QuitCommand.hpp"
 #include "ircserv.h"
 #include "Client.hpp"
 #include "debug.h"
@@ -139,7 +140,7 @@ void    IRCServer::readData(int i)
     bzero(client->getBuffer(), 1024);
     log(INFO, "Server reading data");
     if ((valread = recv(client_fd, client->getBuffer(), 1024, 0)) <= 0) {
-        removeClient(client);
+        QuitCommand::quitAll(client, "Lost connection");
         log(WARN, "recv: socket closed");
         if (valread == -1)  
             log(ERROR, "recv: error");
@@ -151,7 +152,7 @@ void    IRCServer::readData(int i)
         std::string completeBuffer = clientPartial + client->getBuffer();
         if (completeBuffer.size() > MAX_BUFFER_SIZE) {
             log(ERROR, "Buffer overflow from client , disconnecting.");
-            removeClient(client);
+            QuitCommand::quitAll(client, "Buffer Overflow");
             clientPartialBuffers.erase(client_fd);
             return;
         }
@@ -169,7 +170,6 @@ void    IRCServer::acceptConnection()
     int     new_socket;
     log(INFO, "Server accepting new connection");
     new_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen);
-    std::cout << new_socket << std::endl;
     if (new_socket < 0)
         my_exit("accept error", EXIT_FAILURE);
     setNonBlocking(new_socket);
@@ -217,11 +217,11 @@ Client	*IRCServer::findClient(std::string nickname)
 void	IRCServer::removeClient(Client *client)
 {
     std::map<int, Client*>::iterator it = _clients.find(client->getSocket());
-    if (it != _clients.end() && it->second && it->second->getNickname() == client->getNickname())
+    if (it != _clients.end() && it->second)
     {
         log(DEBUG, it->second->getNickname() + " is deleted");
         if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, it->first, nullptr) == -1)
-            perror("epoll_ctl: EPOLL_CTL_DEL failed");
+            log(ERROR,"epoll_ctl: EPOLL_CTL_DEL failed");
         close(it->first);
         delete ((it->second->getClient()));
         it = _clients.erase(it);

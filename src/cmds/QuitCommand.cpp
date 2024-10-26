@@ -25,3 +25,13 @@ void QuitCommand::execute(Client *client, const std::map<std::string, std::vecto
 	}
 	server->removeClient(client);
 }
+
+void QuitCommand::quitAll(Client *client, std::string message)
+{
+    IRCServer *server = IRCServer::getInstance();
+	for (std::map<std::string, Channel*>::iterator _it = server->getChannels()->begin(); _it != server->getChannels()->end(); _it++) {
+		if (_it->second->inChannel(client->getNickname()))
+			quitServer2(_it->second->getChannelName() , message, client, server);
+	}
+	server->removeClient(client);
+}

@@ -14,7 +14,7 @@ Client::Client(const int &socket, struct sockaddr_in address): _socket(socket)
 	IRCServer *server = IRCServer::getInstance();
 	char temp[1024];
 	_buffer = new char[1024];
-	_nickname = "default";
+	_nickname = "";
 	_realname = "";
 	if (server->getPasswordIsSet())
 		_level = NONE;

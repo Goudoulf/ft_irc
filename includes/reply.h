@@ -75,6 +75,7 @@
 #define RPL_JOIN(prefix, channel ) (":" + prefix + " JOIN " + channel + "\r\n")
 #define RPL_PART(prefix, channel, message) (":" + prefix + " PART " + channel + " :" + message + "\r\n")
 #define RPL_PRIVMSG(prefix, target, message) (":" + prefix + " PRIVMSG " + target + " :" + message + "\r\n")
+#define RPL_NEWNICK(prefix, nickname) (":" + prefix + " NICK :" + nickname + "\r\n")
 
 #define ERR_NOSUCHCHANNEL(nickname, channel) (":localhost 403 " + nickname + " " +  channel + " :No such channel" + "\r\n")
 #define ERR_NOTONCHANNEL(channel) (":localhost 442 " + channel + " :You're not on that channel\r\n")

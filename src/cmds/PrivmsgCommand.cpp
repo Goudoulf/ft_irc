@@ -7,7 +7,6 @@ void PrivmsgCommand::execute(Client *client, const std::map<std::string, std::ve
 {
     log(CMD, client->getNickname() + ":_____privmsg_____");
     IRCServer *server = IRCServer::getInstance();
-    std::string msg(":" + client->getPrefix() + " PRIVMSG " + params.find("msgtarget")->second[0] + " :" + params.find("message")->second[0] + "\r\n");
     std::string target = params.find("msgtarget")->second[0];
     std::string message = params.find("message")->second[0];
     if (target.at(0) == '&' || target.at(0) == '+' || target.at(0) == '!' || target.at(0) == '#')
@@ -26,5 +25,4 @@ void PrivmsgCommand::execute(Client *client, const std::map<std::string, std::ve
 	else
 	    client->replyServer(ERR_NOSUCHNICK(target));
     }
-    log(REPLY, msg);
 }
