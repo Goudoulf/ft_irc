@@ -78,7 +78,7 @@
 
 #define ERR_NOSUCHCHANNEL(nickname, channel) (":localhost 403 " + nickname + " " +  channel + " :No such channel" + "\r\n")
 #define ERR_NOTONCHANNEL(channel) (":localhost 442 " + channel + " :You're not on that channel\r\n")
-#define ERR_BADCHANNELKEY(channel) (":localhost 475 " + channel + " :Cannot join channel (+k) \r\n")
+#define ERR_BADCHANNELKEY(client, channel) (":localhost 475 " + client + " " + channel + " :Cannot join channel (+k) \r\n")
 #define ERR_NOSUCHNICK(nickname) (":localhost 401 " + nickname + " :No such nick/channel\r\n")
 #define ERR_NOSUCHSERVER(server) (":localhost 402 " + server + " :No such server\r\n")
 #define ERR_CANNOTSENDTOCHAN(channel) (":localhost 404 " + channel + " :Cannot send to channel\r\n")
@@ -109,14 +109,14 @@
 #define ERR_PASSWDMISMATCH() (":localhost 464 :Password incorrect\r\n")
 #define ERR_YOUREBANNEDCREEP() (":localhost 465 :You are banned from this server\r\n")
 #define ERR_CHANNELISFULL(client, channel) (":localhost 471 " + client + " " + channel + " :Cannot join channel (+l)\r\n")
-#define ERR_UNKNOWNMODE(mode) (":localhost 472 " + mode + " :is unknown mode char to me\r\n")
+#define ERR_UNKNOWNMODE(client, mode) (":localhost 472 " + client + " " + mode + " :is unknown mode char to me\r\n")
 #define ERR_INVITEONLYCHAN(client, channel) (":localhost 473 " + client + " " + channel + " :Cannot join channel (+i)\r\n")
 #define ERR_BANNEDFROMCHAN(channel) (":localhost 474 " + channel + " :Cannot join channel (+b)\r\n")
 #define ERR_NOPRIVILEGES() (":localhost 481 :Permission Denied- You're not an IRC operator\r\n")
 #define ERR_CHANOPRIVSNEEDED(client, channel) (":localhost 482 " + client + " " + channel + " :You're not channel operator\r\n")
 #define ERR_CANTKILLSERVER() (":localhost 483 :You can't kill a server!\r\n")
 #define ERR_NOOPERHOST() (":localhost 491 :No O-lines for your host\r\n")
-#define ERR_INVALIDMODEPARAM(client, target, modeChar, parameter, description) (client + " " + target + " " + modeChar + " " + parameter + " :" + description + "\r\n")
-#define ERR_INVALIDKEY(client, target) (client + " " + target + " :Key is not well-formed\r\n")
+#define ERR_INVALIDMODEPARAM(client, target, modeChar, parameter, description) (":localhost 696 " + client + " " + target + " " + modeChar + " " + parameter + " :" + description + "\r\n")
+#define ERR_INVALIDKEY(client, target) (":localhost 525 " + client + " " + target + " :Key is not well-formed\r\n")
 
 void	rpl_send(int fd, std::string rpl);

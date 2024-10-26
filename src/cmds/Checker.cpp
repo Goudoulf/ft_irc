@@ -229,7 +229,7 @@ bool    isValidMode(const std::string param, Client *client)
     {
         if (validModes.find(modes.at(i)) > 5)
         {
-            rpl_send(client->getSocket(), ERR_UNKNOWNMODE(modes.substr(i, 1)));
+            rpl_send(client->getSocket(), ERR_UNKNOWNMODE(client->getNickname(), modes.substr(i, 1)));
             return (false);
         }
     }

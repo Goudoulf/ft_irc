@@ -18,7 +18,7 @@ void	joinChannel2(std::string channel, std::string key, Client *client, IRCServe
 		if (!chan->keyIsValid(key))
 		{
 			log(ERROR, "Wrong Channel Key " + channel);
-			client->replyServer(ERR_BADCHANNELKEY(channel));
+			client->replyServer(ERR_BADCHANNELKEY(client->getNickname(), channel));
 			return ;
 		}
 		chan->add_client(client);
