@@ -1,11 +1,10 @@
 #pragma once
 #include <string>
 
-#define idd(nickname, username, host) (nickname + "!" + username + "@" + host)
-#define RPL_WELCOME(idd, nickname) ( idd + " " + nickname + ":Welcome to the Internet Relay Network, " + nickname + "!\r\n")
-#define RPL_YOURHOST(servername, version) (":localhost 002 Your host is " + servername + ", running version " + version + "\r\n")
-#define RPL_CREATED(date) (":localhost 003 This server was created " + date + "\r\n")
-#define RPL_MYINFO(servername, version, user_modes, channel_modes) (":localhost 004 " + servername + " " + version + " " + user_modes + " " + channel_modes+ "\r\n")
+#define RPL_WELCOME(nickname) (":localhost 001 " + nickname + " :Welcome to the Internet Relay Network, " + nickname + "!\r\n")
+#define RPL_YOURHOST(nickname) (":localhost 002 " + nickname + " :Your host is NeTwerkers, running version v0.1\r\n")
+#define RPL_CREATED(nickname, date) (":localhost 003 " + nickname + " This server was created " + date + "\r\n")
+#define RPL_MYINFO(nickname) (":localhost 004 " + nickname + " NetTwerkers v0.1 itkol\r\n")
 #define RPL_BOUNCE(servername, port) (":localhost 005 Try server " + servername + ", port " + port+ "\r\n")
 #define RPL_USERHOST(reply) (":localhost 302 :" + reply+ "\r\n")
 #define RPL_ISON(nicknames) (":localhost 303 " + nicknames + " :are online"+ "\r\n")
