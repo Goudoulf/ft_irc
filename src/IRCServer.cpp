@@ -129,7 +129,7 @@ int     IRCServer::run(void)
 {
     log(INFO, "IRC Server loop is starting");
     while (!stop) {
-        int event_count = epoll_wait(epoll_fd, events, MAX_EVENTS, -1); // Wait indefinitely for events
+        int event_count = epoll_wait(epoll_fd, events, MAX_EVENTS, 0); // Wait indefinitely for events
         if (event_count == -1)
         {
             if (errno == EINTR) 
@@ -163,6 +163,7 @@ void		IRCServer::stopServer()
 
 void    IRCServer::readData(int i)
 {
+    log(INFO, "read data start");
     int client_fd = events[i].data.fd;
     Client* client = _clients.find(client_fd)->second;
     log(INFO, "Clear buffer");
@@ -189,9 +190,11 @@ void    IRCServer::readData(int i)
         std::string remainingPartial;
         std::vector<std::string> messages = splitBuffer(completeBuffer, remainingPartial);
         clientPartialBuffers[client_fd] = remainingPartial;
+        log(INFO, "parse command start");
         for (std::vector<std::string>::iterator it = messages.begin(); it != messages.end(); it++)
             _director->parseCommand(client, *it);
     }
+    log(INFO, "epoll_wait start");
 }
 
 void    IRCServer::acceptConnection()
