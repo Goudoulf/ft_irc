@@ -50,7 +50,6 @@ IRCServer::~IRCServer(void)
     close (pipefd[1]);
     delete[] pipefd;
     removeAllClient();
-    checkChannels();
 }
 
 IRCServer*	IRCServer::getInstance()
@@ -130,7 +129,6 @@ int     IRCServer::run(void)
 {
     log(INFO, "IRC Server loop is starting");
     while (!stop) {
-        checkChannels();
         int event_count = epoll_wait(epoll_fd, events, MAX_EVENTS, -1); // Wait indefinitely for events
         if (event_count == -1)
         {

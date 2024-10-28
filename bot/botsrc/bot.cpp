@@ -80,8 +80,15 @@ void Bot::run()
 	send(_socketFd, "JOIN #botchan\r\n", 15, 0);
 	while (1)
 	{
+		int valread = 0;
 		bzero(buffer, 1024);
-		recv(_socketFd, buffer, 1024, 0);
+		valread = recv(_socketFd, buffer, 1024, 0);
+		if (valread <= 0)
+		{
+			close (_socketFd);
+			std::cout << "CONNECTION CLOSED" << std::endl;
+			return;
+		}
 		if (!readData (buffer))
 			return ;
 	}
@@ -122,6 +129,7 @@ bool Bot::readData (std::string buffer)
 {
 	std::istringstream iss(buffer);
 	std::string prefix, command, channel, game, trailing;
+	std::cout << buffer << std::endl;
 
 	buffer.erase(0, buffer.find_first_not_of(" \r\n"));
     buffer.erase(buffer.find_last_not_of(" \r\n") + 1);

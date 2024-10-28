@@ -11,6 +11,8 @@ void	quitServer2(std::string channel, std::string message, Client *client, IRCSe
 			message_server("", "QUIT", *client, message, it->second->getSocket());
 	}
 	chan->remove_client(client);
+	if (chan->getIsEmpty())
+		server->removeChannel(chan);
 }
 
 void QuitCommand::execute(Client *client, const std::map<std::string, std::vector<std::string> >& params)
@@ -39,6 +41,8 @@ void QuitCommand::quitAll2(Client *client, std::string message)
 	
 	for (std::map<std::string, Channel*>::iterator _it = server->getChannels()->begin(); _it != server->getChannels()->end(); _it++) {
 		if (_it->second && _it->second->inChannel(client->getNickname()))
+		{
 			quitServer2(_it->second->getChannelName() , message, client, server);
+		}
 	}
 }
