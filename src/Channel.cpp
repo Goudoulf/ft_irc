@@ -93,8 +93,6 @@ void	Channel::remove_client(Client *client)
 		else
 			++it;
 	}
-	if (_users.empty())
-		_isEmpty = true;
 }
 
 void	Channel::sendMessage(Client *sender, std::string message)
@@ -180,7 +178,7 @@ std::string Channel::getPassword()const {return _password;}
 
 std::string		Channel::getTopic()const {return _topic;}
 
-bool	Channel::getIsEmpty()const {return _isEmpty;}
+bool	Channel::getIsEmpty()const {return _users.empty();}
 
 bool	Channel::getInviteOnly(void)const {return _InviteOnly;}
 

@@ -16,6 +16,8 @@
 #define RPL_INVITED(channel, nickname, prefix) (":" + prefix + " INVITE " + nickname + " " + channel + "\r\n")
 #define RPL_INVITELIST(channel, mask) (":localhost 346 " + channel + " " + mask+ "\r\n")
 #define RPL_ENDOFINVITELIST(channel) (":localhost 347 " + channel + " :End of INVITELIST"+ "\r\n")
+#define RPL_WHOISSERVER(nickname, server, server_info) (":localhost 312 " + nickname + " " + server + " :" + server_info+ "\r\n")
+#define RPL_WHOISCHANNELS(nickname, channels) (":localhost 319 " + nickname + " :" + channels + "\r\n")
 #define RPL_WHOREPLY(channel, user, host, server, nickname, flags, hopcount, real_name) (":localhost 352 " + channel + " " + user + " " + host + " " + server + " " + nickname + " " + flags + " :" + hopcount + " " + real_name+ "\r\n")
 #define RPL_ENDOFWHO(name) (":localhost 315 " + name + " :End of WHO list"+ "\r\n")
 #define RPL_NAMREPLY(client, channel, nicknames) (":localhost 353 " + client + " = " + channel + " :" + nicknames+ "\r\n")   

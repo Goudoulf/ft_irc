@@ -8,7 +8,6 @@
 #include <utility>
 #include "debug.h"
 #include <map>
-#include <sstream>
 
 TemplateBuilder::TemplateBuilder(const std::string& name, CmdLevel level, const std::vector<std::pair<std::string, const ParamTemplate*> >& params , Command *command, CommandParser *parser)
 {
@@ -54,8 +53,8 @@ TemplateBuilder::Builder& TemplateBuilder::Builder::command(Command *command)
 
 TemplateBuilder::Builder& TemplateBuilder::Builder::parser(CommandParser *parser)
 {
+	delete this->_parser;
 	this->_parser = parser;
-	// TODO: deep copy to clean delete
 	return *this;
 }
 
@@ -108,7 +107,6 @@ bool	TemplateBuilder::fill_param(Client *client, std::vector<std::vector<std::st
 
 void    TemplateBuilder::executeCommand(Client *client, const std::string &input)
 {
-	(void)client;
 	log(DEBUG, "input =" + input + "|");
 	std::vector<std::vector<std::string> > params;
 	if (!_parser->parse(input, params))
@@ -124,4 +122,17 @@ void    TemplateBuilder::executeCommand(Client *client, const std::string &input
 	_parsedParams.clear();
 }
 
-TemplateBuilder::~TemplateBuilder() {}
+TemplateBuilder::~TemplateBuilder()
+{
+	if (_command)
+		delete _command;
+	if (_parser)
+		delete _parser;
+	std::vector<std::pair<std::string, const ParamTemplate*> >::iterator it;
+	for (it = _params.begin(); it != _params.end(); it++)
+	{
+		if (it->second)
+			delete it->second;
+	}
+	_params.clear();
+}

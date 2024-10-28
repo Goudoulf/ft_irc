@@ -20,8 +20,10 @@ bool    stop = false;
 
 static void	sigquit_handler(int sig)
 {
+    IRCServer *server = IRCServer::getInstance();
     (void)sig;
     stop = true;
+    write(server->getPipeFd()[1], "shutdown", 8);
 }
 
 void	signal_handling(void)
@@ -30,6 +32,8 @@ void	signal_handling(void)
 
 	memset(&act, 0, sizeof(act));
 	act.sa_handler = &sigquit_handler;
+        sigemptyset(&act.sa_mask);
+        act.sa_flags = 0;
 	sigaction(SIGQUIT, &act, NULL);
 }
 
@@ -70,6 +74,7 @@ int main(int argc, char **argv)
         server->initialize(argv[1], "");
         server->initSocket();
 	server->run();
+        delete server;
     }
     return (0);
 }

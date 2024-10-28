@@ -29,7 +29,7 @@ Client::Client(const int &socket, struct sockaddr_in address): _socket(socket)
 
 Client::~Client()
 {
-	delete _buffer;
+	delete[] _buffer;
 }
 
 void    Client::replyServer(std::string message)
@@ -47,47 +47,6 @@ void	Client::sendMessage(int target, std::string message)
 bool Client::operator<(const Client &toComp) const
 {
 	return _socket < toComp._socket;
-}
-
-void	Client::findnick(const char *buffer)
-{
-	char *temp = new char[1024];
-	char *p;
-	temp = strcpy(temp, buffer);
-	p = strtok(temp, "  \r\n");
-	while (p != NULL)
-	{
-		if (strcmp(p, "NICK") == 0)
-		{
-			p = strtok(NULL , " \r\n");
-			// std::cout << "p=" << p << std::endl;
-			_nickname = p;
-			break ;
-		}
-
-		p = strtok(NULL , " \r\n");
-	}
-	log(DEBUG, "New user nick = " + _nickname);
-}
-
-void	Client::finduser(const char * buffer)
-{
-	char *temp = new char[1024];
-	char *p;
-	temp = strcpy(temp, buffer);
-	p = strtok(temp, " \r\n");
-	while (p != NULL)
-	{
-		if (strcmp(p, "USER") == 0)
-		{
-			p = strtok(NULL , " \r\n");
-			_username = p;
-			break ;
-		}
-
-		p = strtok(NULL , " \r\n");
-	}
-	log(DEBUG, "New user username = " + _username);
 }
 
 void		Client::setPrefix()

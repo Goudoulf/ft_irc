@@ -1,10 +1,22 @@
 #include "CommandDirector.hpp"
+#include "TemplateBuilder.hpp"
 #include "debug.h"
 #include <utility>
 #include <sstream>
 #include <string>
 #include <map>
-#include <vector>
+
+CommandDirector::~CommandDirector()
+{
+	log(INFO, "Destroying Command Director");
+	std::map<std::string, TemplateBuilder *>::iterator it;
+	for (it = _commandList.begin(); it != _commandList.end(); it++)
+	{
+		if (it->second)
+			delete it->second;
+	}
+	_commandList.clear();
+}
 
 void	CommandDirector::addCommand(TemplateBuilder *command)
 {

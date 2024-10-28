@@ -60,9 +60,11 @@ class IRCServer
 		Channel					*createChannel(std::string channel, Client *client, std::string key);
 		bool					checkNick(const std::string& Nick);
 		void					removeClient(Client *client);
+		void					removeAllClient();
 		void					removeChannel(Channel *channel);
 		Channel					*findChannel(std::string channel);
 		Client					*findClient(std::string nickname);
+		void					checkChannels();
 
 		std::map<int, Client*>*	getClients();
 		std::map<std::string, Channel*>*	getChannels();
@@ -70,6 +72,7 @@ class IRCServer
 		std::string				getPort();
 		std::string				getPassword();
 		bool					getPasswordIsSet();
+		int*					getPipeFd();
 
 	private:
 
@@ -89,5 +92,6 @@ class IRCServer
 		std::map<int, Client*>	_clients;
 		CommandDirector*		_director;
 		int server_fd, valread, addrlen, epoll_fd;
+		int *pipefd;
 };
 

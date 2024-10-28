@@ -33,9 +33,6 @@ class Client
 
 		void		replyServer(std::string message);
 		void		sendMessage(int target, std::string message);
-		void		findnick(const char *buffer);
-		void		finduser(const char *buffer);
-
 
 		void		setNickname(std::string nickname);
 		void		setHostname(std::string nickname);

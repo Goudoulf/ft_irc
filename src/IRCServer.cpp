@@ -30,6 +30,7 @@
 
 extern bool stop;
 const size_t MAX_BUFFER_SIZE = 512;
+#define SHUTDOWN_MSG "shutdown"
 
 IRCServer* IRCServer::_instance = NULL;
 
@@ -43,6 +44,13 @@ void my_exit(std::string error, int code)
 
 IRCServer::~IRCServer(void)
 {
+    log(INFO, "IRC Server closing");
+    delete _director;
+    close (pipefd[0]);
+    close (pipefd[1]);
+    delete[] pipefd;
+    removeAllClient();
+    checkChannels();
 }
 
 IRCServer*	IRCServer::getInstance()
@@ -62,6 +70,7 @@ void	IRCServer::initialize(std::string port, std::string password)
     _password = password;
     _passwordIsSet = !_password.empty();
     _director = new CommandDirector();
+    pipefd = new int[2];
     setCommandTemplate(_director);
 
     addrlen = sizeof(address);
@@ -71,6 +80,7 @@ void	IRCServer::initialize(std::string port, std::string password)
 void  IRCServer::initSocket()
 {
     int test = 1;
+    pipe(pipefd);
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
         my_exit("socket failed", EXIT_FAILURE);
 
@@ -107,19 +117,40 @@ void  IRCServer::initSocket()
         close(epoll_fd);
         exit(EXIT_FAILURE);
     }
+    event.events = EPOLLIN;
+    event.data.fd = pipefd[0];  // read-end of the pipe
+    if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, pipefd[0], &event) == -1) {
+        perror("epoll_ctl failed for pipe");
+        exit(EXIT_FAILURE);
+    }
     _clients.insert(std::pair<int, Client*>(server_fd, NULL));
 }
 
 int     IRCServer::run(void)
 {
     log(INFO, "IRC Server loop is starting");
-    while (true) {
+    while (!stop) {
+        checkChannels();
         int event_count = epoll_wait(epoll_fd, events, MAX_EVENTS, -1); // Wait indefinitely for events
         if (event_count == -1)
+        {
+            if (errno == EINTR) 
+                continue;
             my_exit("epoll_wait failed", EXIT_FAILURE);
+        }
         for (int i = 0; i < event_count; i++) {
             if (events[i].data.fd == server_fd)
                 acceptConnection();
+            else if (events[i].data.fd == pipefd[0])
+            {
+                char buffer[10];
+                read(pipefd[0], buffer, sizeof(buffer));  // Read the shutdown signal
+                if (strncmp(buffer, SHUTDOWN_MSG, strlen(SHUTDOWN_MSG)) == 0) {
+                    printf("Received shutdown signal\n");
+                    stop = 1;  // Set running to 0 to exit the loop
+                    break;
+                }
+            }
             else
                 readData(i);
         }
@@ -183,6 +214,19 @@ void    IRCServer::acceptConnection()
     _clients.insert(std::pair<int, Client*>(new_socket, new Client(new_socket, address)));
 }
 
+void    IRCServer::checkChannels()
+{
+    for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end();)
+    {
+        if (it->second->getIsEmpty())
+        {
+            delete it->second;
+            _channels.erase(it);
+        }
+        else
+            it++;
+    }
+}
 
 void    IRCServer::sendReply(int target, std::string message)
 {
@@ -192,9 +236,8 @@ void    IRCServer::sendReply(int target, std::string message)
 
 Channel *IRCServer::createChannel(std::string channel, Client *client, std::string key)
 {
-    // _channels.push_back(new Channel(channel, client, key));
-    _channels[channel] = new Channel(channel, client, key);
-    return (_channels[channel]);
+    _channels.insert(std::pair<std::string, Channel*>(channel, new Channel(channel, client, key)));
+    return (_channels.find(channel)->second);
 }
 
 Channel	*IRCServer::findChannel(std::string channel)
@@ -214,6 +257,25 @@ Client	*IRCServer::findClient(std::string nickname)
     return (NULL);
 }
 
+void	IRCServer::removeAllClient()
+{
+    std::map<int, Client*>::iterator it; 
+    for (it = _clients.begin();it != _clients.end(); ++it)
+    {
+        if (it->second)
+        {
+            log(DEBUG, it->second->getNickname() + " is deleted");
+            QuitCommand::quitAll2(it->second, "Server Closing");
+            if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, it->first, NULL) == -1)
+                log(ERROR,"epoll_ctl: EPOLL_CTL_DEL failed");
+            close(it->first);
+            delete ((it->second->getClient()));
+            it->second = NULL;
+        }
+    }
+    _clients.clear();
+}
+
 void	IRCServer::removeClient(Client *client)
 {
     std::map<int, Client*>::iterator it = _clients.find(client->getSocket());
@@ -230,10 +292,12 @@ void	IRCServer::removeClient(Client *client)
 
 void	IRCServer::removeChannel(Channel *channel)
 {
+    log(DEBUG, channel->getChannelName() + " is trying to delete");
     std::map<std::string, Channel*>::iterator it;
     if ((it = _channels.find(channel->getChannelName())) != _channels.end())
     {
-        delete _channels[channel->getChannelName()];
+        log(DEBUG, it->second->getChannelName() + " is deleted");
+        delete it->second;
         _channels.erase(it);
     }
 }
@@ -275,4 +339,10 @@ std::string	IRCServer::getPort()
 bool    IRCServer::getPasswordIsSet()
 {
     return _passwordIsSet;
+}
+
+
+int*	IRCServer::getPipeFd()
+{
+    return pipefd;
 }
