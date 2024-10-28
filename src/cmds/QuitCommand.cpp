@@ -39,10 +39,13 @@ void QuitCommand::quitAll2(Client *client, std::string message)
 {
     IRCServer *server = IRCServer::getInstance();
 	
-	for (std::map<std::string, Channel*>::iterator _it = server->getChannels()->begin(); _it != server->getChannels()->end(); _it++) {
+	for (std::map<std::string, Channel*>::iterator _it = server->getChannels()->begin(); _it != server->getChannels()->end();) {
+		std::map<std::string, Channel *>::iterator _it2 = _it;
+		_it2++;
 		if (_it->second && _it->second->inChannel(client->getNickname()))
 		{
 			quitServer2(_it->second->getChannelName() , message, client, server);
 		}
+		_it = _it2;
 	}
 }
