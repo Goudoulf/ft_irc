@@ -112,6 +112,7 @@
 #define ERR_UNKNOWNMODE(client, mode) (":localhost 472 " + client + " " + mode + " :is unknown mode char to me\r\n")
 #define ERR_INVITEONLYCHAN(client, channel) (":localhost 473 " + client + " " + channel + " :Cannot join channel (+i)\r\n")
 #define ERR_BANNEDFROMCHAN(channel) (":localhost 474 " + channel + " :Cannot join channel (+b)\r\n")
+#define ERR_NOCHANMODES(client, channel) (":localhost 477 " + client + " " + channel + " :Channel doesn't support modes\r\n")
 #define ERR_NOPRIVILEGES() (":localhost 481 :Permission Denied- You're not an IRC operator\r\n")
 #define ERR_CHANOPRIVSNEEDED(client, channel) (":localhost 482 " + client + " " + channel + " :You're not channel operator\r\n")
 #define ERR_CANTKILLSERVER() (":localhost 483 :You can't kill a server!\r\n")

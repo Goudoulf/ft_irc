@@ -19,7 +19,7 @@ bool isValidInvite(const std::string param, Client *client)
         {
             if (channel->getInviteOnly())
             {
-                if (isOp(param, client))
+                if (checkiIsOp(param, client))
                     return (true);
             }
             else
@@ -210,11 +210,11 @@ bool   isInvited(const std::string param, Client *client)
     return (true);
 }
 
-bool    isOp(const std::string param, Client *client)
+bool    checkiIsOp(const std::string param, Client *client)
 {
     IRCServer *server = IRCServer::getInstance();
     Channel *channel = server->findChannel(param);
-    if (channel->isOp((server->getClients()->find(client->getSocket()))->second->getNickname()))
+    if (channel->isOp((client->getNickname())))
         return (true);
     rpl_send(client->getSocket(), ERR_CHANOPRIVSNEEDED(client->getNickname(), channel->getChannelName()));
     return(false);
@@ -234,4 +234,15 @@ bool    isValidMode(const std::string param, Client *client)
         }
     }
     return (true);
+}
+
+
+bool channelSupportsMode(const std::string param, Client *client)
+{
+    if (!param.empty() && param.at(0) == '+')
+    {
+        rpl_send(client->getSocket(), ERR_NOCHANMODES(client->getNickname(), param));
+        return (false);
+    }
+    return(true);
 }
