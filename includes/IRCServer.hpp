@@ -84,7 +84,6 @@ class IRCServer
 		std::string				_port_string;
 		std::string				_password;
 		bool					_passwordIsSet;
-		//std::vector<Channel*>	_channels;
 		std::string				_creation_date;
 		struct sockaddr_in		address;
 		struct epoll_event		event, events[MAX_EVENTS];

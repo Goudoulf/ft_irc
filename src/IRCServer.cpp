@@ -285,6 +285,7 @@ void	IRCServer::removeClient(Client *client)
         close(it->first);
         delete ((it->second->getClient()));
         _clients.erase(it);
+        log(DEBUG, "Realy is deleted");
     }
 }
 

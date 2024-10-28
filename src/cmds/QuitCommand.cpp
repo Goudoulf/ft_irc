@@ -18,9 +18,14 @@ void	quitServer2(std::string channel, std::string message, Client *client, IRCSe
 void QuitCommand::execute(Client *client, const std::map<std::string, std::vector<std::string> >& params)
 {
     IRCServer *server = IRCServer::getInstance();
-	for (std::map<std::string, Channel*>::iterator _it = server->getChannels()->begin(); _it != server->getChannels()->end(); _it++) {
-		if (_it->second->inChannel(client->getNickname()))
+	for (std::map<std::string, Channel*>::iterator _it = server->getChannels()->begin(); _it != server->getChannels()->end();) {
+		std::map<std::string, Channel *>::iterator _it2 = _it;
+		_it2++;
+		if (_it->second && _it->second->inChannel(client->getNickname()))
+		{
 			quitServer2(_it->second->getChannelName() , params.find("message")->second[0], client, server);
+		}
+		_it = _it2;
 	}
 	server->removeClient(client);
 }
@@ -28,9 +33,14 @@ void QuitCommand::execute(Client *client, const std::map<std::string, std::vecto
 void QuitCommand::quitAll(Client *client, std::string message)
 {
     IRCServer *server = IRCServer::getInstance();
-	for (std::map<std::string, Channel*>::iterator _it = server->getChannels()->begin(); _it != server->getChannels()->end(); _it++) {
-		if (_it->second->inChannel(client->getNickname()))
+	for (std::map<std::string, Channel*>::iterator _it = server->getChannels()->begin(); _it != server->getChannels()->end();) {
+		std::map<std::string, Channel *>::iterator _it2 = _it;
+		_it2++;
+		if (_it->second && _it->second->inChannel(client->getNickname()))
+		{
 			quitServer2(_it->second->getChannelName() , message, client, server);
+		}
+		_it = _it2;
 	}
 	server->removeClient(client);
 }
