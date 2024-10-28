@@ -1,7 +1,5 @@
 #include "QuitCommand.hpp"
 #include "cmds.h"
-#include "debug.h"
-#include "reply.h"
 
 void	quitServer2(std::string channel, std::string message, Client *client, IRCServer *server)
 {
