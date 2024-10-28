@@ -7,12 +7,6 @@ Channel::Channel(const std::string &name, Client *creator, const std::string &ke
 {
 	_name = name;
 	_mode = selectMode(name);
-	if (_mode == safe)
-	{
-		time_t timestamp = time(NULL);
-		std::cout << "time: " << timestamp << std::endl;
-		std::cout << "channelID: " << createChannelId(timestamp) << std::endl;
-	}
 	bool creatorOp = true;
 	if (_mode == noMode)
 		creatorOp = false;
@@ -52,19 +46,6 @@ channelMode	Channel::selectMode(std::string name)
 			break;
 	}
 	return (error);
-}
-
-std::string	Channel::createChannelId(time_t timestamp)
-{
-	std::string base36("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");
-	std::string res;
-
-	for (int i = 5; i > 0; i--)
-	{
-		res = base36.at(timestamp % 36) + res;
-		timestamp /= 36;
-	}
-	return (res);
 }
 
 bool	Channel::keyIsValid(std::string &key)

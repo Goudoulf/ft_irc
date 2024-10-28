@@ -28,7 +28,6 @@ class Channel
 		bool	isOp(std::string client);
 		bool	keyIsValid(std::string &key);
 		channelMode	selectMode(std::string name);
-		std::string	createChannelId(time_t timestamp);
 
 		void	setTopic(std::string topic);
 		void	setInviteOnly(bool sign);

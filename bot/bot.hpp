@@ -34,7 +34,7 @@ class Bot
 		std::vector<Game*> getGames();
 		std::vector<std::string> getPlayersList(std::string chanName);
 		void run();
-		void readData(std::string buffer);
+		bool readData(std::string buffer);
 };
 
 #endif

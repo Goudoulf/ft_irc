@@ -39,15 +39,20 @@ Bot::Bot(std::string port)
 {
 	char *end;
 	int test = 1;
+
 	memset(&_address, 0, sizeof(_address));
 	_port = static_cast<unsigned short>(std::strtod(port.c_str(), &end)); 
     if ((_socketFd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
 	{
         std::cout << "ERROR socket" << std::endl;
+		delete (this);
+		exit(1);
 	}
     if (setsockopt(_socketFd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &test, sizeof(test)))
 	{
         std::cout << "ERROR socketopt" << std::endl;
+		delete (this);
+		exit(1);
 	}
 	_address.sin_family = AF_INET;
     _address.sin_addr.s_addr = INADDR_ANY;
@@ -55,6 +60,8 @@ Bot::Bot(std::string port)
 	if (connect(_socketFd, (struct sockaddr *)&_address, sizeof(_address)) < 0)
 	{
 		std::cout << "ERROR CONNECT" << std::endl;
+		delete (this);
+		exit(1);
 	}
 	_gameMap = init_map();
 }
@@ -75,8 +82,8 @@ void Bot::run()
 	{
 		bzero(buffer, 1024);
 		recv(_socketFd, buffer, 1024, 0);
-		std::cout << buffer << std::endl;
-		readData (buffer);
+		if (!readData (buffer))
+			return ;
 	}
 }
 
@@ -111,7 +118,7 @@ std::vector<std::string> Bot::getPlayersList(std::string chanName)
 	return list;
 }
 
-void Bot::readData (std::string buffer)
+bool Bot::readData (std::string buffer)
 {
 	std::istringstream iss(buffer);
 	std::string prefix, command, channel, game, trailing;
@@ -119,10 +126,12 @@ void Bot::readData (std::string buffer)
 	buffer.erase(0, buffer.find_first_not_of(" \r\n"));
     buffer.erase(buffer.find_last_not_of(" \r\n") + 1);
 	iss >> prefix;
+	if (prefix.empty())
+		return false;
 	prefix = prefix.substr(1);
 	iss >> command;
 	if (command != "PRIVMSG")
-		return;
+		return true;
 	iss >> channel;
 	iss >> game;
 	game = game.substr(1);
@@ -132,7 +141,6 @@ void Bot::readData (std::string buffer)
 		std::getline(iss, trailing);
 		std::vector<std::string> params = split (trailing.substr(1), ' ');
 		addGame(game, params);
-		return ;
 	}
 	else
 	{
@@ -146,7 +154,6 @@ void Bot::readData (std::string buffer)
 			if (game == "!start" && !actualGame->isStarted())
 				actualGame->setPlayers(getPlayersList(actualGame->getChanName()));
 			actualGame->gameLoop();
-			std::cout << actualGame->getBuffer() << std::endl;
 			std::vector<std::string> message = split(actualGame->getBuffer(), '\n');
 			for (std::vector<std::string>::iterator it = message.begin(); it != message.end(); it++)
 			{
@@ -154,17 +161,14 @@ void Bot::readData (std::string buffer)
 				if (actualGame->getBuffer().empty())
 					break;
 				std::string toSend("PRIVMSG " + actualGame->getChanName() + " :" + (*it).erase(((*it).length())) + "\r\n");
-				std::cout << toSend<< std::endl;
 				send(_socketFd, toSend.c_str(), toSend.length(), 0);
 			}
-			std::cout << actualGame->getBuffer().length() << std::endl;
 			actualGame->cleanBuffer();
-			if (actualGame->isFinished())
-				return;
+			// if (actualGame->isFinished())
+			// 	return true;
 		}
-		else
-			std::cout << "nothing" << std::endl;
 	}
+	return (true);
 }
 
 void Bot::addGame(std::string game, std::vector<std::string> params)
@@ -179,9 +183,10 @@ void Bot::addGame(std::string game, std::vector<std::string> params)
 	_games.push_back(toAdd->second(game, params));
 	std::string joinMessage("JOIN " + _games.back()->getChanName() + "\r\n");
 	send(_socketFd, joinMessage.c_str(), joinMessage.length(), 0);
+	std::string modeMessage("MODE " + _games.back()->getChanName() + "+i\r\n");
+	send(_socketFd, modeMessage.c_str(), modeMessage.length(), 0);
 	std::string creationMessage("PRIVMSG #botchan :" + _games.back()->getChanName() + " created, have fun !\r\n");
 	send(_socketFd, creationMessage.c_str(), creationMessage.length(), 0);
-	std::cout << _games.back()->getChanName() + " added" << std::endl;
 	std::vector<std::string> players = _games.back()->getPlayers();
 	for (std::vector<std::string>::iterator it = players.begin(); it != players.end(); it++)
 	{
@@ -194,13 +199,8 @@ Game *Bot::findGame(std::string toFind)
 {
 	for (std::vector<Game*>::iterator it = _games.begin(); it != _games.end(); it++)
 	{
-		std::cout << "iter" << std::endl;
 		if ((*it)->getChanName() == toFind)
-		{
-			std::cout << "found" << std::endl;
 			return (*it);
-		}
 	}
-	std::cout << "not found" << std::endl;
 	return NULL;
 }
