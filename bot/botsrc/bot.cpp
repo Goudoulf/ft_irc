@@ -2,13 +2,13 @@
 
 std::vector<std::string> split(const std::string& input, char delimiter)
 {
-    std::vector<std::string> tokens;
-    std::string token;
-    std::istringstream tokenStream(input);
-    while (std::getline(tokenStream, token, delimiter)) {
-        tokens.push_back(token);
-    }
-    return tokens;
+	std::vector<std::string> tokens;
+	std::string token;
+	std::istringstream tokenStream(input);
+	while (std::getline(tokenStream, token, delimiter)) {
+		tokens.push_back(token);
+	}
+	return tokens;
 }
 
 Game *createHang(std::string type, std::vector<std::string> params)
@@ -42,21 +42,21 @@ Bot::Bot(std::string port)
 
 	memset(&_address, 0, sizeof(_address));
 	_port = static_cast<unsigned short>(std::strtod(port.c_str(), &end)); 
-    if ((_socketFd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
+	if ((_socketFd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
 	{
-        std::cout << "ERROR socket" << std::endl;
+		std::cout << "ERROR socket" << std::endl;
 		delete (this);
 		exit(1);
 	}
-    if (setsockopt(_socketFd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &test, sizeof(test)))
+	if (setsockopt(_socketFd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &test, sizeof(test)))
 	{
-        std::cout << "ERROR socketopt" << std::endl;
+		std::cout << "ERROR socketopt" << std::endl;
 		delete (this);
 		exit(1);
 	}
 	_address.sin_family = AF_INET;
-    _address.sin_addr.s_addr = INADDR_ANY;
-    _address.sin_port = htons(_port);
+	_address.sin_addr.s_addr = INADDR_ANY;
+	_address.sin_port = htons(_port);
 	if (connect(_socketFd, (struct sockaddr *)&_address, sizeof(_address)) < 0)
 	{
 		std::cout << "ERROR CONNECT" << std::endl;
@@ -81,14 +81,14 @@ void Bot::run()
 		int valread = 0;
 		bzero(buffer, 1024);
 		valread = recv(_socketFd, buffer, 1024, 0);
-		if (valread <= 0)
+		if (valread <= 0 || !readData (buffer))
 		{
 			close (_socketFd);
 			std::cout << "CONNECTION CLOSED" << std::endl;
+			for (std::vector<Game*>::iterator it = _games.begin(); it != _games.end(); it++)
+				delete (*it);
 			return;
 		}
-		if (!readData (buffer))
-			return ;
 	}
 }
 
@@ -96,11 +96,13 @@ std::vector<std::string> Bot::getPlayersList(std::string chanName)
 {
 	char buffer[1024];
 	std::string toSend(":bot!bot@localhost NAMES " + chanName +"\r\n");
-	send(_socketFd, toSend.c_str(), toSend.length(), 0);
 	bzero(buffer, 1024);
+	send(_socketFd, toSend.c_str(), toSend.length(), 0);
 	recv(_socketFd, buffer, 1024, 0);
 	std::vector<std::string> list;
 	std::string line(buffer);
+	if (line.empty())
+		return list;
 	line.erase(line.find_first_of('\r'), std::string::npos);
 	line.erase(0, 1);
 	std::istringstream iss(line);
@@ -130,7 +132,7 @@ bool Bot::readData (std::string buffer)
 	std::cout << buffer << std::endl;
 
 	buffer.erase(0, buffer.find_first_not_of(" \r\n"));
-    buffer.erase(buffer.find_last_not_of(" \r\n") + 1);
+	buffer.erase(buffer.find_last_not_of(" \r\n") + 1);
 	iss >> prefix;
 	if (prefix.empty())
 		return false;
@@ -170,8 +172,6 @@ bool Bot::readData (std::string buffer)
 				send(_socketFd, toSend.c_str(), toSend.length(), 0);
 			}
 			actualGame->cleanBuffer();
-			// if (actualGame->isFinished())
-			// 	return true;
 		}
 	}
 	return (true);
