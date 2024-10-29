@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rjacq <rjacq@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 08:21:58 by cassie            #+#    #+#             */
-/*   Updated: 2024/10/21 15:47:47 by rjacq            ###   ########.fr       */
+/*   Updated: 2024/10/29 11:40:19 by lvallini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ IRCServer* IRCServer::_instance = NULL;
 
 std::map<int, std::string> clientPartialBuffers;
 
-void my_exit(std::string error, int code)
+void myExit(std::string error, int code)
 {
     log(ERROR, error);
     exit(code);
@@ -46,9 +46,9 @@ IRCServer::~IRCServer(void)
 {
     log(INFO, "IRC Server closing");
     delete _director;
-    close (pipefd[0]);
-    close (pipefd[1]);
-    delete[] pipefd;
+    close (_pipefd[0]);
+    close (_pipefd[1]);
+    delete[] _pipefd;
     removeAllClient();
 }
 
@@ -63,89 +63,90 @@ void	IRCServer::initialize(std::string port, std::string password)
 {
     char *end;
     log(DEBUG, "IRC Server is setting up socket");
-    memset(&address, 0, sizeof(address));
+    memset(&_address, 0, sizeof(_address));
     _port = static_cast<unsigned short>(std::strtod(port.c_str(), &end)); 
-    _port_string = port;
+    _portString = port;
     _password = password;
     _passwordIsSet = !_password.empty();
     _director = new CommandDirector();
-    pipefd = new int[2];
+    _pipefd = new int[2];
     setCommandTemplate(_director);
 
-    addrlen = sizeof(address);
+    _addrlen = sizeof(_address);
     _creation_date = getTime();
 }
 
 void  IRCServer::initSocket()
 {
-    int test = 1;
-    pipe(pipefd);
-    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
-        my_exit("socket failed", EXIT_FAILURE);
+    int opt = 1;
+    pipe(_pipefd);
+    if ((_serverfd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
+        myExit("socket failed", EXIT_FAILURE);
 
-    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &test, sizeof(test)))
-        my_exit("setsockopt", EXIT_FAILURE);
+    if (setsockopt(_serverfd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)))
+        myExit("setsockopt", EXIT_FAILURE);
 
-    setNonBlocking(server_fd);
+    setNonBlocking(_serverfd);
 
-    address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(_port);
+    _address.sin_family = AF_INET;
+    _address.sin_addr.s_addr = INADDR_ANY;
+    _address.sin_port = htons(_port);
 
-    if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
+    if (bind(_serverfd, (struct sockaddr *)&_address, sizeof(_address)) < 0)
     {
         log(ERROR, strerror(errno));
-        my_exit("bind failed", EXIT_FAILURE);
+        myExit("bind failed", EXIT_FAILURE);
     }
 
-    if (listen(server_fd, 10) < 0)
-        my_exit("listen error", EXIT_FAILURE);
+    if (listen(_serverfd, 10) < 0)
+        myExit("listen error", EXIT_FAILURE);
 
-    epoll_fd = epoll_create1(0);
-    if (epoll_fd == -1) {
+    _epollfd = epoll_create1(0);
+    if (_epollfd == -1) {
         perror("epoll_create1 failed");
-        close(server_fd);
+        close(_serverfd);
         exit(EXIT_FAILURE);
     }
 
-    event.events = EPOLLIN; // Wait for incoming connections
-    event.data.fd = server_fd;
-    if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, server_fd, &event) == -1) {
+    _event.events = EPOLLIN;
+    _event.data.fd = _serverfd;
+    if (epoll_ctl(_epollfd, EPOLL_CTL_ADD, _serverfd, &_event) == -1) {
         perror("epoll_ctl: server_fd failed");
-        close(server_fd);
-        close(epoll_fd);
+        close(_serverfd);
+        close(_epollfd);
         exit(EXIT_FAILURE);
     }
-    event.events = EPOLLIN;
-    event.data.fd = pipefd[0];  // read-end of the pipe
-    if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, pipefd[0], &event) == -1) {
+    _event.events = EPOLLIN;
+    _event.data.fd = _pipefd[0];
+    if (epoll_ctl(_epollfd, EPOLL_CTL_ADD, _pipefd[0], &_event) == -1) {
         perror("epoll_ctl failed for pipe");
         exit(EXIT_FAILURE);
     }
-    _clients.insert(std::pair<int, Client*>(server_fd, NULL));
+    _clients.insert(std::pair<int, Client*>(_serverfd, NULL));
 }
 
 int     IRCServer::run(void)
 {
     log(INFO, "IRC Server loop is starting");
     while (!stop) {
-        int event_count = epoll_wait(epoll_fd, events, MAX_EVENTS, 0); // Wait indefinitely for events
+        int event_count = epoll_wait(_epollfd, _events, MAX_EVENTS, 0);
         if (event_count == -1)
         {
             if (errno == EINTR) 
                 continue;
-            my_exit("epoll_wait failed", EXIT_FAILURE);
+            myExit("epoll_wait failed", EXIT_FAILURE);
         }
         for (int i = 0; i < event_count; i++) {
-            if (events[i].data.fd == server_fd)
+            if (_events[i].data.fd == _serverfd)
                 acceptConnection();
-            else if (events[i].data.fd == pipefd[0])
+            else if (_events[i].data.fd == _pipefd[0])
             {
                 char buffer[10];
-                read(pipefd[0], buffer, sizeof(buffer));  // Read the shutdown signal
-                if (strncmp(buffer, SHUTDOWN_MSG, strlen(SHUTDOWN_MSG)) == 0) {
-                    printf("Received shutdown signal\n");
-                    stop = 1;  // Set running to 0 to exit the loop
+                read(_pipefd[0], buffer, sizeof(buffer));
+                if (strncmp(buffer, SHUTDOWN_MSG, strlen(SHUTDOWN_MSG)) == 0)
+                {
+                    std::cout << "Received shutdown signal" << std::endl;
+                    stop = 1;
                     break;
                 }
             }
@@ -158,21 +159,21 @@ int     IRCServer::run(void)
 
 void		IRCServer::stopServer()
 {
-        return;
+    return;
 }
 
 void    IRCServer::readData(int i)
 {
     log(INFO, "read data start");
-    int client_fd = events[i].data.fd;
-    Client* client = _clients.find(client_fd)->second;
+    int clientfd = _events[i].data.fd;
+    Client* client = _clients.find(clientfd)->second;
     log(INFO, "Clear buffer");
     bzero(client->getBuffer(), 1024);
     log(INFO, "Server reading data");
-    if ((valread = recv(client_fd, client->getBuffer(), 1024, 0)) <= 0) {
+    if ((_valread = recv(clientfd, client->getBuffer(), 1024, 0)) <= 0) {
         QuitCommand::quitAll(client, "Lost connection");
         log(WARN, "recv: socket closed");
-        if (valread == -1)  
+        if (_valread == -1)  
             log(ERROR, "recv: error");
     }
     else
@@ -183,13 +184,13 @@ void    IRCServer::readData(int i)
         if (completeBuffer.size() > MAX_BUFFER_SIZE) {
             log(ERROR, "Buffer overflow from client , disconnecting.");
             QuitCommand::quitAll(client, "Buffer Overflow");
-            clientPartialBuffers.erase(client_fd);
+            clientPartialBuffers.erase(clientfd);
             return;
         }
 
         std::string remainingPartial;
         std::vector<std::string> messages = splitBuffer(completeBuffer, remainingPartial);
-        clientPartialBuffers[client_fd] = remainingPartial;
+        clientPartialBuffers[clientfd] = remainingPartial;
         log(INFO, "parse command start");
         for (std::vector<std::string>::iterator it = messages.begin(); it != messages.end(); it++)
             _director->parseCommand(client, *it);
@@ -199,20 +200,20 @@ void    IRCServer::readData(int i)
 
 void    IRCServer::acceptConnection()
 {
-    int     new_socket;
+    int     newSocket;
     log(INFO, "Server accepting new connection");
-    new_socket = accept(server_fd, (struct sockaddr*)&address, (socklen_t*)&addrlen);
-    if (new_socket < 0)
-        my_exit("accept error", EXIT_FAILURE);
-    setNonBlocking(new_socket);
-    event.events = EPOLLIN | EPOLLET;
-    event.data.fd = new_socket;
-    if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, new_socket, &event) == -1)
+    newSocket = accept(_serverfd, (struct sockaddr*)&_address, (socklen_t*)&_addrlen);
+    if (newSocket < 0)
+        myExit("accept error", EXIT_FAILURE);
+    setNonBlocking(newSocket);
+    _event.events = EPOLLIN | EPOLLET;
+    _event.data.fd = newSocket;
+    if (epoll_ctl(_epollfd, EPOLL_CTL_ADD, newSocket, &_event) == -1)
     {
         log(ERROR, "epoll_ctl: new socket failed");
-        close(new_socket);
+        close(newSocket);
     }
-    _clients.insert(std::pair<int, Client*>(new_socket, new Client(new_socket, address)));
+    _clients.insert(std::pair<int, Client*>(newSocket, new Client(newSocket, _address)));
 }
 
 void    IRCServer::checkChannels()
@@ -267,7 +268,7 @@ void	IRCServer::removeAllClient()
         {
             log(DEBUG, it->second->getNickname() + " is deleted");
             QuitCommand::quitAll2(it->second, "Server Closing");
-            if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, it->first, NULL) == -1)
+            if (epoll_ctl(_epollfd, EPOLL_CTL_DEL, it->first, NULL) == -1)
                 log(ERROR,"epoll_ctl: EPOLL_CTL_DEL failed");
             close(it->first);
             delete ((it->second->getClient()));
@@ -283,7 +284,7 @@ void	IRCServer::removeClient(Client *client)
     if (it != _clients.end() && it->second)
     {
         log(DEBUG, it->second->getNickname() + " is deleted");
-        if (epoll_ctl(epoll_fd, EPOLL_CTL_DEL, it->first, NULL) == -1)
+        if (epoll_ctl(_epollfd, EPOLL_CTL_DEL, it->first, NULL) == -1)
             log(ERROR,"epoll_ctl: EPOLL_CTL_DEL failed");
         close(it->first);
         delete ((it->second->getClient()));
@@ -335,7 +336,7 @@ std::string	IRCServer::getCreationDate()
 
 std::string	IRCServer::getPort()
 {
-    return _port_string;
+    return _portString;
 }
 
 bool    IRCServer::getPasswordIsSet()
@@ -346,5 +347,5 @@ bool    IRCServer::getPasswordIsSet()
 
 int*	IRCServer::getPipeFd()
 {
-    return pipefd;
+    return _pipefd;
 }
