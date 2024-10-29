@@ -14,11 +14,6 @@ ConnectFour::~ConnectFour()
 	delete[] _gameState;
 }
 
-void ConnectFour::createRoom()
-{
-	std::cout << "create room" << std::endl;
-}
-
 bool ConnectFour::checkDirection(int deltaX, int deltaY)
 {
 	for (int startX = 0; startX < 7; startX++)

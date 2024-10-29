@@ -17,11 +17,6 @@ Morpion::~Morpion()
 	delete[] _gameState;
 }
 
-void Morpion::createRoom()
-{
-	std::cout << "create room" << std::endl;
-}
-
 bool Morpion::checkInput()
 {
 	if (_input.length() != 2 || _input[0] > '3' || _input[0] < '1' || _input[1] > 'C' || _input[1] < 'A')
@@ -70,61 +65,121 @@ bool Morpion::winCondition()
 	return false;
 }
 
-bool Morpion::isBufferFull()
+bool Morpion::checkGameOver()
 {
 	if (winCondition() || _turn >= 10)
 	{
 		if (_turn >= 10)
 			_buffer += "Draw!";
-		else if (_turn % 2)
-			_buffer += _player2 + " win!";
 		else
-			_buffer += _player1 + " win!";
+			_buffer += (_turn % 2 ? _player2 : _player1) + " wins!";
 		_finished = true;
 		return true;
 	}
+	return false;
+}
+
+bool Morpion::isBufferFull()
+{
+	if (checkGameOver())
+		return true;
+
 	if (_input.empty())
 	{
-		if (_turn % 2)
-			_buffer += "\n" "\x03" "4" + _player1 + " turn\nPut coordinates (ex: 1A, 3B, ...):";
-		else
-			_buffer += "\n" "\x03" "3" + _player2 + " turn\nPut coordinates (ex: 1A, 3B, ...):";
+		std::string player = (_turn % 2) ? _player1 : _player2;
+		std::string colorCode = (_turn % 2) ? "\x03" "4" : "\x03" "3";
+		_buffer += "\n" + colorCode + player + " turn\nPut coordinates (ex: 1A, 3B, ...):";
 		return true;
 	}
-	if (!checkInput())
+
+	return !checkInput();
+}
+
+bool Morpion::handleStartCommand()
+{
+	if (_players.size() < 2)
+	{
+		_buffer = "Not enough player, please wait for another player!";
 		return true;
-	return false;
+	}
+
+	initializePlayers();
+	prepareGameStartMessage();
+	_turn++;
+	_start = true;
+	return true;
+}
+
+void Morpion::prepareGameStartMessage()
+{
+	_buffer = "---------------\n|   MORPION   |\n---------------\n";
+	displayGame();
+	_buffer += "\n" "\x03" "4" + _player1 + " turn\nPut coordinates (ex: 1A, 3B, ...):";
+}
+
+void Morpion::initializePlayers()
+{
+	_player1 = _players[0];
+	_player2 = _players[1];
 }
 
 bool Morpion::checkStart()
 {
-	if (!_start && _input == "!start")
+	if (_start)
+		return false;
+	if (_input == "!start")
+		return handleStartCommand();
+
+	_buffer.clear();
+	return true;
+}
+
+bool Morpion::isGameReady()
+{
+	if (checkStart() || isBufferFull())
+		return false;
+	return true;
+}
+
+bool Morpion::isPlayerTurn()
+{
+	if ((_turn % 2 && _currentPlayer != _player1) ||
+		(!(_turn % 2) && _currentPlayer != _player2))
+		return false;
+	return true;
+}
+
+bool Morpion::isInputValid()
+{
+	if (!checkInput())
+		return false;
+	_x = _input[0] - '0' - 1;
+	_y = _input[1] - 'A';
+	
+	if (_gameState[_x][_y] != ' ')
 	{
-		if (_players.size() < 2)
-		{
-			_buffer = "Not enough player, please wait for another player!";
-			return true;
-		}
-		_player1 = _players[0];
-		_player2 = _players[1];
-		_buffer = "---------------\n|   MORPION   |\n---------------\n";
-		displayGame();
-		_buffer += "\n" "\x03" "4" + _player1 + " turn\nPut coordinates (ex: 1A, 3B, ...):";
-		_turn++;
-		_start = true;
-		return true;
+		_buffer += "Coordinate are already used\nPut coordinates (ex: 1A, 3B, ...):";
+		return false;
 	}
-	else if (!_start)
-	{
-		_buffer.clear();
-		return true;
-	}
-	return false;
+	return true;
+}
+
+void Morpion::updateGameState()
+{
+	_gameState[_x][_y] = (_turn % 2) ? 'x' : 'o';
+	_turn++;
+	_input.clear();
 }
 
 void Morpion::gameLoop()
 {
-	if (checkStart())
+	if (!isGameReady() | !isPlayerTurn() || !isInputValid())
+		return;
+
+	updateGameState();
+	displayGame();
+
+	/*if (checkStart())
 		return;
 
 	if (_turn % 2 && _currentPlayer != _player1)
@@ -154,5 +209,5 @@ void Morpion::gameLoop()
 	displayGame();
 	_input.clear();
 	if (isBufferFull())
-		return;
+		return;*/
 }

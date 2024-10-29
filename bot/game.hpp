@@ -13,42 +13,40 @@
 class Game
 {
 	protected:
-		std::string _chanName;
-		std::vector<std::string> _players;
-		std::string	_input;
-		std::string	_buffer;
-		std::string	*_gameState;
-		std::string	_currentPlayer;
-		bool		_start;
-		bool		_finished;
+		bool						_start;
+		bool						_finished;
+		std::string					_chanName;
+		std::string					_input;
+		std::string					_buffer;
+		std::string					*_gameState;
+		std::string					_currentPlayer;
+		std::vector<std::string>	_players;
 
 	public:
 		Game();
 		virtual ~Game() {};
-		// Game(std::vector<std::string> params);
-		// Game(const Game& myGame);
-		// const Game& operator=(const Game& myGame);
-		std::string getChanName();
-		std::string generateChanId();
-		std::vector<std::string> getPlayers();
-		void setPlayers(std::vector<std::string> players);
-		virtual void createRoom() = 0;
 
+		std::string 				generateChanId();
 
-		virtual void	displayGame() = 0;
-		virtual bool	checkInput() = 0;
-		virtual bool	isBufferFull() = 0;
-		virtual bool	checkStart() = 0;
-		virtual bool	winCondition() = 0;
-		virtual void	gameLoop() = 0;
+		virtual bool				checkInput() = 0;
+		virtual bool				isBufferFull() = 0;
+		virtual bool				checkStart() = 0;
+		virtual bool				winCondition() = 0;
+		virtual void				displayGame() = 0;
+		virtual void				gameLoop() = 0;
 
-		bool			isFinished();
-		bool			isStarted();
-		std::string		getInput() const;
-		std::string		getBuffer() const;
-		void			cleanBuffer();
-		void			setInput(std::string input);
-		void			setCurrentPlayer(std::string client);
+		bool						isFinished();
+		bool						isStarted();
+
+		std::string					getInput() const;
+		std::string					getBuffer() const;
+		std::string					getChanName() const;
+		std::vector<std::string>	getPlayers() const;
+
+		void						cleanBuffer();
+		void						setInput(std::string input);
+		void						setCurrentPlayer(std::string client);
+		void						setPlayers(std::vector<std::string> players);
 };
 
 #endif

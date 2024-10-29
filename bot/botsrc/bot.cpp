@@ -67,9 +67,7 @@ Bot::Bot(std::string port)
 }
 
 
-Bot::~Bot()
-{
-}
+Bot::~Bot(){}
 
 void Bot::run()
 {

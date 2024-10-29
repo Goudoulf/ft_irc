@@ -24,11 +24,6 @@ HangMan::~HangMan()
 	delete[] _gameState;
 }
 
-void HangMan::createRoom()
-{
-	std::cout << "create room" << std::endl;
-}
-
 void HangMan::displayGame()
 {
 	_buffer += _gameState[7 - _attempt] + "\n";
