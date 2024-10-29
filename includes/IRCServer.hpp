@@ -6,7 +6,7 @@
 /*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 10:26:00 by cassie            #+#    #+#             */
-/*   Updated: 2024/10/16 14:48:37 by lvallini         ###   ########.fr       */
+/*   Updated: 2024/10/29 11:35:52 by lvallini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,16 +81,16 @@ class IRCServer
 		static IRCServer*		_instance;
 
 		u_int16_t				_port;
-		std::string				_port_string;
+		std::string				_portString;
 		std::string				_password;
 		bool					_passwordIsSet;
 		std::string				_creation_date;
-		struct sockaddr_in		address;
-		struct epoll_event		event, events[MAX_EVENTS];
+		struct sockaddr_in		_address;
+		struct epoll_event		_event, _events[MAX_EVENTS];
 		std::map<std::string, Channel*>	_channels;
 		std::map<int, Client*>	_clients;
 		CommandDirector*		_director;
-		int server_fd, valread, addrlen, epoll_fd;
-		int *pipefd;
+		int _serverfd, _valread, _addrlen, _epollfd;
+		int *_pipefd;
 };
 

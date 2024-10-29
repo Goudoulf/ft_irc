@@ -95,9 +95,9 @@ void Bot::run()
 std::vector<std::string> Bot::getPlayersList(std::string chanName)
 {
 	char buffer[1024];
-	std::string toSend(":bot!bot@localhost NAMES " + chanName +"\r\n");
-	bzero(buffer, 1024);
+	std::string toSend("NAMES " + chanName +"\r\n");
 	send(_socketFd, toSend.c_str(), toSend.length(), 0);
+	bzero(buffer, 1024);
 	recv(_socketFd, buffer, 1024, 0);
 	std::vector<std::string> list;
 	std::string line(buffer);
