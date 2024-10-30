@@ -21,9 +21,20 @@ SRCS_FILE = Channel.cpp client_checker.cpp Client.cpp cmds/CapCommand.cpp cmds/C
 			cmds/ParamTemplate.cpp cmds/Checker.cpp cmds/NamesCommand.cpp \
 			IRCServer.cpp main.cpp cmds/DefaultCommandParser.cpp cmds/ModeCommandParser.cpp \
 			cmds/utils/setNonBlocking.cpp cmds/utils/getTime.cpp initCommandTemplate.cpp cmds/KickCommandParser.cpp \
-			cmds/JoinCommandParser.cpp
+			cmds/JoinCommandParser.cpp 
+
+CMD_FILE = CapCommand.cpp JoinCommand.cpp  NamesCommand.cpp  PassCommand.cpp \
+		   PrivmsgCommand.cpp UserCommand.cpp Command.cpp KickCommand.cpp \
+		   NickCommand.cpp PingCommand.cpp QuitCommand.cpp WhoCommand.cpp \
+		   InviteCommand.cpp ModeCommand.cpp PartCommand.cpp PongCommand.cpp \
+		   TopicCommand.cpp WhoisCommand.cpp
+
+TEMPLATE_FILE = Checker.cpp CommandDirector.cpp ParamTemplate.cpp TemplateBuilder.cpp
+
 
 DIR_SRC := src/
+DIR_CMD := src/command
+DIR_TEMPLATE := src/command
 DIR_OBJ := .object/
 
 OBJS = $(patsubst %.cpp, ${DIR_OBJ}%.o, ${SRCS})
