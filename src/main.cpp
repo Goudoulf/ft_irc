@@ -70,7 +70,7 @@ bool isValidPassword(const std::string& password) {
 
 int main(int argc, char **argv)
 {
-    if (argc < 2 || argc > 4)
+    if (argc < 3 || argc > 5)
     {
         std::cout << "Wrond number of arguments" << std::endl;
         return (-1);
