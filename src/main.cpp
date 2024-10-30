@@ -16,6 +16,7 @@
 #include <cstring>
 #include <signal.h>
 #include <iostream>
+#include <sstream>
 
 bool    stop = false;
 
@@ -40,19 +41,44 @@ void	signal_handling(void)
 
 bool isValidPort(const std::string& port)
 {
+    log(INFO, "Checking port validity");
     if (port.length() < 1 || port.length() > 5)
+    {
+        log(ERROR, "Port is not valid");
         return false;
+    }
     for (size_t i = 0; port[i] != 0; i++)
     {
-         if (!isalnum(port[i]))
+        if (!isalnum(port[i]))
+        {
+            log(ERROR, "Port is not valid");
             return false;
+        }
+    }
+    double port_double;
+    std::stringstream ss(port); 
+    ss >> port_double;
+
+    if (ss.fail())
+    {
+        log(ERROR, "Port is not valid");
+        return false;
+    }
+    else if (port_double < 6660 || port_double > 6669)
+    {
+        log(ERROR, "Error Port must be between 6660-6669");
+        return false;
     }
     return true;
 }
 
 bool isValidPassword(const std::string& password) {
+    log(INFO, "Checking password validity");
     if (password.length() < 1 || password.length() > 23)
+    {
+        log(ERROR, "Password is not valid");
         return false;
+    }
     for (size_t i = 0; password[i] != 0; i++) {
         unsigned char uc = static_cast<unsigned char>(password[i]);
 
@@ -61,28 +87,32 @@ bool isValidPassword(const std::string& password) {
               (uc == 0x0C) ||
               (uc >= 0x0E && uc <= 0x1F) ||
               (uc >= 0x21 && uc <= 0x7F))) {
+            log(ERROR, "Port is not valid");
             return false;
         }
     }
 
-    return true; // All checks passed
+    return true;
 }
 
 int main(int argc, char **argv)
 {
     if (argc < 3 || argc > 5)
     {
-        std::cout << "Wrond number of arguments" << std::endl;
+        log(ERROR, "Wrong number of arguments: ./ircserv <port> <password>");
         return (-1);
     }
     if (argc == 4 && std::strcmp(argv[3], "--debug") == 0)
         currentLogLevel = DEBUG;
     else if (argc == 4 && std::strcmp(argv[3], "--debug") != 0)
+    {
+        log(ERROR, "Wrong argument: ./ircserv <port> <password> --debug");
         return (-1);
+    }
     else
         currentLogLevel = INFO;
-    log(INFO, "IRC Server launching");
     signal_handling();
+    log(INFO, "IRC Server launching");
     if (isValidPassword(argv[2]) && isValidPort(argv[1]))
     {
         IRCServer *server = IRCServer::getInstance();
@@ -90,6 +120,7 @@ int main(int argc, char **argv)
         server->initSocket();
 	server->run();
         delete server;
+        return (0);
     }
-    return (0);
+    return (-1);
 }
