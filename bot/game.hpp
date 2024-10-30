@@ -22,31 +22,42 @@ class Game
 		std::string					_currentPlayer;
 		std::vector<std::string>	_players;
 
+		std::string 				generateChanId();
+
+		virtual bool				checkInput() = 0;
+		virtual bool				checkStart() = 0;
+		virtual bool				winCondition() = 0;
+		virtual bool				checkGameOver() = 0;
+		virtual bool				handleStartCommand() = 0;
+
+		virtual bool				isGameReady() = 0;
+		virtual bool				isPlayerTurn() = 0;
+		virtual bool				isInputValid() = 0;
+		virtual bool				isBufferFull() = 0;
+
+		virtual void				initializePlayers() = 0;
+		virtual void				prepareGameStartMessage() = 0;
+		virtual void				updateGameState() = 0;
+		virtual void				displayGame() = 0;
+
 	public:
 		Game();
 		virtual ~Game() {};
 
-		std::string 				generateChanId();
+		void						gameLoop();
+		void						cleanBuffer();
 
-		virtual bool				checkInput() = 0;
-		virtual bool				isBufferFull() = 0;
-		virtual bool				checkStart() = 0;
-		virtual bool				winCondition() = 0;
-		virtual void				displayGame() = 0;
-		virtual void				gameLoop() = 0;
-
-		bool						isFinished();
 		bool						isStarted();
+		bool						isFinished();
 
-		std::string					getInput() const;
+		void						setInput(std::string input);
+		void						setCurrentPlayer(std::string client);
+		void						setPlayers(std::vector<std::string> players);
+
 		std::string					getBuffer() const;
 		std::string					getChanName() const;
 		std::vector<std::string>	getPlayers() const;
 
-		void						cleanBuffer();
-		void						setInput(std::string input);
-		void						setCurrentPlayer(std::string client);
-		void						setPlayers(std::vector<std::string> players);
 };
 
 #endif

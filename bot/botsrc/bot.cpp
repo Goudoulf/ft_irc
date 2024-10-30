@@ -95,9 +95,9 @@ void Bot::run()
 std::vector<std::string> Bot::getPlayersList(std::string chanName)
 {
 	char buffer[1024];
+	bzero(buffer, 1024);
 	std::string toSend("NAMES " + chanName +"\r\n");
 	send(_socketFd, toSend.c_str(), toSend.length(), 0);
-	bzero(buffer, 1024);
 	recv(_socketFd, buffer, 1024, 0);
 	std::vector<std::string> list;
 	std::string line(buffer);
@@ -114,14 +114,16 @@ std::vector<std::string> Bot::getPlayersList(std::string chanName)
 		{
 			if (param != ":@bot" && param != ":bot")
 			{
-				param.erase(0);
+				param.erase(0, 1);
 				list.push_back(param);
 			}
 			while (iss >> param)
-				list.push_back(param);
+			{
+				if (param != "@bot" && param != "bot")
+					list.push_back(param);
+			}
 		}
 	}
-	
 	return list;
 }
 

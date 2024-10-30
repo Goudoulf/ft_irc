@@ -9,53 +9,14 @@ Morpion::Morpion(std::string type, std::vector<std::string> players) : Game()
 	_x = 0;
 	_y = 0;
 	_turn = 0;
-	_gameState = new std::string[3] {"   ", "   ", "   "}; 
+	_gameState = new std::string[3];
+	for (int i = 0; i < 3; i++)
+		_gameState[i] = "...";
 }
 
 Morpion::~Morpion()
 {
 	delete[] _gameState;
-}
-
-void Morpion::gameLoop()
-{
-	if (!isGameReady() | !isPlayerTurn() || !isInputValid())
-		return;
-
-	updateGameState();
-	displayGame();
-
-	/*if (checkStart())
-		return;
-
-	if (_turn % 2 && _currentPlayer != _player1)
-		return;
-	else if (!(_turn % 2) && _currentPlayer != _player2)
-		return;
-
-	if (isBufferFull())
-		return;
-	if (!checkInput())
-		return;
-
-	_x = _input[0] - '0' - 1;
-	_y = _input[1] - 'A';
-	
-	if (_gameState[_x][_y] != ' ')
-	{
-		_buffer += "Coordinate are already used\nPut coordinates (ex: 1A, 3B, ...):";
-		return;
-	}
-	if (_turn % 2)
-		_gameState[_x][_y] = 'x';
-	else
-		_gameState[_x][_y] = 'o';
-	_turn++;
-
-	displayGame();
-	_input.clear();
-	if (isBufferFull())
-		return;*/
 }
 
 bool Morpion::isGameReady()
@@ -115,6 +76,8 @@ void Morpion::displayGame()
 		if (i < 2)
 			_buffer += "  ---|---|---\n";
 	}
+	_input.clear();
+	isBufferFull();
 }
 
 bool Morpion::checkStart()
@@ -137,7 +100,7 @@ bool Morpion::isBufferFull()
 	{
 		std::string player = (_turn % 2) ? _player1 : _player2;
 		std::string colorCode = (_turn % 2) ? "\x03" "4" : "\x03" "3";
-		_buffer += "\n" + colorCode + player + " turn\nPut coordinates (ex: 1A, 3B, ...):";
+		_buffer += "\n" + colorCode + player + "'s turn\nPut coordinates (ex: 1A, 3B, ...):";
 		return true;
 	}
 
@@ -161,12 +124,11 @@ bool Morpion::handleStartCommand()
 	if (_players.size() < 2)
 	{
 		_buffer = "Not enough player, please wait for another player!";
-		return true;
+		return false;
 	}
 
 	initializePlayers();
 	prepareGameStartMessage();
-	_turn++;
 	_start = true;
 	return true;
 }
@@ -189,7 +151,6 @@ void Morpion::prepareGameStartMessage()
 {
 	_buffer = "---------------\n|   MORPION   |\n---------------\n";
 	displayGame();
-	_buffer += "\n" "\x03" "4" + _player1 + " turn\nPut coordinates (ex: 1A, 3B, ...):";
 }
 
 void Morpion::initializePlayers()

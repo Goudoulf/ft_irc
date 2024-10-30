@@ -24,6 +24,14 @@ std::string Game::generateChanId()
 	}
 	return (res);
 }
+void Game::gameLoop()
+{
+	if (!isGameReady() | !isPlayerTurn() || !isInputValid())
+		return;
+
+	updateGameState();
+	displayGame();
+}
 
 bool Game::isFinished()
 {
@@ -48,11 +56,6 @@ void Game::setInput(std::string input)
 void Game::setCurrentPlayer(std::string client)
 {
 	_currentPlayer = client;
-}
-
-std::string Game::getInput() const
-{
-	return _input;
 }
 
 std::string Game::getBuffer() const

@@ -11,18 +11,27 @@ class ConnectFour : public Game
 		std::string	_player2;
 		size_t		_turn;
 
-	public:
-		ConnectFour(std::string type, std::vector<std::string> players);
-		~ConnectFour();
+		bool	isGameReady();
+		bool	isPlayerTurn();
+		bool	isInputValid();
+		bool	isBufferFull();
 
 		bool	checkInput();
 		bool	winCondition();
-		bool	isBufferFull();
 		bool	checkStart();
+		bool	checkGameOver();
+		bool	handleStartCommand();
+
+		void	initializePlayers();
+		void	prepareGameStartMessage();
+		void	updateGameState();
 		void	displayGame();
-		void	gameLoop();
 
 		bool	checkDirection(int deltaX, int deltaY);
+
+	public:
+		ConnectFour(std::string type, std::vector<std::string> players);
+		~ConnectFour();
 };
 
 #endif
