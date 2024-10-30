@@ -36,7 +36,7 @@
 #define ERR_CANNOTSENDTOCHAN(channel) (":localhost 404 " + channel + " :Cannot send to channel\r\n")
 #define ERR_TOOMANYCHANNELS(channel) (":localhost 405 " + channel + " :You have joined too many channels\r\n")
 #define ERR_TOOMANYTARGETS(target) (":localhost 407 " + target + " :Duplicate recipients. No message delivered\r\n")
-#define ERR_UNKNOWNCOMMAND(command) (":localhost 421 " + command + " :Unknown command\r\n")
+#define ERR_UNKNOWNCOMMAND( command) (":localhost 421 " + command + " :Unknown command\r\n")
 #define ERR_NONICKNAMEGIVEN() (":localhost 431 :No nickname given\r\n")
 #define ERR_ERRONEUSNICKNAME(nickname) (":localhost 432 " + nickname + " :Erroneous nickname\r\n")
 #define ERR_NICKNAMEINUSE(nickname) (":localhost 433 " + nickname + " :Nickname is already in use\r\n")
@@ -57,4 +57,4 @@
 #define ERR_INVALIDMODEPARAM(client, target, modeChar, parameter, description) (":localhost 696 " + client + " " + target + " " + modeChar + " " + parameter + " :" + description + "\r\n")
 #define ERR_INVALIDKEY(client, target) (":localhost 525 " + client + " " + target + " :Key is not well-formed\r\n")
 
-void	rpl_send(int fd, std::string rpl);
+void	rplSend(int fd, std::string rpl);

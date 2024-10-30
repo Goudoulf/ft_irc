@@ -37,7 +37,7 @@ bool	nickExist(const std::string param, Client *client)
 	    if (it->second && it->second->getNickname() == param)
 		return true;
 	}
-	rpl_send(client->getSocket(), ERR_NOSUCHNICK(param));
+	rplSend(client->getSocket(), ERR_NOSUCHNICK(param));
 	return false;
 }
 
@@ -59,7 +59,7 @@ bool	ChannelExist(const std::string param, Client *client)
     IRCServer *server = IRCServer::getInstance();
     if (!server->findChannel(param))
     {
-	rpl_send(client->getSocket(), ERR_NOSUCHCHANNEL(client->getNickname(), param));
+	rplSend(client->getSocket(), ERR_NOSUCHCHANNEL(client->getNickname(), param));
 	return false;
     }
     return true;
@@ -70,7 +70,7 @@ bool	isValidPassword(const std::string param, Client *client)
     IRCServer *server = IRCServer::getInstance();
     if (server->getPassword() == param)
     {
-        rpl_send(client->getSocket(), ERR_PASSWDMISMATCH());
+        rplSend(client->getSocket(), ERR_PASSWDMISMATCH());
         return false;
     }
 	return true;
@@ -82,7 +82,7 @@ bool	isEmpty(const std::string param, Client *client)
     (void)server;
     if (param.empty())
     {
-	    rpl_send(client->getSocket(), ERR_NONICKNAMEGIVEN());
+	    rplSend(client->getSocket(), ERR_NONICKNAMEGIVEN());
         return false;
     }
     return true;
@@ -93,14 +93,14 @@ bool	isValidNick(const std::string param, Client *client)
     IRCServer *server = IRCServer::getInstance();
     if (param.length() > 9)
     {
-	rpl_send(client->getSocket(), ERR_ERRONEUSNICKNAME(param));
+	rplSend(client->getSocket(), ERR_ERRONEUSNICKNAME(param));
         return false;
     }
     char firstChar = param[0];
     if (!isalpha(firstChar) && firstChar != '-' && firstChar != '[' && firstChar != ']' &&
         firstChar != '\\' && firstChar != '^' && firstChar != '_' && firstChar != '{' &&
         firstChar != '}' && firstChar != '|') {
-	rpl_send(client->getSocket(), ERR_ERRONEUSNICKNAME(param));
+	rplSend(client->getSocket(), ERR_ERRONEUSNICKNAME(param));
         return false;
     }
     for (size_t i = 1; i < param.length(); ++i) {
@@ -108,13 +108,13 @@ bool	isValidNick(const std::string param, Client *client)
         if (!isalnum(c) && c != '-' && c != '[' && c != ']' &&
             c != '\\' && c != '^' && c != '_' && c != '{' &&
             c != '}' && c != '|') {
-	    rpl_send(client->getSocket(), ERR_ERRONEUSNICKNAME(param));
+	    rplSend(client->getSocket(), ERR_ERRONEUSNICKNAME(param));
             return false;
         }
     }
     if (!server->checkNick(param))
     {
-	rpl_send(client->getSocket(), ERR_NICKNAMEINUSE(param));
+	rplSend(client->getSocket(), ERR_NICKNAMEINUSE(param));
 	return false;
     }
     return true;
@@ -132,7 +132,7 @@ bool	isValidChannel(const std::string param, Client *client)
 	char firstChar = (*it)[0];
 	if (firstChar != '#' && firstChar != '!' && firstChar != '&' && firstChar != '+')
 	{
-	    rpl_send(client->getSocket(), ERR_NOSUCHCHANNEL(client->getNickname(), *it));
+	    rplSend(client->getSocket(), ERR_NOSUCHCHANNEL(client->getNickname(), *it));
 	    return false;
 	}
 	for (size_t i = 1; i < (*it).length(); ++i) {
@@ -140,7 +140,7 @@ bool	isValidChannel(const std::string param, Client *client)
 	    if (!isalnum(c) && c != '-' && c != '[' && c != ']' &&
 		c != '\\' && c != '^' && c != '_' && c != '{' &&
 		c != '}' && c != '|') {
-		rpl_send(client->getSocket(), ERR_NOSUCHCHANNEL(client->getNickname(), *it));
+		rplSend(client->getSocket(), ERR_NOSUCHCHANNEL(client->getNickname(), *it));
 		return false;
 	    }
 	}
@@ -157,7 +157,7 @@ bool    isInLimits(const std::string param, Client *client)
     if (channel->getIsLimited())
         if (channel->getUsersMap().size() >= channel->getLimitSize())
         {
-            rpl_send(client->getSocket(), ERR_CHANNELISFULL(client->getNickname(), param));
+            rplSend(client->getSocket(), ERR_CHANNELISFULL(client->getNickname(), param));
             return (false);
         }
     return (true);
@@ -169,7 +169,7 @@ bool	isConnected(const std::string param, Client *client)
     (void) param;
     if (client->getLevel() >= CONNECTED)
     {
-	rpl_send(client->getSocket(), ERR_NOTREGISTERED());
+	rplSend(client->getSocket(), ERR_NOTREGISTERED());
 	return (false);
     }
     return true;
@@ -183,7 +183,7 @@ bool	isAlphaNum(const std::string param, Client *client)
     {
 	if (!isalnum((*it2)))
 	{
-	    rpl_send(client->getSocket(), ERR_NOTREGISTERED());
+	    rplSend(client->getSocket(), ERR_NOTREGISTERED());
 	    return false;
 	}
     }
@@ -204,7 +204,7 @@ bool   isInvited(const std::string param, Client *client)
             if ((*it) == client)
                 return (true);
         }
-        rpl_send(client->getSocket(), ERR_INVITEONLYCHAN(client->getNickname(), channel->getChannelName()));
+        rplSend(client->getSocket(), ERR_INVITEONLYCHAN(client->getNickname(), channel->getChannelName()));
         return (false);
     }
     return (true);
@@ -216,7 +216,7 @@ bool    checkiIsOp(const std::string param, Client *client)
     Channel *channel = server->findChannel(param);
     if (channel->isOp((client->getNickname())))
         return (true);
-    rpl_send(client->getSocket(), ERR_CHANOPRIVSNEEDED(client->getNickname(), channel->getChannelName()));
+    rplSend(client->getSocket(), ERR_CHANOPRIVSNEEDED(client->getNickname(), channel->getChannelName()));
     return(false);
 }
 
@@ -229,7 +229,7 @@ bool    isValidMode(const std::string param, Client *client)
     {
         if (validModes.find(modes.at(i)) > 5)
         {
-            rpl_send(client->getSocket(), ERR_UNKNOWNMODE(client->getNickname(), modes.substr(i, 1)));
+            rplSend(client->getSocket(), ERR_UNKNOWNMODE(client->getNickname(), modes.substr(i, 1)));
             return (false);
         }
     }
@@ -241,7 +241,7 @@ bool channelSupportsMode(const std::string param, Client *client)
 {
     if (!param.empty() && param.at(0) == '+')
     {
-        rpl_send(client->getSocket(), ERR_NOCHANMODES(client->getNickname(), param));
+        rplSend(client->getSocket(), ERR_NOCHANMODES(client->getNickname(), param));
         return (false);
     }
     return(true);

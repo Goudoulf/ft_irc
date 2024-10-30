@@ -16,8 +16,8 @@ SRCS_FILE = Channel.cpp client_checker.cpp Client.cpp cmds/CapCommand.cpp cmds/C
 			cmds/JoinCommand.cpp cmds/KickCommand.cpp cmds/ModeCommand.cpp cmds/NickCommand.cpp\
 			cmds/PartCommand.cpp cmds/PassCommand.cpp cmds/PingCommand.cpp cmds/PongCommand.cpp\
 			cmds/PrivmsgCommand.cpp cmds/QuitCommand.cpp cmds/TemplateBuilder.cpp cmds/TopicCommand.cpp\
-			cmds/UserCommand.cpp cmds/utils/find_cmd.cpp cmds/utils/reply.cpp\
-			cmds/utils/split.cpp cmds/utils/tokenize.cpp cmds/WhoCommand.cpp cmds/WhoisCommand.cpp debug/debug.cpp \
+			cmds/UserCommand.cpp cmds/utils/splitBuffer.cpp cmds/utils/reply.cpp\
+			cmds/utils/split.cpp cmds/WhoCommand.cpp cmds/WhoisCommand.cpp debug/debug.cpp \
 			cmds/ParamTemplate.cpp cmds/Checker.cpp cmds/NamesCommand.cpp \
 			IRCServer.cpp main.cpp cmds/DefaultCommandParser.cpp cmds/ModeCommandParser.cpp \
 			cmds/utils/setNonBlocking.cpp cmds/utils/getTime.cpp initCommandTemplate.cpp cmds/KickCommandParser.cpp \

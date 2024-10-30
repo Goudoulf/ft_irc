@@ -1,6 +1,7 @@
 #include "CommandDirector.hpp"
 #include "TemplateBuilder.hpp"
 #include "debug.h"
+#include "reply.h"
 #include <utility>
 #include <sstream>
 #include <string>
@@ -48,7 +49,7 @@ void	CommandDirector::parseCommand(Client* client, std::string buffer)
     }
     if ((_commandList.find(command)) == _commandList.end())
     {
-	    log(ERROR, "Can't find command " + command);
+	    rplSend(client->getSocket(), ERR_UNKNOWNCOMMAND(command));
 	    return;
     }
     log(INFO, "Director fill param");

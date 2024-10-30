@@ -16,6 +16,6 @@ void NamesCommand::execute(Client *client, const std::map<std::string, std::vect
 	}
 	std::string channelName = "= " + channel->getChannelName();
 	std::string clientName = (server->getClients()->find(client->getSocket())->second)->getNickname();
-	rpl_send(client->getSocket(), RPL_NAMREPLY(clientName, channelName, clientsList)
+	rplSend(client->getSocket(), RPL_NAMREPLY(clientName, channelName, clientsList)
 				+ RPL_ENDOFNAMES(clientName, channel->getChannelName()));
 }

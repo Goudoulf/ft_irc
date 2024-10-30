@@ -6,7 +6,7 @@ void	quitServer2(std::string channel, std::string message, Client *client, IRCSe
 	Channel *chan = server->findChannel(channel);
 	for (std::map<int, Client*>::iterator it = server->getClients()->begin(); it != server->getClients()->end(); it++) {
 		if (it->second && chan->inChannel(it->second->getNickname()))
-			message_server("", "QUIT", *client, message, it->second->getSocket());
+			messageServer("", "QUIT", *client, message, it->second->getSocket());
 	}
 	chan->remove_client(client);
 	if (chan->getIsEmpty())

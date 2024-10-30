@@ -12,16 +12,16 @@ void TopicCommand::execute(Client *client, const std::map<std::string, std::vect
 	if (topic.empty())
 	{
 		if ((topic = channel->getTopic()).empty())
-			rpl_send(client->getSocket(), RPL_NOTOPIC(client->getNickname(), channelName));
+			rplSend(client->getSocket(), RPL_NOTOPIC(client->getNickname(), channelName));
 		else
-			rpl_send(client->getSocket(), RPL_TOPIC(channelName, client->getNickname(), topic));
+			rplSend(client->getSocket(), RPL_TOPIC(channelName, client->getNickname(), topic));
 		return;
 	}
 	if (channel->getIsTopicForOp())
 	{
 		if (!channel->isOp(client->getNickname()))
 		{
-			rpl_send(client->getSocket(), ERR_CHANOPRIVSNEEDED(client->getNickname(), channel->getChannelName()));
+			rplSend(client->getSocket(), ERR_CHANOPRIVSNEEDED(client->getNickname(), channel->getChannelName()));
 			return;
 		}
 	}

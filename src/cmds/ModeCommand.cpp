@@ -28,7 +28,7 @@ void	modeKey(bool sign, std::vector<std::string> params, Client& client, Channel
 		std::cout << (*it) << std::endl;
 		if ((*it).find(' ') <= (*it).length())
 		{
-			rpl_send(client.getSocket(), ERR_INVALIDKEY(client.getNickname(), channel.getChannelName()));
+			rplSend(client.getSocket(), ERR_INVALIDKEY(client.getNickname(), channel.getChannelName()));
 			return ;
 		}
 		channel.setPassword(*it);
@@ -42,7 +42,7 @@ void	modeOpe(bool sign, std::vector<std::string> params, Client& client, Channel
 	{
 		if (!channel.inChannel(*it))
 		{
-			rpl_send(client.getSocket(), ERR_USERNOTINCHANNEL(*it, channel.getChannelName()));
+			rplSend(client.getSocket(), ERR_USERNOTINCHANNEL(*it, channel.getChannelName()));
 			return ;
 		}
 		channel.setOp(server->findClient(*it), sign);
@@ -65,7 +65,7 @@ void	modeLimit(bool sign, std::vector<std::string> params, Client& client, Chann
 		stream >> newLimit;
 		if (stream.fail() || newLimit == 0)
 		{
-			rpl_send(client.getSocket(), ERR_INVALIDMODEPARAM(client.getNickname(), channel.getChannelName(), "l", *it, "invalid limit"));
+			rplSend(client.getSocket(), ERR_INVALIDMODEPARAM(client.getNickname(), channel.getChannelName(), "l", *it, "invalid limit"));
 			return ;
 		}
 		channel.setLimitSize(newLimit);
