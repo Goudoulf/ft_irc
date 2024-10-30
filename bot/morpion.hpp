@@ -8,21 +8,29 @@ class Morpion: public Game
 	public:
 		Morpion(std::string type, std::vector<std::string> players);
 		~Morpion();
-		void createRoom();
-
-		void	displayGame();
-		bool	checkInput();
-		bool	winCondition();
-		bool	isBufferFull();
-		bool	checkStart();
-		void	gameLoop();
 
 	private:
-		size_t		_turn;
 		int			_x;
 		int			_y;
-		std::string _player1;
-		std::string _player2;
+		size_t		_turn;
+		std::string	_player1;
+		std::string	_player2;
+
+		bool	isGameReady();
+		bool	isPlayerTurn();
+		bool	isInputValid();
+		bool	isBufferFull();
+
+		bool	checkInput();
+		bool	winCondition();
+		bool	checkStart();
+		bool	checkGameOver();
+		bool	handleStartCommand();
+
+		void	initializePlayers();
+		void	prepareGameStartMessage();
+		void	updateGameState();
+		void	displayGame();
 
 };
 

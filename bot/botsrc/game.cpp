@@ -6,21 +6,6 @@ Game::Game()
 	_finished = false;
 }
 
-// Game::Game(std::vector<std::string> params) {}
-
-// Game::Game(const Game &myGame) {}
-
-std::string Game::getChanName()
-{
-	return _chanName;
-}
-
-
-std::vector<std::string> Game::getPlayers()
-{
-	return _players;
-}
-
 void Game::setPlayers(std::vector<std::string> players) 
 {
 	_players = players;
@@ -39,6 +24,14 @@ std::string Game::generateChanId()
 	}
 	return (res);
 }
+void Game::gameLoop()
+{
+	if (!isGameReady() | !isPlayerTurn() || !isInputValid())
+		return;
+
+	updateGameState();
+	displayGame();
+}
 
 bool Game::isFinished()
 {
@@ -48,16 +41,6 @@ bool Game::isFinished()
 bool Game::isStarted()
 {
 	return _start;
-}
-
-std::string Game::getInput() const
-{
-	return _input;
-}
-
-std::string Game::getBuffer() const
-{
-	return _buffer;
 }
 
 void Game::cleanBuffer()
@@ -73,4 +56,19 @@ void Game::setInput(std::string input)
 void Game::setCurrentPlayer(std::string client)
 {
 	_currentPlayer = client;
+}
+
+std::string Game::getBuffer() const
+{
+	return _buffer;
+}
+
+std::string Game::getChanName() const
+{
+	return _chanName;
+}
+
+std::vector<std::string> Game::getPlayers() const
+{
+	return _players;
 }

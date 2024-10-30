@@ -3,6 +3,7 @@
 
 # include "game.hpp"
 #include <vector>
+#include <algorithm>
 #include <fstream>
 
 
@@ -11,26 +12,32 @@ class HangMan : public Game
 	public:
 		HangMan(std::string type, std::vector<std::string> players);
 		~HangMan();
-		void createRoom();
 
-		void	displayGame();
+	private:
+		size_t								_attempt;
+		std::string							_lettersTried;
+		std::string							_lettersGuessed;
+		std::string							_wordToGuess;
+		std::vector<std::string>			_wordsTried;
+		std::vector<std::string>::iterator	_itPlayer;
+
+		void	setNewWordToGuess();
+
+		bool	isGameReady();
+		bool	isPlayerTurn();
+		bool	isInputValid();
+		bool	isBufferFull();
+
 		bool	checkInput();
 		bool	winCondition();
-		bool	isBufferFull();
 		bool	checkStart();
-		void	gameLoop();
-		void	setNewWordToGuess();
-		// HangMan(const HangMan& myHangMan);
-		// const HangMan& operator=(const HangMan& myHangMan);
-		// void newTurn();
-	
-	private:
-		size_t		_attempt;
-		std::string	_lettersTried;
-		std::vector<std::string> _wordsTried;
-		std::string	_lettersGuessed;
-		std::string	_wordToGuess;
-		std::vector<std::string>::iterator _itPlayer;
+		bool	checkGameOver();
+		bool	handleStartCommand();
+
+		void	initializePlayers();
+		void	prepareGameStartMessage();
+		void	updateGameState();
+		void	displayGame();
 };
 
 #endif

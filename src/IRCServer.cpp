@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rjacq <rjacq@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 08:21:58 by cassie            #+#    #+#             */
-/*   Updated: 2024/10/29 11:40:19 by lvallini         ###   ########.fr       */
+/*   Updated: 2024/10/29 13:52:39 by rjacq            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,6 +171,7 @@ void    IRCServer::readData(int i)
     bzero(client->getBuffer(), 1024);
     log(INFO, "Server reading data");
     if ((_valread = recv(clientfd, client->getBuffer(), 1024, 0)) <= 0) {
+		close(clientfd);
         QuitCommand::quitAll(client, "Lost connection");
         log(WARN, "recv: socket closed");
         if (_valread == -1)  

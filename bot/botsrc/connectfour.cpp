@@ -6,7 +6,9 @@ ConnectFour::ConnectFour(std::string type, std::vector<std::string> players) : G
 	_chanName = "#" + type + generateChanId();
 	std::cout << "Connectfour game created" << std::endl;
 	_turn = 0;
-	_gameState = new std::string[6] {"       ", "       ", "       ", "       ", "       ", "       "};
+	_gameState = new std::string[6];
+	for (int i = 0; i < 6; i++)
+		_gameState[i] = "       ";
 }
 
 ConnectFour::~ConnectFour()
@@ -14,56 +16,47 @@ ConnectFour::~ConnectFour()
 	delete[] _gameState;
 }
 
-void ConnectFour::createRoom()
+bool ConnectFour::isGameReady()
 {
-	std::cout << "create room" << std::endl;
+	if (checkStart() || isBufferFull())
+		return false;
+	return true;
 }
 
-bool ConnectFour::checkDirection(int deltaX, int deltaY)
+bool ConnectFour::isPlayerTurn()
 {
-	for (int startX = 0; startX < 7; startX++)
+	if ((_turn % 2 && _currentPlayer != _player1) ||
+		(!(_turn % 2) && _currentPlayer != _player2))
+		return false;
+	return true;
+}
+
+bool ConnectFour::isInputValid()
+{
+	if (!checkInput())
+		return false;
+	int x = _input[0] - '0' - 1;
+	
+	if (_gameState[0][x] != ' ')
 	{
-		for (int startY = 0; startY < 6; startY++)
-		{
-			char past = _gameState[startY][startX];
-			if (past == ' ')
-				continue;
-			int connected = 1;
-			int x = startX, y = startY;
-
-			while (true)
-			{
-				x += deltaX;
-				y += deltaY;
-				if (x < 0 || x >= 7 || y < 0 || y >= 6)
-					break;
-				if (_gameState[y][x] == past)
-				{
-					connected++;
-					if (connected == 4)
-						return true;
-				}
-				else
-					break;
-			}
-		}
-	}
-	return false;
-}
-
-bool ConnectFour::winCondition()
-{
-	return checkDirection(0, 1) || checkDirection(1, 0) || checkDirection(1, 1) || checkDirection(1, -1);
-}
-
-bool ConnectFour::checkInput()
-{
-	if (_input.length() != 1 || _input[0] < '1' || _input[0] > '7')
-	{
-		_buffer += "Input is not a column number (1-7)!\nInput a column number:";
+		_buffer += "Column is full!\nInput a column number (1-7):";
 		return false;
 	}
 	return true;
+}
+
+void ConnectFour::updateGameState()
+{
+	for (int i = 5; i >= 0; i--)
+	{
+		if ((i <= 5 && _gameState[i][_input[0] - '0' - 1] == ' '))
+		{
+			_gameState[i][_input[0] - '0' - 1] = (_turn % 2) ? 'x' : 'o';
+			break;
+		}
+	}
+	_turn++;
+	_input.clear();
 }
 
 void ConnectFour::displayGame()
@@ -84,94 +77,116 @@ void ConnectFour::displayGame()
 	}
 }
 
+bool ConnectFour::checkStart()
+{
+	if (_start)
+		return false;
+	if (_input == "!start")
+		return handleStartCommand();
+	
+	_buffer.clear();
+	return true;
+}
+
 bool ConnectFour::isBufferFull()
+{
+	if (checkGameOver())
+		return true;
+
+	if (_input.empty())
+	{
+		std::string player = (_turn % 2) ? _player2 : _player1;
+		std::string colorCode = (_turn % 2) ? "\x03" "4" : "\x03" "2";
+		_buffer += "\n" + colorCode + player + "'s turn\nInput a column number (1-7):";
+		return true;
+	}
+	return !checkInput();
+}
+
+bool ConnectFour::checkInput()
+{
+	if (_input.length() != 1 || _input[0] < '1' || _input[0] > '7')
+	{
+		_buffer += "Input is not a column number (1-7)!\nInput a column number:";
+		return false;
+	}
+	return true;
+}
+
+bool ConnectFour::handleStartCommand()
+{
+	if (_players.size() < 2)
+	{
+		_buffer = "Not enough player, please wait for another player!";
+		return false;
+	}
+
+	initializePlayers();
+	prepareGameStartMessage();
+	_start = true;
+	return true;
+}
+
+bool ConnectFour::checkGameOver()
 {
 	if (winCondition() || _turn >= 43)
 	{
 		if (_turn >= 43)
 			_buffer += "Draw!";
-		else if (_turn % 2)
-			_buffer += _player2 + " win!";
 		else
-			_buffer += _player1 + " win!";
+			_buffer += (_turn % 2 ? _player2 : _player1) + " wins!";
 		_finished = true;
 		return true;
 	}
-	if (_input.empty())
-	{
-		if (_turn % 2)
-			_buffer += "\n" "\x03" "4" + _player1 + " turn\nInput a column number (1-7):";
-		else
-			_buffer += "\n" "\x03" "2" + _player2 + " turn\nInput a column number (1-7):";
-		return true;
-	}
-	if (!checkInput())
-		return true;
 	return false;
 }
 
-
-bool ConnectFour::checkStart()
+void ConnectFour::prepareGameStartMessage()
 {
-	if (!_start && _input == "!start")
-	{
-		if (_players.size() < 2)
-		{
-			_buffer = "Not enough player, please wait for another player!";
-			return true;
-		}
-		_player1 = _players[0];
-		_player2 = _players[1];
-		for (std::vector<std::string>::iterator it = _players.begin(); it != _players.end(); it++)
-			std::cout << "	" << (*it) << std::endl;
-		_buffer = "--------------------\n|   CONNECT FOUR   |\n--------------------\n";
-		displayGame();
-		_buffer += "\n" "\x03" "4" + _player1 + " turn\nInput a column number (1-7):";
-		_turn++;
-		_start = true;
-		return true;
-	}
-	else if (!_start)
-	{
-		_buffer.clear();
-		return true;
-	}
-	return false;
-}
-
-void ConnectFour::gameLoop()
-{
-	if (checkStart())
-		return;
-
-	if (_turn % 2 && _currentPlayer != _player1)
-		return;
-	else if (!(_turn % 2) && _currentPlayer != _player2)
-		return;
-
-	if (isBufferFull())
-		return;
-	if (!checkInput())
-		return;
-	for (int i = 5; i >= 0; i--)
-	{
-		if ((i <= 5 && _gameState[i][_input[0] - '0' - 1] == ' '))
-		{
-			if (_turn % 2)
-				_gameState[i][_input[0] - '0' - 1] = 'x';
-			else
-				_gameState[i][_input[0] - '0' - 1] = 'o';
-			break;
-		}
-		else if (_gameState[0][_input[0] - '0' - 1] != ' ')
-		{
-			_buffer += "Column is full!\nInput a column number (1-7):";
-			return;
-		}
-	}
-	_turn++;
+	_buffer = "--------------------\n|   CONNECT FOUR   |\n--------------------\n";
 	displayGame();
-	_input.clear();
-	if (isBufferFull())
-		return;
+}
+
+void ConnectFour::initializePlayers()
+{
+	_player1 = _players[0];
+	_player2 = _players[1];
+}
+
+bool ConnectFour::winCondition()
+{
+	return checkDirection(0, 1) || checkDirection(1, 0) || checkDirection(1, 1) || checkDirection(1, -1);
+}
+
+bool ConnectFour::checkDirection(int deltaX, int deltaY)
+{
+	for (int startX = 0; startX < 7; startX++)
+	{
+		for (int startY = 0; startY < 6; startY++)
+		{
+			char past = _gameState[startY][startX];
+			if (past == ' ')
+				continue;
+			int connected = 1;
+			int x = startX;
+			int y = startY;
+
+			while (true)
+			{
+				x += deltaX;
+				y += deltaY;
+				if (x < 0 || x >= 7 || y < 0 || y >= 6)
+					break;
+				if (_gameState[y][x] == past)
+				{
+					connected++;
+					if (connected == 4)
+						return true;
+				}
+				else
+					break;
+			}
+		}
+	}
+	return false;
 }
