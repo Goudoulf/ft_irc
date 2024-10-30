@@ -129,7 +129,6 @@ bool Bot::readData (std::string buffer)
 {
 	std::istringstream iss(buffer);
 	std::string prefix, command, channel, game, trailing;
-	std::cout << buffer << std::endl;
 
 	buffer.erase(0, buffer.find_first_not_of(" \r\n"));
     buffer.erase(buffer.find_last_not_of(" \r\n") + 1);
@@ -137,6 +136,9 @@ bool Bot::readData (std::string buffer)
 	if (prefix.empty())
 		return false;
 	prefix = prefix.substr(1);
+	std::string client(prefix);
+	if (client.find('!') <= client.length())
+		client.erase(client.find('!'));
 	iss >> command;
 	if (command != "PRIVMSG")
 		return true;
@@ -148,6 +150,7 @@ bool Bot::readData (std::string buffer)
 		game = game.substr(1);
 		std::getline(iss, trailing);
 		std::vector<std::string> params = split (trailing.substr(1), ' ');
+		params.push_back(client);
 		addGame(game, params);
 	}
 	else
@@ -155,8 +158,6 @@ bool Bot::readData (std::string buffer)
 		Game *actualGame = findGame(channel);
 		if (actualGame != NULL && !actualGame->isFinished())
 		{
-			std::string client(prefix);
-			client.erase(client.find('!'), std::string::npos);
 			actualGame->setCurrentPlayer(client);
 			actualGame->setInput(game);
 			if (game == "!start" && !actualGame->isStarted())
@@ -172,8 +173,6 @@ bool Bot::readData (std::string buffer)
 				send(_socketFd, toSend.c_str(), toSend.length(), 0);
 			}
 			actualGame->cleanBuffer();
-			// if (actualGame->isFinished())
-			// 	return true;
 		}
 	}
 	return (true);
@@ -191,7 +190,7 @@ void Bot::addGame(std::string game, std::vector<std::string> params)
 	_games.push_back(toAdd->second(game, params));
 	std::string joinMessage("JOIN " + _games.back()->getChanName() + "\r\n");
 	send(_socketFd, joinMessage.c_str(), joinMessage.length(), 0);
-	std::string modeMessage("MODE " + _games.back()->getChanName() + "+i\r\n");
+	std::string modeMessage("MODE " + _games.back()->getChanName() + " +i\r\n");
 	send(_socketFd, modeMessage.c_str(), modeMessage.length(), 0);
 	std::string creationMessage("PRIVMSG #botchan :" + _games.back()->getChanName() + " created, have fun !\r\n");
 	send(_socketFd, creationMessage.c_str(), creationMessage.length(), 0);
