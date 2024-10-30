@@ -112,7 +112,7 @@ void    setCommandTemplate(CommandDirector *director)
 
     director->addCommand(TemplateBuilder::Builder()
                           .name("QUIT")
-                          .level(REGISTERED)
+                          .level(NONE)
                           .trailing("message",  ParamTemplate::Builder()
                                  .isOptional()
                                  .build()

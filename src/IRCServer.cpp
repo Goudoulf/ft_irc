@@ -6,7 +6,7 @@
 /*   By: rjacq <rjacq@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 08:21:58 by cassie            #+#    #+#             */
-/*   Updated: 2024/10/29 13:52:39 by rjacq            ###   ########.fr       */
+/*   Updated: 2024/10/30 16:54:37 by rjacq            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -290,7 +290,6 @@ void	IRCServer::removeClient(Client *client)
         close(it->first);
         delete ((it->second->getClient()));
         _clients.erase(it);
-        log(DEBUG, "Realy is deleted");
     }
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cassie <cassie@student.42lyon.fr>          +#+  +:+       +#+        */
+/*   By: rjacq <rjacq@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 10:23:27 by cassie            #+#    #+#             */
-/*   Updated: 2024/08/26 08:42:21 by cassie           ###   ########.fr       */
+/*   Updated: 2024/10/30 16:46:15 by rjacq            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ bool isValidPort(const std::string& port)
 }
 
 bool isValidPassword(const std::string& password) {
+	log(DEBUG, "PASSWORD = |" + password + "|");
     if (password.length() < 1 || password.length() > 23)
         return false;
     for (size_t i = 0; password[i] != 0; i++) {

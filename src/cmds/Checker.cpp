@@ -68,7 +68,7 @@ bool	ChannelExist(const std::string param, Client *client)
 bool	isValidPassword(const std::string param, Client *client)
 {
     IRCServer *server = IRCServer::getInstance();
-    if (server->getPassword() == param)
+    if (server->getPassword() != param)
     {
         rplSend(client->getSocket(), ERR_PASSWDMISMATCH());
         return false;
