@@ -6,7 +6,7 @@
 /*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 08:21:58 by cassie            #+#    #+#             */
-/*   Updated: 2024/10/31 08:51:55 by lvallini         ###   ########.fr       */
+/*   Updated: 2024/10/31 10:05:26 by lvallini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ const size_t MAX_BUFFER_SIZE = 512;
 #define SHUTDOWN_MSG "shutdown"
 
 IRCServer* IRCServer::_instance = NULL;
-
-std::map<int, std::string> clientPartialBuffers;
 
 void myExit(std::string error, int code)
 {
@@ -71,7 +69,6 @@ void	IRCServer::initialize(std::string port, std::string password)
     _director = new CommandDirector();
     _pipefd = new int[2];
     setCommandTemplate(_director);
-
     _addrlen = sizeof(_address);
     _creation_date = getTime();
 }
@@ -169,19 +166,17 @@ void    IRCServer::readData(int i)
     else
     {
         log(DEBUG, client->getBuffer());
-        std::string& clientPartial = clientPartialBuffers[i];
-        std::string completeBuffer = clientPartial + client->getBuffer();
+        std::string remainingPartial = client->getPartialBuffer();
+        std::string completeBuffer = remainingPartial + client->getBuffer();
         if (completeBuffer.size() > MAX_BUFFER_SIZE)
         {
             log(ERROR, "Buffer overflow from client , disconnecting.");
             QuitCommand::quitAll(client, "Buffer Overflow");
-            clientPartialBuffers.erase(clientfd);
+            client->erasePartialBuffer();
             return;
         }
-
-        std::string remainingPartial;
         std::vector<std::string> messages = splitBuffer(completeBuffer, remainingPartial);
-        clientPartialBuffers[clientfd] = remainingPartial;
+        client->setPartialBuffer(remainingPartial);
         log(INFO, "parse command start");
         for (std::vector<std::string>::iterator it = messages.begin(); it != messages.end(); it++)
             _director->parseCommand(client, *it);

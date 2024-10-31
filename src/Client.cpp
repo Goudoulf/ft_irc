@@ -100,3 +100,9 @@ time_t	Client::getSignOnTime()const {return _signOnTime;}
 time_t	Client::getLastActivity()const {return _lastActivity;}
 
 void	Client::setLastActivity(time_t newActivity) {_lastActivity = newActivity;}
+
+std::string Client::getPartialBuffer() const {return _partialBuffer;}
+
+void	Client::setPartialBuffer(std::string newPartialBuffer) {_partialBuffer = newPartialBuffer;}
+
+void	Client::erasePartialBuffer() {_partialBuffer.erase();}
