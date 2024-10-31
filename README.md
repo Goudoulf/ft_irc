@@ -2,8 +2,10 @@
 
 ## LEO
 
-- check les sends dans les commandes ou des erreurs ect
-- check les leaks
+- OK check les sends dans les commandes ou des erreurs ect
+- OK check les leaks
+- Input bot port et mot de passe check parsing
+- check bot parsing et command et gestion erreurs
 
 ## ROMAIN
 
@@ -97,17 +99,14 @@ Whois
 
 
 - Clean les logs, et les message debug rajoute logi, rajouter log main et server et autre.
--  OK : Finir le main, : gestion de mot de passe , port et du debug
-- Input bot port et mot de passe check parsing
+- OK : Finir le main, : gestion de mot de passe , port et du debug
 - OK clean les includes et ifndef
-- test main input port password ect;
-- check les leaks
+- OK test main input port password ect;
 
-- check bot parsing et command et gestion erreurs
 - check mini jeu
 - add log system bot
 - Camel case
-- Makefile clean
+- OK Makefile clean
 
 
 check ca : .param("toto", ParamTemplate::Builder()
