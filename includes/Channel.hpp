@@ -21,9 +21,9 @@ class Channel
 		void	sendMessage(Client *sender, std::string message);
 		void	sendReply(std::string message);
 		void	sendMessageWithSender(Client *sender, std::string message);
-		void	add_client(Client *client);
+		void	addClient(Client *client);
 		void	addInvitation(Client *client);
-		void	remove_client(Client *client);
+		void	removeClient(Client *client);
 		bool	inChannel(std::string client);
 		bool	isOp(std::string client);
 		bool	keyIsValid(std::string &key);

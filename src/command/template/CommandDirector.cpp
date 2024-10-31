@@ -29,7 +29,7 @@ void	CommandDirector::parseCommand(Client* client, std::string buffer)
     log(INFO, "Director Parsing");
     std::string trimmedMessage = buffer;
     std::istringstream iss(trimmedMessage);
-    std::string prefix, command, params;
+    std::string prefix, command;
 
     trimmedMessage.erase(0, trimmedMessage.find_first_not_of(" \r\n"));
     trimmedMessage.erase(trimmedMessage.find_last_not_of(" \r\n") + 1);

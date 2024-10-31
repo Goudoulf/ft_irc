@@ -22,7 +22,7 @@ Channel::~Channel()
 {
 }
 
-void	Channel::add_client(Client *client)
+void	Channel::addClient(Client *client)
 {
 	_users.insert(std::pair<Client*, bool>(client, false));	
 }
@@ -63,7 +63,7 @@ bool	Channel::inChannel(std::string client)
 	return (false);
 }
 
-void	Channel::remove_client(Client *client)
+void	Channel::removeClient(Client *client)
 {
 	for (std::map<Client*, bool>::iterator it = _users.begin(); it != _users.end();) {
 		if (it->first->getNickname() == client->getNickname())

@@ -1,6 +1,6 @@
-
 #include "ModeCommand.hpp"
 #include <sstream>
+#include "debug.h"
 
 void	modeInvite(bool sign, std::vector<std::string> params, Client& client, Channel& channel)
 {
@@ -83,6 +83,7 @@ void	mapModeInit(std::map<char, void (*)(bool, std::vector<std::string>, Client&
 
 void ModeCommand::execute(Client *client, const std::map<std::string, std::vector<std::string> >& params)
 {
+	log(CMD, client->getNickname() + ":_____mode_____");
 	IRCServer *server = IRCServer::getInstance();
 	Channel *channel = server->findChannel(params.find("channel")->second[0]);
 	std::vector<std::string> iter = params.find("modes")->second;
@@ -96,5 +97,4 @@ void ModeCommand::execute(Client *client, const std::map<std::string, std::vecto
 		for (unsigned int i = 1; i < modes.length(); i++)
 			(mapFunction.find(modes.at(i)))->second(sign, toProcess, *client, *channel);
 	}
-	//TODO: NAMEREPLY
 }

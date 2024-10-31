@@ -49,7 +49,7 @@ bool Client::operator<(const Client &toComp) const
 	return _socket < toComp._socket;
 }
 
-void		Client::setPrefix()
+void	Client::setPrefix()
 {
 	_prefix = _nickname + "!" + _username + "@" + _hostname;	
 }

@@ -26,7 +26,7 @@ const ParamTemplate *ParamTemplate::Builder::build() const
 	return new ParamTemplate(_paramChecker, _isOptional);
 }
 
-bool    ParamTemplate::checkParam(Client *client, std::vector<std::string> param)const
+bool    ParamTemplate::checkParam(Client *client, std::vector<std::string> param) const
 {
 	for (std::vector<bool (*)(const std::string, Client*)>::const_iterator it = _paramCheckers.begin(); it != _paramCheckers.end(); it++)
 	{

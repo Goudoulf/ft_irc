@@ -6,7 +6,7 @@
 
 void UserCommand::execute(Client *client, const std::map<std::string, std::vector<std::string> >& params)
 {
-	log(INFO,"_____user command_____");
+	log(INFO,"_____user_____");
 	IRCServer *server = IRCServer::getInstance();
 	client->setUsername(params.find("user")->second.begin()[0]);
 	if (client->getUsername().size() != 0 && client->getNickname().size() != 0)

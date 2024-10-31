@@ -6,7 +6,7 @@
 bool ModeCommandParser::parse(const std::string &input, std::vector<std::vector<std::string> >& params)
 {
     std::istringstream iss(input);
-    std::string token, target, tempString;
+    std::string token, tempString;
 
     if (!(iss >> token))
 		return false;
@@ -32,15 +32,5 @@ bool ModeCommandParser::parse(const std::string &input, std::vector<std::vector<
     }
 	modes.push_back(tempString);
 	params.push_back(modes);
-	// std::cout << "MODE PARAM {" << std::endl;
-	// for (std::vector<std::vector<std::string>>::iterator it = params.begin(); it != params.end(); it++)
-	// {
-	// 	std::cout << "ModeParams: ";
-	// 	for (std::vector<std::string>::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++)
-	// 	{
-	// 		std::cout << (*it2) << std::endl;
-	// 	}
-	// }
-	// std::cout << "}" << std::endl;
     return !params.empty();
 }

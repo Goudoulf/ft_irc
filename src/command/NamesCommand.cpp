@@ -4,6 +4,7 @@
 
 void NamesCommand::execute(Client *client, const std::map<std::string, std::vector<std::string> >& params)
 {
+	log(CMD, client->getNickname() + ":_____names_____");
 	IRCServer *server = IRCServer::getInstance();
 	Channel *channel = server->findChannel(params.find("channels")->second[0]);
 	std::map<Client*, bool> clients = channel->getUsersMap();
