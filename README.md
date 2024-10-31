@@ -101,7 +101,7 @@ Whois
 - Clean les logs, et les message debug rajoute logi, rajouter log main et server et autre.
 -  OK : Finir le main, : gestion de mot de passe , port et du debug
 - Input bot port et mot de passe check parsing
-- clean les includes et ifndef
+- OK clean les includes et ifndef
 - test main input port password ect;
 - check les leaks
 
