@@ -30,7 +30,6 @@
 #define RPL_NEWNICK(prefix, nickname) (":" + prefix + " NICK " + nickname + "\r\n")
 
 #define ERR_NOSUCHCHANNEL(nickname, channel) (":NeTwerkers 403 " + nickname + " " +  channel + " :No such channel" + "\r\n")
-// #define ERR_NOTONCHANNEL(channel) (":NeTwerkers 442 " + channel + " :You're not on that channel\r\n")
 #define ERR_BADCHANNELKEY(client, channel) (":NeTwerkers 475 " + client + " " + channel + " :Cannot join channel (+k) \r\n")
 #define ERR_NOSUCHNICK(nickname) (":NeTwerkers 401 " + nickname + " :No such nick/channel\r\n")
 // #define ERR_CANNOTSENDTOCHAN(channel) (":NeTwerkers 404 " + channel + " :Cannot send to channel\r\n")
@@ -41,7 +40,7 @@
 #define ERR_ERRONEUSNICKNAME(nickname) (":NeTwerkers 432 NICK " + nickname + " :Erroneous nickname\r\n")
 #define ERR_NICKNAMEINUSE(nickname) (":NeTwerkers 433 NICK " + nickname + " :Nickname is already in use\r\n")
 #define ERR_USERNOTINCHANNEL(nickname, channel) (":NeTwerkers 441 " + channel + " " + nickname + " :They aren't on that channel\r\n")
-#define ERR_NOTONCHANNEL(channel) (":NeTwerkers 442 " + channel + " :You're not on that channel\r\n")
+#define ERR_NOTONCHANNEL(client, channel) (":NeTwerkers 442 " + client + " " + channel + " :You're not on that channel\r\n")
 #define ERR_USERONCHANNEL(nickname, channel) (":NeTwerkers 443 " + nickname + " " + channel + " :is already on channel\r\n")
 #define ERR_NOTREGISTERED(command) (":NeTwerkers 451 " + command + " :You have not registered\r\n")
 #define ERR_NEEDMOREPARAMS(command) (":NeTwerkers 461 " + command + " :Not enough parameters\r\n")

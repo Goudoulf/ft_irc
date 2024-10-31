@@ -49,7 +49,7 @@ bool	isOnChannel(const std::string param, Client *client)
 
     if (channel && !channel->inChannel(client->getNickname()))
     {
-	    client->replyServer(ERR_NOTONCHANNEL(param));
+	    client->replyServer(ERR_NOTONCHANNEL(client->getNickname(), param));
         return false;
     }
     return true;
