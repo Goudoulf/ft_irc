@@ -12,24 +12,24 @@
 edit servername au debut des reply
 
 > Password
->	rpl :	~~OK ERR_NEEDMOREPARAM~~		~~ERR_ALREADYREGISTRED~~
+	rpl :	~~OK ERR_NEEDMOREPARAM~~		~~ERR_ALREADYREGISTRED~~
 
 >Nickname
 	rpl :	ERR_NONICKNAMEGIVEN(n'est pas utilise sur Nick)		~~ERR_ERRONEUSNICKNAME~~
 			~~ERR_NICKNAMEINUSE~~
 
 >User
-	rpl :	~~ERR_NEEDMOREPARAMS~~		ERR_ALREADYREGISTRED (Potentiel probleme : Si j'utilise USER sans arg, est ce aue je dois avoir needmoreparam ou alreadyregistred apres m'etre enregistre)
+	rpl :	~~ERR_NEEDMOREPARAMS~~		ERR_ALREADYREGISTRED (Potentiel probleme : Si j'utilise USER sans arg, est ce que je dois avoir needmoreparam ou alreadyregistred apres m'etre enregistre)
 
 >Quit
 >	rpl :	None
 
-Join
-	rpl :	~~ERR_NEEDMOREPARAMS~~		ERR_BANNEDFROMCHAN
-			ERR_INVITEONLYCHAN		ERR_BADCHANNELKEY
-			ERR_CHANNELISFULL		ERR_BADCHANMASK
-			ERR_NOSUCHCHANNEL		ERR_TOOMANYCHANNELS
-			RPL_TOPIC
+>Join
+	rpl :	~~ERR_NEEDMOREPARAMS~~
+			~~ERR_INVITEONLYCHAN~~		~~ERR_BADCHANNELKEY~~
+			~~ERR_CHANNELISFULL~~
+			ERR_NOSUCHCHANNEL (doute sur les espaces et les surplus de parametres)		ERR_TOOMANYCHANNELS (pas utile ?)
+			~~RPL_TOPIC~~
 
 Part
 	rpl :	ERR_NEEDMOREPARAMS		ERR_NOSUCHCHANNEL

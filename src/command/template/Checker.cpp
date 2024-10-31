@@ -135,7 +135,7 @@ bool	isValidChannel(const std::string param, Client *client)
     for (std::vector<std::string>::iterator it = channels.begin(); it != channels.end(); it++)
     {
         char firstChar = (*it)[0];
-        if (firstChar != '#' && firstChar != '!' && firstChar != '&' && firstChar != '+')
+        if ((firstChar != '#' && firstChar != '!' && firstChar != '&' && firstChar != '+') || (*it).size() < 2)
         {
             rplSend(client->getSocket(), ERR_NOSUCHCHANNEL(client->getNickname(), *it));
             return false;
