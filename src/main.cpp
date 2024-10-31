@@ -6,7 +6,7 @@
 /*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 10:23:27 by cassie            #+#    #+#             */
-/*   Updated: 2024/10/31 08:52:33 by lvallini         ###   ########.fr       */
+/*   Updated: 2024/10/31 10:21:57 by lvallini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,8 +117,8 @@ int main(int argc, char **argv)
     {
         IRCServer *server = IRCServer::getInstance();
         server->initialize(argv[1], argv[2]);
-        server->initSocket();
-	    server->run();
+        if (server->initSocket())
+	        server->run();
         delete server;
         return (0);
     }
