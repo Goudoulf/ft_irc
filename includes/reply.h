@@ -27,7 +27,7 @@
 #define RPL_JOIN(prefix, channel ) (":" + prefix + " JOIN " + channel + "\r\n")
 #define RPL_PART(prefix, channel, message) (":" + prefix + " PART " + channel + " :" + message + "\r\n")
 #define RPL_PRIVMSG(prefix, target, message) (":" + prefix + " PRIVMSG " + target + " :" + message + "\r\n")
-#define RPL_NEWNICK(prefix, nickname) (":" + prefix + " NICK :" + nickname + "\r\n")
+#define RPL_NEWNICK(prefix, nickname) (":" + prefix + " NICK " + nickname + "\r\n")
 
 #define ERR_NOSUCHCHANNEL(nickname, channel) (":localhost 403 " + nickname + " " +  channel + " :No such channel" + "\r\n")
 #define ERR_NOTONCHANNEL(channel) (":localhost 442 " + channel + " :You're not on that channel\r\n")
@@ -38,7 +38,7 @@
 #define ERR_TOOMANYTARGETS(target) (":localhost 407 " + target + " :Duplicate recipients. No message delivered\r\n")
 #define ERR_UNKNOWNCOMMAND( command) (":localhost 421 " + command + " :Unknown command\r\n")
 #define ERR_NONICKNAMEGIVEN() (":localhost 431 :No nickname given\r\n")
-#define ERR_ERRONEUSNICKNAME(nickname) (":localhost 432 " + nickname + " :Erroneous nickname\r\n")
+#define ERR_ERRONEUSNICKNAME(nickname) (":localhost 432 NICK " + nickname + " :Erroneous nickname\r\n")
 #define ERR_NICKNAMEINUSE(nickname) (":localhost 433 NICK " + nickname + " :Nickname is already in use\r\n")
 #define ERR_USERNOTINCHANNEL(nickname, channel) (":localhost 441 " + channel + " " + nickname + " :They aren't on that channel\r\n")
 #define ERR_NOTONCHANNEL(channel) (":localhost 442 " + channel + " :You're not on that channel\r\n")

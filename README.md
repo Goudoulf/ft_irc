@@ -10,17 +10,17 @@
 - test toutes les commandes, avec checker et erreurs les reply
 
 > Password
->	rpl :	#OK ERR_NEEDMOREPARAM		#ERR_ALREADYREGISTRED
+>	rpl :	~~OK ERR_NEEDMOREPARAM~~		~~ERR_ALREADYREGISTRED~~
 
-Nickname
-	rpl :	ERR_NONICKNAMEGIVEN		ERR_ERRONEUSNICKNAME
-			(ERR_NICKNAMEINUSE)		ERR_NICKCOLLISION
+>Nickname
+	rpl :	ERR_NONICKNAMEGIVEN(n'est pas utilise sur Nick)		~~ERR_ERRONEUSNICKNAME~~
+			~~ERR_NICKNAMEINUSE~~
 
-User
-	rpl :	ERR_NEEDMOREPARAMS		ERR_ALREADYREGISTRED
+>User
+	rpl :	~~ERR_NEEDMOREPARAMS~~		ERR_ALREADYREGISTRED (Potentiel probleme : Si j'utilise USER sans arg, est ce aue je dois avoir needmoreparam ou alreadyregistred apres m'etre enregistre)
 
-Quit
-	rpl :	None
+>Quit
+>	rpl :	None
 
 Join
 	rpl :	ERR_NEEDMOREPARAMS		ERR_BANNEDFROMCHAN
@@ -39,7 +39,6 @@ Mode
 			ERR_NOTONCHANNEL		ERR_KEYSET
 			RPL_BANLIST				RPL_ENDOFBANLIST
 			ERR_UNKNOWNMODE			ERR_NOSUCHCHANNEL
-
 			ERR_USERSDONTMATCH		RPL_UMODEIS
 			ERR_UMODEUNKNOWNFLAG
 
@@ -88,6 +87,8 @@ Whois
 			RPL_ENDOFWHOIS
 
 - test nc : envoi partiel, ctrl c ctrl d ctrl z test quelque commande avec cas chelou
+	erreur ? avec echo "PASS 123456\r\nNICK test\r\nUSER a a a :a\r\nJOIN #42\r\nPRIVMSG #42 :the cake is a lie\r\nQUIT\n\rJOIN #43\n\rJOIN #42" | nc 127.0.0.1 6665 (le probleme vient des \n\r qui sont inverse)
+	arrive a join sans \r\n (pareil pour toutes les commandes ?)
 - check les leaks
 - dictionary check validity
 - check nombre de joueur creation de je
