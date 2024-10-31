@@ -188,7 +188,11 @@ bool    IRCServer::readData(int i)
         client->setPartialBuffer(remainingPartial);
         log(INFO, "parse command start");
         for (std::vector<std::string>::iterator it = messages.begin(); it != messages.end(); it++)
+        {
+            if (_clients.find(clientfd) == _clients.end())
+                break;
             _director->parseCommand(client, *it);
+        }
     }
     log(INFO, "epoll_wait start");
     return (true);
@@ -275,7 +279,8 @@ void	IRCServer::removeClient(Client *client)
         if (epoll_ctl(_epollfd, EPOLL_CTL_DEL, it->first, NULL) == -1)
             log(ERROR,"epoll_ctl: EPOLL_CTL_DEL failed");
         close(it->first);
-        delete ((it->second->getClient()));
+        delete (client);
+        client = NULL;
         _clients.erase(it);
     }
 }

@@ -27,6 +27,7 @@ void	CommandDirector::addCommand(TemplateBuilder *command)
 void	CommandDirector::parseCommand(Client* client, std::string buffer)
 {
     log(INFO, "Director Parsing");
+    log(INFO, "Buffer=" + buffer + "|");
     std::string trimmedMessage = buffer;
     std::istringstream iss(trimmedMessage);
     std::string prefix, command;

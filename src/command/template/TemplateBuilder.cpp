@@ -125,10 +125,7 @@ void    TemplateBuilder::executeCommand(Client *client, const std::string &input
 	if (!_parser->parse(input, params))
 		return;
 	if (!checkLevel(client))
-	{
-		//rplSend(client->getSocket(), ERR_NOTREGISTERED(this->getName()));
 		return ;
-	}
 	if (!fillParam(client, params))
 		return;
 	_command->execute(client, _parsedParams);
