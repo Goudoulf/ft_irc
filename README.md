@@ -16,14 +16,14 @@
 >	rpl :	~~OK ERR_NEEDMOREPARAM~~		~~ERR_ALREADYREGISTRED~~
 
 >Nickname
-	rpl :	(ERR_NONICKNAMEGIVEN)		~~ERR_ERRONEUSNICKNAME~~
-			(ERR_NICKNAMEINUSE)
+	rpl :	ERR_NONICKNAMEGIVEN(n'est pas utilise sur Nick)		~~ERR_ERRONEUSNICKNAME~~
+			~~ERR_NICKNAMEINUSE~~
 
-User
-	rpl :	ERR_NEEDMOREPARAMS		ERR_ALREADYREGISTRED
+>User
+	rpl :	~~ERR_NEEDMOREPARAMS~~		ERR_ALREADYREGISTRED (Potentiel probleme : Si j'utilise USER sans arg, est ce aue je dois avoir needmoreparam ou alreadyregistred apres m'etre enregistre)
 
-Quit
-	rpl :	None
+>Quit
+>	rpl :	None
 
 Join
 	rpl :	ERR_NEEDMOREPARAMS		ERR_BANNEDFROMCHAN
@@ -42,7 +42,6 @@ Mode
 			ERR_NOTONCHANNEL		ERR_KEYSET
 			RPL_BANLIST				RPL_ENDOFBANLIST
 			ERR_UNKNOWNMODE			ERR_NOSUCHCHANNEL
-
 			ERR_USERSDONTMATCH		RPL_UMODEIS
 			ERR_UMODEUNKNOWNFLAG
 
