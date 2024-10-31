@@ -6,9 +6,8 @@
 
 void NickCommand::execute(Client *client, const std::map<std::string, std::vector<std::string> >& params)
 {
-    log(INFO, "_____nick command_____");
+    log(INFO, "_____nick_____");
     IRCServer *server = IRCServer::getInstance();
-    std::string old_nick = client->getNickname();
     std::string old_prefix = client->getPrefix();
     client->setNickname(*params.find("nick")->second.begin());
     client->setPrefix();

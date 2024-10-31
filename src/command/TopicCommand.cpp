@@ -1,8 +1,10 @@
 #include "TopicCommand.hpp"
 #include "reply.h"
+#include "debug.h"
 
 void TopicCommand::execute(Client *client, const std::map<std::string, std::vector<std::string> > &params)
 {
+	log(CMD, client->getNickname() + ":_____topic_____");
 	IRCServer *server = IRCServer::getInstance();
 	std::string topic = "";
 	if (params.size() > 1)

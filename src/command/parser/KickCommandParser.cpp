@@ -27,14 +27,5 @@ bool KickCommandParser::parse(const std::string &input, std::vector<std::vector<
 			temp = split(token, ',');
 		params.push_back(temp);
     }
-	// for (std::vector<std::vector<std::string>>::iterator it = params.begin(); it != params.end(); it++)
-	// {
-	// 	std::cout << "DIFF" << std::endl;
-	// 	for (std::vector<std::string>::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++)
-	// 	{
-	// 		std::cout << "AAA"<< (*it2) << std::endl;
-	// 	}
-	// }
-	return true;
-    //return !params.empty();
+    return true;
 }

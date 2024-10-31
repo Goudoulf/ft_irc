@@ -99,7 +99,7 @@ Whois
 
 
 - Clean les logs, et les message debug rajoute logi, rajouter log main et server et autre.
-- Finir le main, : gestion de mot de passe , port et du debug
+-  OK : Finir le main, : gestion de mot de passe , port et du debug
 - Input bot port et mot de passe check parsing
 - clean les includes et ifndef
 - test main input port password ect;
@@ -110,3 +110,8 @@ Whois
 - add log system bot
 - Camel case
 - Makefile clean
+
+
+check ca : .param("toto", ParamTemplate::Builder()
+ping ?
+autre nom pour les fonctions de quit

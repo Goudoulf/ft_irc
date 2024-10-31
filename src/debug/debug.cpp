@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   debug.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cassie <cassie@student.42lyon.fr>          +#+  +:+       +#+        */
+/*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 08:07:57 by cassie            #+#    #+#             */
-/*   Updated: 2024/08/26 08:37:11 by cassie           ###   ########.fr       */
+/*   Updated: 2024/10/31 08:40:53 by lvallini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 LogLevel currentLogLevel = DEBUG;
 
-std::string log_time()
+std::string logTime()
 {
 	time_t timestamp = time( NULL );
     struct tm * pTime = localtime( & timestamp );
@@ -35,22 +35,22 @@ void log(LogLevel level, const std::string message)
 	{
 		switch (level) {
 			case DEBUG:
-				std::cout << "[" << log_time() << "]" << BLUE << "[DEBUG]: " << message << RESET << std::endl;
+				std::cout << "[" << logTime() << "]" << BLUE << "[DEBUG]: " << message << RESET << std::endl;
 				break;
 			case INFO:
-				std::cout << "[" << log_time() << "]" << WHITE << "[INFO]: " << message << RESET << std::endl;
+				std::cout << "[" << logTime() << "]" << WHITE << "[INFO]: " << message << RESET << std::endl;
 				break;
 			case CMD:
-				std::cout << "[" << log_time() << "]"<< CYAN << "[CMD]: " << message << RESET << std::endl;
+				std::cout << "[" << logTime() << "]"<< CYAN << "[CMD]: " << message << RESET << std::endl;
 				break;
 			case REPLY:
-				std::cout << "[" << log_time() << "]"<< GREEN << "[REPLY]: " << message << RESET << std::endl;
+				std::cout << "[" << logTime() << "]"<< GREEN << "[REPLY]: " << message << RESET << std::endl;
 				break;
 			case WARN:
-				std::cout << "[" << log_time() << "]"<< YELLOW << "[WARN]: " << message << RESET << std::endl;
+				std::cout << "[" << logTime() << "]"<< YELLOW << "[WARN]: " << message << RESET << std::endl;
 				break;
 			case ERROR:
-				std::cout << "[" << log_time() << "]"<< RED <<"[ERROR]: " << message << RESET <<std::endl;
+				std::cout << "[" << logTime() << "]"<< RED <<"[ERROR]: " << message << RESET << std::endl;
 				break;
 		}
 		std::cout << std::flush;

@@ -54,7 +54,7 @@ private:
   CommandParser *_parser;
   std::vector<std::pair<std::string, const ParamTemplate *> > _params;
   Command *_command;
-  bool    check_level(Client *client)const;
-  bool    fill_param(Client *client, std::vector<std::vector<std::string> > params);
+  bool    checkLevel(Client *client)const;
+  bool    fillParam(Client *client, std::vector<std::vector<std::string> > params);
   void    executeCommand(Client *client, const std::string &param);
 };

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IRCServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rjacq <rjacq@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 08:21:58 by cassie            #+#    #+#             */
-/*   Updated: 2024/10/30 16:54:37 by rjacq            ###   ########.fr       */
+/*   Updated: 2024/10/31 08:51:55 by lvallini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,53 +82,45 @@ void  IRCServer::initSocket()
     pipe(_pipefd);
     if ((_serverfd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
         myExit("socket failed", EXIT_FAILURE);
-
     if (setsockopt(_serverfd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)))
         myExit("setsockopt", EXIT_FAILURE);
-
     setNonBlocking(_serverfd);
-
     _address.sin_family = AF_INET;
     _address.sin_addr.s_addr = INADDR_ANY;
     _address.sin_port = htons(_port);
-
     if (bind(_serverfd, (struct sockaddr *)&_address, sizeof(_address)) < 0)
     {
         log(ERROR, strerror(errno));
         myExit("bind failed", EXIT_FAILURE);
     }
-
     if (listen(_serverfd, 10) < 0)
         myExit("listen error", EXIT_FAILURE);
-
     _epollfd = epoll_create1(0);
-    if (_epollfd == -1) {
-        perror("epoll_create1 failed");
+    if (_epollfd == -1)
+    {
         close(_serverfd);
-        exit(EXIT_FAILURE);
+        myExit("epoll_create1 failed", EXIT_FAILURE);
     }
-
     _event.events = EPOLLIN;
     _event.data.fd = _serverfd;
-    if (epoll_ctl(_epollfd, EPOLL_CTL_ADD, _serverfd, &_event) == -1) {
-        perror("epoll_ctl: server_fd failed");
+    if (epoll_ctl(_epollfd, EPOLL_CTL_ADD, _serverfd, &_event) == -1)
+    {
         close(_serverfd);
         close(_epollfd);
-        exit(EXIT_FAILURE);
+        myExit("epoll_ctl: server_fd failed", EXIT_FAILURE);
     }
     _event.events = EPOLLIN;
     _event.data.fd = _pipefd[0];
-    if (epoll_ctl(_epollfd, EPOLL_CTL_ADD, _pipefd[0], &_event) == -1) {
-        perror("epoll_ctl failed for pipe");
-        exit(EXIT_FAILURE);
-    }
+    if (epoll_ctl(_epollfd, EPOLL_CTL_ADD, _pipefd[0], &_event) == -1)
+        myExit("epoll_ctl failed for pipe", EXIT_FAILURE);
     _clients.insert(std::pair<int, Client*>(_serverfd, NULL));
 }
 
 int     IRCServer::run(void)
 {
     log(INFO, "IRC Server loop is starting");
-    while (!stop) {
+    while (!stop)
+    {
         int event_count = epoll_wait(_epollfd, _events, MAX_EVENTS, 0);
         if (event_count == -1)
         {
@@ -136,7 +128,8 @@ int     IRCServer::run(void)
                 continue;
             myExit("epoll_wait failed", EXIT_FAILURE);
         }
-        for (int i = 0; i < event_count; i++) {
+        for (int i = 0; i < event_count; i++)
+        {
             if (_events[i].data.fd == _serverfd)
                 acceptConnection();
             else if (_events[i].data.fd == _pipefd[0])
@@ -145,7 +138,7 @@ int     IRCServer::run(void)
                 read(_pipefd[0], buffer, sizeof(buffer));
                 if (strncmp(buffer, SHUTDOWN_MSG, strlen(SHUTDOWN_MSG)) == 0)
                 {
-                    std::cout << "Received shutdown signal" << std::endl;
+                    log (ERROR, "Received shutdown signal");
                     stop = 1;
                     break;
                 }
@@ -157,11 +150,6 @@ int     IRCServer::run(void)
     return 0;
 }
 
-void		IRCServer::stopServer()
-{
-    return;
-}
-
 void    IRCServer::readData(int i)
 {
     log(INFO, "read data start");
@@ -170,7 +158,8 @@ void    IRCServer::readData(int i)
     log(INFO, "Clear buffer");
     bzero(client->getBuffer(), 1024);
     log(INFO, "Server reading data");
-    if ((_valread = recv(clientfd, client->getBuffer(), 1024, 0)) <= 0) {
+    if ((_valread = recv(clientfd, client->getBuffer(), 1024, 0)) <= 0)
+    {
 		close(clientfd);
         QuitCommand::quitAll(client, "Lost connection");
         log(WARN, "recv: socket closed");
@@ -182,7 +171,8 @@ void    IRCServer::readData(int i)
         log(DEBUG, client->getBuffer());
         std::string& clientPartial = clientPartialBuffers[i];
         std::string completeBuffer = clientPartial + client->getBuffer();
-        if (completeBuffer.size() > MAX_BUFFER_SIZE) {
+        if (completeBuffer.size() > MAX_BUFFER_SIZE)
+        {
             log(ERROR, "Buffer overflow from client , disconnecting.");
             QuitCommand::quitAll(client, "Buffer Overflow");
             clientPartialBuffers.erase(clientfd);
@@ -217,20 +207,6 @@ void    IRCServer::acceptConnection()
     _clients.insert(std::pair<int, Client*>(newSocket, new Client(newSocket, _address)));
 }
 
-void    IRCServer::checkChannels()
-{
-    for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end();)
-    {
-        if (it->second->getIsEmpty())
-        {
-            delete it->second;
-            _channels.erase(it);
-        }
-        else
-            it++;
-    }
-}
-
 void    IRCServer::sendReply(int target, std::string message)
 {
 	log(DEBUG, "REPLY SERVER :" + message);
@@ -253,7 +229,8 @@ Channel	*IRCServer::findChannel(std::string channel)
 Client	*IRCServer::findClient(std::string nickname)
 {
     std::map<int, Client*>::iterator it;
-    for (it = _clients.begin(); it != _clients.end(); it++) {
+    for (it = _clients.begin(); it != _clients.end(); it++)
+    {
         if (it->second && it->second->getNickname() == nickname)
             return it->second;
     }
@@ -307,7 +284,8 @@ void	IRCServer::removeChannel(Channel *channel)
 
 bool	IRCServer::checkNick(const std::string& nick)
 {
-    for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); it++) {
+    for (std::map<int, Client*>::iterator it = _clients.begin(); it != _clients.end(); it++)
+    {
 		if (it->second && it->second->getNickname() == nick)
                     return false;
 	}

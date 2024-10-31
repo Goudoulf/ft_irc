@@ -6,7 +6,7 @@
 /*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 10:26:00 by cassie            #+#    #+#             */
-/*   Updated: 2024/10/29 11:35:52 by lvallini         ###   ########.fr       */
+/*   Updated: 2024/10/31 08:51:01 by lvallini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ class IRCServer
 		void					initialize(std::string port, std::string password);
 		void					initSocket();
 		int						run();
-		void					stopServer();
 
 		void					acceptConnection();
 		void					readData(int i);
@@ -64,7 +63,6 @@ class IRCServer
 		void					removeChannel(Channel *channel);
 		Channel					*findChannel(std::string channel);
 		Client					*findClient(std::string nickname);
-		void					checkChannels();
 
 		std::map<int, Client*>*	getClients();
 		std::map<std::string, Channel*>*	getChannels();
