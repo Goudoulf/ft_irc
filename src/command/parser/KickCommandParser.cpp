@@ -7,7 +7,9 @@ bool KickCommandParser::parse(const std::string &input, std::vector<std::vector<
 {
     std::istringstream iss(input);
     std::string token;
+	std::string command;
 
+	iss >> command;
     if (!(iss >> token))
 		return false;
     while (iss >> token)
@@ -33,5 +35,6 @@ bool KickCommandParser::parse(const std::string &input, std::vector<std::vector<
 	// 		std::cout << "AAA"<< (*it2) << std::endl;
 	// 	}
 	// }
-    return !params.empty();
+	return true;
+    //return !params.empty();
 }

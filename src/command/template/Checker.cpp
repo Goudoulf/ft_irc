@@ -68,7 +68,12 @@ bool	ChannelExist(const std::string param, Client *client)
 bool	isValidPassword(const std::string param, Client *client)
 {
     IRCServer *server = IRCServer::getInstance();
-    if (server->getPassword() == param)
+	if (client->getLevel() >= CONNECTED)
+	{
+		client->replyServer(ERR_ALREADYREGISTRED(std::string("PASS")));
+		return false;
+	}
+    if (server->getPassword() != param)
     {
         rplSend(client->getSocket(), ERR_PASSWDMISMATCH());
         return false;
@@ -162,32 +167,6 @@ bool    isInLimits(const std::string param, Client *client)
         }
     return (true);
 
-}
-
-bool	isConnected(const std::string param, Client *client)
-{
-    (void) param;
-    if (client->getLevel() >= CONNECTED)
-    {
-	rplSend(client->getSocket(), ERR_NOTREGISTERED());
-	return (false);
-    }
-    return true;
-}
-
-bool	isAlphaNum(const std::string param, Client *client)
-{
-    IRCServer *server = IRCServer::getInstance();
-    (void)server;
-    for (std::string::const_iterator it2 = param.begin(); it2 != param.end(); it2++)
-    {
-	if (!isalnum((*it2)))
-	{
-	    rplSend(client->getSocket(), ERR_NOTREGISTERED());
-	    return false;
-	}
-    }
-    return true;
 }
 
 bool   isInvited(const std::string param, Client *client)

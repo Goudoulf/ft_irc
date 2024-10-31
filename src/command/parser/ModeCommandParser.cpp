@@ -7,9 +7,11 @@ bool ModeCommandParser::parse(const std::string &input, std::vector<std::vector<
 {
     std::istringstream iss(input);
     std::string token, target, tempString;
+	std::string command;
 
-    if (!(iss >> token))
-		return false;
+	iss >> command;
+    // if (!(iss >> token))
+	// 	return false;
 	std::vector<std::string> channel;
 	iss >> token;
 	channel.push_back(token);
@@ -42,5 +44,6 @@ bool ModeCommandParser::parse(const std::string &input, std::vector<std::vector<
 	// 	}
 	// }
 	// std::cout << "}" << std::endl;
-    return !params.empty();
+	return true;
+    //return !params.empty();
 }

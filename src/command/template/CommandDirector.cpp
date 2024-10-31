@@ -52,6 +52,8 @@ void	CommandDirector::parseCommand(Client* client, std::string buffer)
 	    rplSend(client->getSocket(), ERR_UNKNOWNCOMMAND(command));
 	    return;
     }
+	if (command == "CAP")
+		return;
     log(INFO, "Director fill param");
     _commandList.find(command)->second->executeCommand(client, trimmedMessage);
 }

@@ -7,9 +7,11 @@ bool JoinCommandParser::parse(const std::string &input, std::vector<std::vector<
 {
     std::istringstream iss(input);
     std::string token;
+	std::string command;
 
-    if (!(iss >> token))
-		return false;
+	iss >> command;
+    // if (!(iss >> token))
+	// 	return false;
     while (iss >> token)
 	{
 		std::vector<std::string> temp;
@@ -25,5 +27,6 @@ bool JoinCommandParser::parse(const std::string &input, std::vector<std::vector<
 			temp = split(token, ',');
 		params.push_back(temp);
     }
-    return !params.empty();
+	return true;
+    //return !params.empty();
 }

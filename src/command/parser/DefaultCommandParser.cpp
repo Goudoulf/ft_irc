@@ -6,10 +6,12 @@ bool DefaultCommandParser::parse(const std::string &input, std::vector<std::vect
 {
     std::istringstream iss(input);
     std::string token;
+	std::string command;
 
-    if (!(iss >> token)) {
-	return false;
-    }
+    // if (!(iss >> token)) {
+	// return true;
+    // }
+	iss >> command;
     while (iss >> token)
     {
 	std::vector<std::string> temp;
@@ -24,5 +26,6 @@ bool DefaultCommandParser::parse(const std::string &input, std::vector<std::vect
 	temp.push_back(token);
 	params.push_back(temp);
     }
-    return !params.empty();
+	return true;
+    //return !params.empty();
 }
