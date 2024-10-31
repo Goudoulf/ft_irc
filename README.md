@@ -12,6 +12,8 @@
 
 - test toutes les commandes, avec checker et erreurs les reply
 
+edit servername au debut des reply
+
 > Password
 >	rpl :	~~OK ERR_NEEDMOREPARAM~~		~~ERR_ALREADYREGISTRED~~
 
@@ -26,7 +28,7 @@
 >	rpl :	None
 
 Join
-	rpl :	ERR_NEEDMOREPARAMS		ERR_BANNEDFROMCHAN
+	rpl :	~~ERR_NEEDMOREPARAMS~~		ERR_BANNEDFROMCHAN
 			ERR_INVITEONLYCHAN		ERR_BADCHANNELKEY
 			ERR_CHANNELISFULL		ERR_BADCHANMASK
 			ERR_NOSUCHCHANNEL		ERR_TOOMANYCHANNELS
