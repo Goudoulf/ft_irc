@@ -102,11 +102,11 @@ Whois
 - OK : Finir le main, : gestion de mot de passe , port et du debug
 - OK clean les includes et ifndef
 - OK test main input port password ect;
+- OK Makefile clean
 
 - check mini jeu
 - add log system bot
 - Camel case
-- OK Makefile clean
 
 
 check ca : .param("toto", ParamTemplate::Builder()
