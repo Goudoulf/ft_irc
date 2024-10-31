@@ -6,23 +6,17 @@
 /*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 10:10:52 by cassie            #+#    #+#             */
-/*   Updated: 2024/10/25 16:01:15 by lvallini         ###   ########.fr       */
+/*   Updated: 2024/10/31 09:54:26 by lvallini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
-// #ifndef CLIENT_HPP
-// #define CLIENT_HPP
+#ifndef CLIENT_HPP
+#define CLIENT_HPP
 
 #include <string>
-#include "IRCServer.hpp"
-#include "cmds.h"
 #include <map>
-#include <string>
 #include <ctime>
 #include "CmdLevel.h"
-
-class IRCServer;
 
 class Client
 {
@@ -44,6 +38,8 @@ class Client
 		void		setIsConnected(bool isconnected);
 		void		setIsRegistered(bool isregistered);
 		void		setLastActivity(time_t newActivity);
+		void		setPartialBuffer(std::string newPartialBuffer);
+		void		erasePartialBuffer ();
 
 		int			getSocket() const;
 		char		*getBuffer();
@@ -59,6 +55,7 @@ class Client
 		std::string	getUsername() const;
 		std::string	getRealname() const;
 		std::string	getHostname() const;
+		std::string getPartialBuffer() const;
 
 		bool operator <(const Client& toComp) const;
 
@@ -69,6 +66,7 @@ class Client
 		std::string	_realname;
 		std::string	_hostname;
 		std::string _prefix;
+		std::string _partialBuffer;
 		time_t		_signOnTime;
 		time_t		_lastActivity; //TODO: update on privmsg 
 		bool		_isconnected;
@@ -76,7 +74,6 @@ class Client
 		CmdLevel	_level;
 		char		*_buffer;
 		int			_socket;
-		std::map<int, std::string> _clientPartialBuffers;
 };
 
-// #endif
+#endif

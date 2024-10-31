@@ -1,4 +1,6 @@
 #include "UserCommand.hpp"
+#include "IRCServer.hpp"
+
 #include "CmdLevel.h"
 #include "cmds.h"
 #include "debug.h"

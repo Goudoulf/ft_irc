@@ -1,5 +1,6 @@
+#ifndef PINGCOMMAND_HPP
+#define PINGCOMMAND_HPP
 
-#pragma once
 #include "Command.hpp"
 #include <string>
 
@@ -10,3 +11,5 @@ public:
     PingCommand() {}
     void execute(Client *client, const std::map<std::string, std::vector<std::string> >& params);
 };
+
+#endif

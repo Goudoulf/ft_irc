@@ -1,16 +1,16 @@
-#pragma once
-// #ifndef CHANNEL_HPP
-// # define CHANNEL_HPP
+#ifndef CHANNEL_HPP
+#define CHANNEL_HPP
+
+#include "Client.hpp"
 
 #include <string>
 #include <map>
-#include "Client.hpp"
 #include <vector>
-#include <ctime>
-enum channelMode {local, noMode, safe, standard, error}; 
 
 class Client;
-//channel delay = not being able to recreate a channel remotely for a defined time.
+
+enum channelMode {local, noMode, safe, standard, error}; 
+
 class Channel
 {
 	public:
@@ -37,15 +37,15 @@ class Channel
 		void	setOp(Client *client, bool sign);
 		void	setPassword(std::string newPassword);
 
-		bool		getIsTopicForOp(void)const;
-		bool		getInviteOnly(void)const;
-		bool		getIsLimited(void)const;
-		bool		getIsEmpty(void)const;
-		channelMode getChannelMode()const;
-		std::string getChannelName()const;
-		std::string	getTopic()const;
-		std::string getUsers();
-		std::string getPassword()const;
+		bool					getIsTopicForOp(void)const;
+		bool					getInviteOnly(void)const;
+		bool					getIsLimited(void)const;
+		bool					getIsEmpty(void)const;
+		channelMode				getChannelMode()const;
+		std::string				getChannelName()const;
+		std::string				getTopic()const;
+		std::string				getUsers();
+		std::string				getPassword()const;
 		std::vector<Client *>	getInvitationList()const;
 		std::map<Client*, bool> getUsersMap(void)const;
 		unsigned int			getLimitSize(void)const;
@@ -55,18 +55,16 @@ class Channel
 		std::string _name; 
 		
 		std::map<Client*, bool> _users;
-		std::vector<Client *> _invited;
-		std::string			_topic;
-		std::string			_password;
-		bool				_isEmpty;
-		bool				_InviteOnly;
-		bool				_isTopicForOp;
-		bool				_isLimited;
-		
-		
-		unsigned int					_limitSize;
-		channelMode _mode;
+		std::vector<Client *>	_invited;
+		std::string				_topic;
+		std::string				_password;
+		bool					_isEmpty;
+		bool					_InviteOnly;
+		bool					_isTopicForOp;
+		bool					_isLimited;
+		unsigned int			_limitSize;
+		channelMode				_mode;
 
 };
 
-// #endif
+#endif

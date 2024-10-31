@@ -1,4 +1,5 @@
 #include "DefaultCommandParser.hpp"
+
 #include <sstream>
 #include <vector>
 
@@ -6,11 +7,8 @@ bool DefaultCommandParser::parse(const std::string &input, std::vector<std::vect
 {
     std::istringstream iss(input);
     std::string token;
-	std::string command;
+    std::string command;
 
-    // if (!(iss >> token)) {
-	// return true;
-    // }
     iss >> command;
     while (iss >> token)
     {
@@ -26,6 +24,5 @@ bool DefaultCommandParser::parse(const std::string &input, std::vector<std::vect
 		temp.push_back(token);
 		params.push_back(temp);
     }
-	return true;
-    //return !params.empty();
+    return true;
 }

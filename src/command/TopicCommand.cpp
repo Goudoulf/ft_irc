@@ -1,4 +1,6 @@
 #include "TopicCommand.hpp"
+#include "IRCServer.hpp"
+
 #include "reply.h"
 #include "debug.h"
 
@@ -32,6 +34,6 @@ void TopicCommand::execute(Client *client, const std::map<std::string, std::vect
 	for (std::map<int, Client *>::iterator it = server->getClients()->begin(); it != server->getClients()->end(); it++)
 	{
 		if (it->second && channel->inChannel(it->second->getNickname()))
-			send(it->second->getSocket(), rpl.c_str(), rpl.length(), 0);
+			rplSend(it->second->getSocket(), RPL_TOPIC(channel->getChannelName(), it->second->getNickname(), topic));
 	}
 }

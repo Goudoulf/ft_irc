@@ -1,5 +1,6 @@
+#ifndef PASSCOMMAND_HPP
+#define PASSCOMMAND_HPP
 
-#pragma once
 #include "Command.hpp"
 #include <string>
 
@@ -10,3 +11,5 @@ public:
     PassCommand() {}
     void execute(Client *client, const std::map<std::string, std::vector<std::string> >& params);
 };
+
+#endif

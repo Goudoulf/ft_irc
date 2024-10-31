@@ -1,4 +1,6 @@
-#pragma once
+#ifndef NAMESCOMMAND_HPP
+#define NAMESCOMMAND_HPP
+
 #include "Command.hpp"
 #include <string>
 
@@ -8,3 +10,5 @@ public:
     NamesCommand() {}
     void execute(Client *client, const std::map<std::string, std::vector<std::string> >& params);
 };
+
+#endif

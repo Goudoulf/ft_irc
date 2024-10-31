@@ -1,5 +1,6 @@
+#ifndef QUITCOMMAND_HPP
+#define QUITCOMMAND_HPP
 
-#pragma once
 #include "Command.hpp"
 #include <string>
 
@@ -12,3 +13,5 @@ public:
     static void quitAll(Client *client, std::string message);
     static void quitAll2(Client *client, std::string message);
 };
+
+#endif

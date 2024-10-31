@@ -1,6 +1,9 @@
 #include "NamesCommand.hpp"
+#include "IRCServer.hpp"
+
 #include "cmds.h"
 #include "debug.h"
+#include "reply.h"
 
 void NamesCommand::execute(Client *client, const std::map<std::string, std::vector<std::string> >& params)
 {

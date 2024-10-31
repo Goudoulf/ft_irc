@@ -1,7 +1,10 @@
 
 #include "KickCommand.hpp"
+#include "IRCServer.hpp"
 #include "PartCommand.hpp"
+
 #include "debug.h"
+#include "reply.h"
 
 void KickCommand::execute(Client *client, const std::map<std::string, std::vector<std::string> >& params)
 {

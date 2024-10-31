@@ -1,5 +1,8 @@
 #include "InviteCommand.hpp"
+#include "IRCServer.hpp"
+
 #include "debug.h"
+#include "reply.h"
 
 void InviteCommand::execute(Client *client, const std::map<std::string, std::vector<std::string> >& params)
 {

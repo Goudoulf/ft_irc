@@ -1,13 +1,14 @@
-#pragma once
+#ifndef TEMPLATEBUILDER_HPP
+#define TEMPLATEBUILDER_HPP
+
 #include "Command.hpp"
 #include "CommandParser.hpp"
 #include "ParamTemplate.hpp"
-#include "cmds.h"
-#include "reply.h"
-#include <string>
-#include <utility>
-#include <map>
+
 #include "CmdLevel.h"
+
+#include <string>
+#include <map>
 
 class Command;
 class CommandParser;
@@ -58,3 +59,5 @@ private:
   bool    fillParam(Client *client, std::vector<std::vector<std::string> > params);
   void    executeCommand(Client *client, const std::string &param);
 };
+
+#endif

@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include "reply.h"
+#include "cmds.h"
 
 bool isValidInvite(const std::string param, Client *client)
 {

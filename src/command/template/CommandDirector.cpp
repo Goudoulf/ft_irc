@@ -1,10 +1,10 @@
 #include "CommandDirector.hpp"
 #include "TemplateBuilder.hpp"
+
 #include "debug.h"
 #include "reply.h"
-#include <utility>
+
 #include <sstream>
-#include <string>
 #include <map>
 
 CommandDirector::~CommandDirector()

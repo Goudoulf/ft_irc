@@ -1,5 +1,7 @@
 #include "PrivmsgCommand.hpp"
-#include "cmds.h"
+#include "Channel.hpp"
+#include "IRCServer.hpp"
+
 #include "debug.h"
 #include "reply.h"
 

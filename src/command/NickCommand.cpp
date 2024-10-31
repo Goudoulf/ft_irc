@@ -1,4 +1,6 @@
 #include "NickCommand.hpp"
+#include "IRCServer.hpp"
+
 #include "CmdLevel.h"
 #include "cmds.h"
 #include "debug.h"
