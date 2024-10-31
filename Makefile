@@ -12,11 +12,11 @@
 
 NAME = ircserv
 
-SRCS_FILE = Channel.cpp client_checker.cpp Client.cpp debug/debug.cpp \
+SRCS_FILE = Channel.cpp Client.cpp debug/debug.cpp \
 			IRCServer.cpp main.cpp 
 
 CMD_FILE = CapCommand.cpp JoinCommand.cpp  NamesCommand.cpp  PassCommand.cpp \
-		   PrivmsgCommand.cpp UserCommand.cpp Command.cpp KickCommand.cpp \
+		   PrivmsgCommand.cpp UserCommand.cpp KickCommand.cpp \
 		   NickCommand.cpp PingCommand.cpp QuitCommand.cpp WhoCommand.cpp \
 		   InviteCommand.cpp ModeCommand.cpp PartCommand.cpp PongCommand.cpp \
 		   TopicCommand.cpp WhoisCommand.cpp

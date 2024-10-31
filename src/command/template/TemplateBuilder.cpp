@@ -19,8 +19,7 @@ TemplateBuilder::TemplateBuilder(const std::string& name, CmdLevel level, const 
 		this->_params.push_back(std::make_pair(it->first, it->second));
 }
 
-TemplateBuilder::Builder::Builder(): _parser(new DefaultCommandParser())
-{}
+TemplateBuilder::Builder::Builder(): _parser(new DefaultCommandParser()) {}
 
 TemplateBuilder::Builder& TemplateBuilder::Builder::name(std::string name)
 {
@@ -68,7 +67,7 @@ const std::string TemplateBuilder::getName()const
 	return _name;
 }
 
-bool    TemplateBuilder::check_level(Client *client)const
+bool    TemplateBuilder::checkLevel(Client *client)const
 {
 
 	if ((this->getName() == "PASS" || this->getName() == "USER") && client->getLevel() > _levelNeeded)
@@ -86,7 +85,7 @@ bool    TemplateBuilder::check_level(Client *client)const
 	return false;
 }
 
-bool	TemplateBuilder::fill_param(Client *client, std::vector<std::vector<std::string> > param)
+bool	TemplateBuilder::fillParam(Client *client, std::vector<std::vector<std::string> > param)
 {
 	log(INFO, "Filling param for " + this->_name);
 	std::vector<std::pair<std::string, const ParamTemplate*> >::iterator it = _params.begin();
@@ -125,12 +124,12 @@ void    TemplateBuilder::executeCommand(Client *client, const std::string &input
 	std::vector<std::vector<std::string> > params;
 	if (!_parser->parse(input, params))
 		return;
-	if (!check_level(client))
+	if (!checkLevel(client))
 	{
 		//rplSend(client->getSocket(), ERR_NOTREGISTERED(this->getName()));
 		return ;
 	}
-	if (!fill_param(client, params))
+	if (!fillParam(client, params))
 		return;
 	_command->execute(client, _parsedParams);
 	_parsedParams.clear();

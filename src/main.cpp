@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rjacq <rjacq@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 10:23:27 by cassie            #+#    #+#             */
-/*   Updated: 2024/10/30 16:46:15 by rjacq            ###   ########.fr       */
+/*   Updated: 2024/10/31 08:52:33 by lvallini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,14 +100,14 @@ int main(int argc, char **argv)
     if (argc < 3 || argc > 5)
     {
         log(ERROR, "Wrong number of arguments: ./ircserv <port> <password>");
-        return (-1);
+        return (1);
     }
     if (argc == 4 && std::strcmp(argv[3], "--debug") == 0)
         currentLogLevel = DEBUG;
     else if (argc == 4 && std::strcmp(argv[3], "--debug") != 0)
     {
         log(ERROR, "Wrong argument: ./ircserv <port> <password> --debug");
-        return (-1);
+        return (1);
     }
     else
         currentLogLevel = INFO;
@@ -118,9 +118,9 @@ int main(int argc, char **argv)
         IRCServer *server = IRCServer::getInstance();
         server->initialize(argv[1], argv[2]);
         server->initSocket();
-	server->run();
+	    server->run();
         delete server;
         return (0);
     }
-    return (-1);
+    return (1);
 }
