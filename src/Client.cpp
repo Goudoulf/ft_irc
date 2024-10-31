@@ -5,6 +5,7 @@
 #include <cstring>
 #include <netdb.h>
 #include <string>
+#include <sys/socket.h>
 
 Client::Client(const int &socket, struct sockaddr_in address): _socket(socket)
 {
@@ -38,7 +39,7 @@ void    Client::replyServer(std::string message)
 void	Client::sendMessage(int target, std::string message)
 {
 	log(DEBUG, "Client Reply :" + message);
-	rplSend(target, message);
+	send(target, message.c_str(), message.length(), 0);
 }
 
 bool Client::operator<(const Client &toComp) const

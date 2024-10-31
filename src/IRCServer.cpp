@@ -18,6 +18,7 @@
 #include "debug.h"
 #include "cmds.h"
 
+#include <fcntl.h>
 #include <cstring>
 #include <cstdlib>
 #include <errno.h>
@@ -219,7 +220,7 @@ bool    IRCServer::acceptConnection()
 void    IRCServer::sendReply(int target, std::string message)
 {
 	log(DEBUG, "REPLY SERVER :" + message);
-	rplSend(target, message);
+	send(target, message.c_str(), message.length(), 0);
 }
 
 Channel *IRCServer::createChannel(std::string channel, Client *client, std::string key)
