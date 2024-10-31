@@ -10,7 +10,7 @@
 enum channelMode {local, noMode, safe, standard, error}; 
 
 class Client;
-//channel delay = not being able to recreate a channel remotely for a defined time.
+
 class Channel
 {
 	public:

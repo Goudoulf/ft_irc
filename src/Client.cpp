@@ -41,7 +41,7 @@ void    Client::replyServer(std::string message)
 void	Client::sendMessage(int target, std::string message)
 {
 	log(DEBUG, "Client Reply :" + message);
-	send(target, message.c_str(), message.size(), 0);
+	rplSend(target, message);
 }
 
 bool Client::operator<(const Client &toComp) const

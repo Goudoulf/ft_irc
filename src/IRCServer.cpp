@@ -6,7 +6,7 @@
 /*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 08:21:58 by cassie            #+#    #+#             */
-/*   Updated: 2024/10/31 11:17:00 by lvallini         ###   ########.fr       */
+/*   Updated: 2024/10/31 13:07:12 by lvallini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,12 @@ IRCServer::~IRCServer(void)
         close (_pipefd[0]);
     if (_pipefd[1] != -1)
         close (_pipefd[1]);
+    delete[] _pipefd;
+    removeAllClient();
     if (_serverfd != -1)
         close(_serverfd);
     if (_epollfd != -1)
         close(_epollfd);
-    delete[] _pipefd;
-    removeAllClient();
 }
 
 IRCServer*	IRCServer::getInstance()
@@ -221,7 +221,7 @@ bool    IRCServer::acceptConnection()
 void    IRCServer::sendReply(int target, std::string message)
 {
 	log(DEBUG, "REPLY SERVER :" + message);
-	send(target, message.c_str(), message.size(), 0);
+	rplSend(target, message);
 }
 
 Channel *IRCServer::createChannel(std::string channel, Client *client, std::string key)

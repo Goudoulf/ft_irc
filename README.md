@@ -3,7 +3,6 @@
 ## LEO
 
 - check les sends dans les commandes ou des erreurs ect
-- Gestion d'exit propre init server
 - check les leaks
 
 ## ROMAIN
