@@ -2,11 +2,11 @@
 #include "CommandParser.hpp"
 #include "DefaultCommandParser.hpp"
 #include "ParamTemplate.hpp"
-#include "cmds.h"
+
 #include "reply.h"
-#include <string>
-#include <utility>
 #include "debug.h"
+
+#include <string>
 #include <map>
 
 TemplateBuilder::TemplateBuilder(const std::string& name, CmdLevel level, const std::vector<std::pair<std::string, const ParamTemplate*> >& params , Command *command, CommandParser *parser)

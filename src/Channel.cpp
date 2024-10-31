@@ -1,7 +1,8 @@
 #include "Channel.hpp"
+#include "IRCServer.hpp"
 #include "debug.h"
+
 #include <string>
-#include <iostream>
 
 Channel::Channel(const std::string &name, Client *creator, const std::string &key)
 {

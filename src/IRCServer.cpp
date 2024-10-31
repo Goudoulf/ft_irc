@@ -11,26 +11,23 @@
 /* ************************************************************************** */
 
 #include "IRCServer.hpp"
-#include "CmdLevel.h"
 #include "QuitCommand.hpp"
-#include "ircserv.h"
 #include "Client.hpp"
+#include "CommandDirector.hpp"
+
 #include "debug.h"
 #include "cmds.h"
-#include "CommandDirector.hpp"
-#include <cmath>
+
 #include <cstring>
-#include <sys/select.h>
-#include <unistd.h>
-#include <utility>
+#include <cstdlib>
 #include <errno.h>
+#include <unistd.h>
 #include <sys/epoll.h>
 #include <sys/socket.h>
 
-
-extern bool stop;
-const size_t MAX_BUFFER_SIZE = 512;
 #define SHUTDOWN_MSG "shutdown"
+
+const size_t MAX_BUFFER_SIZE = 512;
 
 IRCServer* IRCServer::_instance = NULL;
 
@@ -118,6 +115,7 @@ void  IRCServer::initSocket()
 
 int     IRCServer::run(void)
 {
+    bool stop = 0;
     log(INFO, "IRC Server loop is starting");
     while (!stop)
     {

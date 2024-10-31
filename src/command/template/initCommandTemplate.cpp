@@ -20,6 +20,7 @@
 #include "PingCommand.hpp"
 #include "PongCommand.hpp"
 #include "CapCommand.hpp"
+#include "cmds.h"
 
 void    setCommandTemplate(CommandDirector *director)
 {

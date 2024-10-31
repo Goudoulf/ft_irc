@@ -1,4 +1,6 @@
-#pragma once
+#ifndef NICKCOMMAND_HPP
+#define	NICKCOMMAND_HPP
+
 #include "Command.hpp"
 #include <string>
 
@@ -10,3 +12,5 @@ public:
     NickCommand() {} 
     void execute(Client *client, const std::map<std::string, std::vector<std::string> >& params);
 };
+
+#endif

@@ -1,4 +1,7 @@
 #include "QuitCommand.hpp"
+#include "IRCServer.hpp"
+#include "Channel.hpp"
+
 #include "cmds.h"
 #include "debug.h"
 

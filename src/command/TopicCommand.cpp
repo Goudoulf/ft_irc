@@ -1,4 +1,6 @@
 #include "TopicCommand.hpp"
+#include "IRCServer.hpp"
+
 #include "reply.h"
 #include "debug.h"
 

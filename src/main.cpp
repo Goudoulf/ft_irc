@@ -18,13 +18,11 @@
 #include <iostream>
 #include <sstream>
 
-bool    stop = false;
 
 static void	sigquit_handler(int sig)
 {
-    IRCServer *server = IRCServer::getInstance();
     (void)sig;
-    stop = true;
+    IRCServer *server = IRCServer::getInstance();
     write(server->getPipeFd()[1], "shutdown", 8);
 }
 

@@ -1,6 +1,13 @@
 #include "ModeCommand.hpp"
-#include <sstream>
+#include "IRCServer.hpp"
+#include "Channel.hpp"
+
 #include "debug.h"
+#include "reply.h"
+#include "cmds.h"
+
+#include <sstream>
+#include <string>
 
 void	modeInvite(bool sign, std::vector<std::string> params, Client& client, Channel& channel)
 {
@@ -25,7 +32,6 @@ void	modeKey(bool sign, std::vector<std::string> params, Client& client, Channel
 	}
 	for (std::vector<std::string>::iterator it = params.begin() + 1; it != params.end(); it++)
 	{
-		std::cout << (*it) << std::endl;
 		if ((*it).find(' ') <= (*it).length())
 		{
 			rplSend(client.getSocket(), ERR_INVALIDKEY(client.getNickname(), channel.getChannelName()));

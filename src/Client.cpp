@@ -1,13 +1,10 @@
 #include "Client.hpp"
-#include <cstddef>
+#include "IRCServer.hpp"
+#include "debug.h"
+
 #include <cstring>
-#include <iostream>
 #include <netdb.h>
 #include <string>
-#include <sys/socket.h>
-#include "cmds.h"
-#include "debug.h"
-#include "IRCServer.hpp"
 
 Client::Client(const int &socket, struct sockaddr_in address): _socket(socket)
 {
@@ -79,15 +76,15 @@ std::string	Client::getUsername() const {return _username;}
 
 std::string	Client::getRealname() const {return _realname;}
 
+std::string	Client::getBufferString()const {return _buffer;}
+
+std::string	Client::getPrefix() const {return _prefix;}
+
 CmdLevel	Client::getLevel() const {return _level;}
 
 int	Client::getSocket() const {return _socket;}
 
 char	*Client::getBuffer() {return _buffer;}
-
-std::string	Client::getPrefix() const {return _prefix;}
-
-std::string	Client::getBufferString()const {return _buffer;}
 
 bool		Client::getIsConnected()const {return _isconnected;}
 

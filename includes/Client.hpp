@@ -10,19 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
-// #ifndef CLIENT_HPP
-// #define CLIENT_HPP
+#ifndef CLIENT_HPP
+#define CLIENT_HPP
 
 #include <string>
-#include "IRCServer.hpp"
-#include "cmds.h"
 #include <map>
-#include <string>
 #include <ctime>
 #include "CmdLevel.h"
-
-class IRCServer;
 
 class Client
 {
@@ -79,4 +73,4 @@ class Client
 		std::map<int, std::string> _clientPartialBuffers;
 };
 
-// #endif
+#endif

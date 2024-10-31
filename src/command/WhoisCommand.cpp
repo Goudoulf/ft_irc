@@ -1,4 +1,8 @@
 #include "WhoisCommand.hpp"
+#include "IRCServer.hpp"
+
+#include "reply.h"
+
 #include <sstream>
 
 void WhoisCommand::execute(Client *client, const std::map<std::string, std::vector<std::string> >& params)

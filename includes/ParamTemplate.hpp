@@ -1,10 +1,10 @@
-#pragma once
-#include <functional>
+#ifndef PARAMTEMPLATE_HPP
+#define PARAMTEMPLATE_HPP
+
+#include "Client.hpp"
+
 #include <string>
 #include <vector>
-#include "reply.h"
-#include "IRCServer.hpp"
-#include "Client.hpp"
 
 class Client;
 
@@ -39,9 +39,11 @@ private:
 
     friend class CommandDirector;
     friend class TemplateBuilder;
-    bool    _isValid;
+    bool _isValid;
     bool _isOptional;
     std::vector<std::string>    _param;
     std::vector<bool (*)(const std::string, Client *)> _paramCheckers;
     bool    checkParam(Client* client, const std::vector<std::string> param)const;
     };
+
+#endif
