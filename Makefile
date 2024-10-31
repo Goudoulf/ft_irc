@@ -27,7 +27,7 @@ TEMPLATE_FILE = Checker.cpp CommandDirector.cpp ParamTemplate.cpp \
 PARSER_FILE = DefaultCommandParser.cpp JoinCommandParser.cpp \
 			  KickCommandParser.cpp ModeCommandParser.cpp
 
-UTILS_FILE = getTime.cpp reply.cpp setNonBlocking.cpp splitBuffer.cpp split.cpp
+UTILS_FILE = getTime.cpp reply.cpp splitBuffer.cpp split.cpp
 
 DIR_SRC := src/
 DIR_CMD := src/command/

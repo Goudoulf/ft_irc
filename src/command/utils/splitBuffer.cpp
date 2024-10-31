@@ -2,7 +2,8 @@
 #include <sstream>
 #include <string>
 
-std::vector<std::string> splitBuffer(const std::string& buffer, std::string& remainingPartial) {
+std::vector<std::string> splitBuffer(const std::string& buffer, std::string& remainingPartial)
+{
     std::vector<std::string> lines;
     std::string temp;
     std::istringstream stream(buffer);  

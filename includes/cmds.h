@@ -14,7 +14,6 @@ std::vector<std::string> splitBuffer(const std::string& buffer, std::string& rem
 void	messageServer(std::string target, std::string command, Client &client, std::string message, int sd);
 std::vector<std::string> split(const std::string& input, char delimiter);
 
-bool	checkIsConnected(const std::string param, Client * client);
 bool	isValidNick(const std::string param, Client * client);
 bool	isValidPassword(const std::string param, Client * client);
 bool	checkIsEmpty(const std::string param, Client * client);
@@ -31,5 +30,4 @@ bool    channelSupportsMode(const std::string param, Client *client);
 
 void    setCommandTemplate(CommandDirector *director);
 
-void setNonBlocking(int sockfd);
 std::string	getTime();

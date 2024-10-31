@@ -38,7 +38,7 @@ void    Client::replyServer(std::string message)
 void	Client::sendMessage(int target, std::string message)
 {
 	log(DEBUG, "Client Reply :" + message);
-	send(target, message.c_str(), message.size(), 0);
+	rplSend(target, message);
 }
 
 bool Client::operator<(const Client &toComp) const
@@ -97,3 +97,9 @@ time_t	Client::getSignOnTime()const {return _signOnTime;}
 time_t	Client::getLastActivity()const {return _lastActivity;}
 
 void	Client::setLastActivity(time_t newActivity) {_lastActivity = newActivity;}
+
+std::string Client::getPartialBuffer() const {return _partialBuffer;}
+
+void	Client::setPartialBuffer(std::string newPartialBuffer) {_partialBuffer = newPartialBuffer;}
+
+void	Client::erasePartialBuffer() {_partialBuffer.erase();}

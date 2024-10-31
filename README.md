@@ -3,9 +3,6 @@
 ## LEO
 
 - check les sends dans les commandes ou des erreurs ect
-- faire un coup de clean et SUPRIMER les fichier vide
-- test commande decouper ajouter dans client clientpartialbuffer
-- Gestion d'exit propre init server
 - check les leaks
 
 ## ROMAIN

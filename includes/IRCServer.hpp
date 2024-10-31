@@ -6,7 +6,7 @@
 /*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 10:26:00 by cassie            #+#    #+#             */
-/*   Updated: 2024/10/31 08:51:01 by lvallini         ###   ########.fr       */
+/*   Updated: 2024/10/31 11:08:25 by lvallini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,11 @@ class IRCServer
 			
 		~IRCServer();
 		void					initialize(std::string port, std::string password);
-		void					initSocket();
+		bool					initSocket();
 		int						run();
 
-		void					acceptConnection();
-		void					readData(int i);
+		bool					acceptConnection();
+		bool					readData(int i);
 
 		void					sendReply(int target, std::string message);
 		Channel					*createChannel(std::string channel, Client *client, std::string key);
