@@ -4,6 +4,7 @@ Game::Game()
 {
 	_start = false;
 	_finished = false;
+	_error = false;
 }
 
 void Game::setPlayers(std::vector<std::string> players) 
@@ -26,7 +27,7 @@ std::string Game::generateChanId()
 }
 void Game::gameLoop()
 {
-	if (!isGameReady() | !isPlayerTurn() || !isInputValid())
+	if (_error || !isGameReady() || !isPlayerTurn() || !isInputValid())
 		return;
 
 	updateGameState();

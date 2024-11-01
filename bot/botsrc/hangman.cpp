@@ -187,8 +187,16 @@ void HangMan::setNewWordToGuess()
 	char buff[50];
 	std::ifstream dictionary;
 	dictionary.open("easy_dictionary");
+
+	if (!dictionary) {
+		_buffer += "Error to start the game! Please create a new game.";
+		_error = true;
+		_finished = true;
+		return;
+	}
+
 	srand(time(0));
-	size_t line = (rand() % 853);
+	size_t line = (rand() % 852);
 	for (size_t i = 0; i < line - 1; i++)
 		dictionary.ignore(50, '\n');
 	dictionary.getline(buff, 50);
