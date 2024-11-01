@@ -10,6 +10,11 @@ void NamesCommand::execute(Client *client, const std::map<std::string, std::vect
 	log(CMD, client->getNickname() + ":_____names_____");
 	IRCServer *server = IRCServer::getInstance();
 	Channel *channel = server->findChannel(params.find("channels")->second[0]);
+	if (!channel)
+	{
+		client->replyServer(RPL_ENDOFNAMES(client->getNickname(), params.find("channels")->second[0]));
+		return;
+	}
 	std::map<Client*, bool> clients = channel->getUsersMap();
 	std::string clientsList;
 	for (std::map<Client*, bool>::iterator it = clients.begin(); it != clients.end(); it++)

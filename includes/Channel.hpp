@@ -45,10 +45,13 @@ class Channel
 		std::string				getChannelName()const;
 		std::string				getTopic()const;
 		std::string				getUsers();
+		//std::string 			getOP();
 		std::string				getPassword()const;
 		std::vector<Client *>	getInvitationList()const;
 		std::map<Client*, bool> getUsersMap(void)const;
 		unsigned int			getLimitSize(void)const;
+		/*std::string				getLimitString() const;
+		std::string				getModeList();*/
 		
 	private:
 

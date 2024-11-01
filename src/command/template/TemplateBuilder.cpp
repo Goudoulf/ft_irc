@@ -95,7 +95,7 @@ bool	TemplateBuilder::fillParam(Client *client, std::vector<std::vector<std::str
 		log(INFO, "Param = " + it->first);
 		if (it->second->_isOptional == false && it2 == param.end())
 		{
-			client->replyServer(ERR_NEEDMOREPARAMS(this->getName()));
+			client->replyServer(ERR_NEEDMOREPARAMS(client->getNickname(), this->getName()));
 			return false;
 		}
 		if (it->second->_isOptional == true && it2 == param.end())
@@ -112,7 +112,7 @@ bool	TemplateBuilder::fillParam(Client *client, std::vector<std::vector<std::str
 	}
 	if (it2 != param.end())
 	{
-		client->replyServer(ERR_NEEDMOREPARAMS(this->getName()));
+		client->replyServer(ERR_NEEDMOREPARAMS(client->getNickname(), this->getName()));
 		return false;
 	}
 	return true;

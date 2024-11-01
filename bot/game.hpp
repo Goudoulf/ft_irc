@@ -15,6 +15,7 @@ class Game
 	protected:
 		bool						_start;
 		bool						_finished;
+		bool						_error;
 		std::string					_chanName;
 		std::string					_input;
 		std::string					_buffer;

@@ -3,6 +3,8 @@
 #include "debug.h"
 
 #include <string>
+/*#include <vector>
+#include <sstream>*/
 
 Channel::Channel(const std::string &name, Client *creator, const std::string &key)
 {
@@ -133,6 +135,23 @@ std::string Channel::getUsers()
 	return temp;
 }
 
+/*std::string Channel::getOP()
+{
+	std::string temp;
+	for (std::map<Client*, bool>::iterator it = _users.begin(); it != _users.end(); it++) {
+		if (it->second)
+		{
+			if (it != _users.begin())
+				temp += " ";
+			if (isOp(it->first->getNickname()) == true)
+				temp += "@" + it->first->getNickname();
+			else
+				temp += it->first->getNickname();
+		}
+	}
+	return temp;
+}*/
+
 void	Channel::setOp(Client *client, bool sign)
 {
 	std::map<Client*, bool>::iterator it = _users.find(client);
@@ -170,6 +189,44 @@ bool	Channel::getIsLimited(void)const {return _isLimited;}
 
 unsigned int			Channel::getLimitSize()const {return _limitSize;}
 
+/*std::string Channel::getLimitString() const
+{
+	std::stringstream ss;
+	ss << getLimitSize();
+	std::string limit = ss.str();
+
+	return limit;
+}*/
+
 std::map<Client*, bool> Channel::getUsersMap()const {return _users;}
 
 std::vector<Client *>	Channel::getInvitationList()const {return _invited;}
+
+/*std::string Channel::getModeList()
+{
+	std::vector<std::string> list;
+	//invite
+	if (_InviteOnly)
+		list.push_back("+i");
+	//topic
+	if (_isTopicForOp)
+		list.push_back("+t");
+	//mdp
+	if (!_password.empty())
+		list.push_back("+k");
+	//operator
+	std::string userOP = getOP();
+	if (!userOP.empty())
+		list.push_back("+o " + userOP);
+	//limit
+	if (_isLimited)
+		list.push_back("+l " + getLimitString());
+	
+	std::string temp;
+	for (std::vector<std::string>::iterator it = list.begin(); it != list.end(); it++) {
+		if (it != list.begin())
+			temp += " ";
+		temp += *it;
+	}
+	return temp;
+}*/
