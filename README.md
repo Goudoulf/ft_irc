@@ -2,8 +2,7 @@
 
 ## LEO
 
-- check les sends dans les commandes ou des erreurs ect
-- check les leaks
+jsp pb qui fait qu'on recoit le RPL 266 trop tot parfois donc des fois on a "@bot" des fois "@bot\r\n" des fois "@bot "
 
 ## ROMAIN
 

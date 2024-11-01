@@ -150,8 +150,18 @@ bool Bot::readData (std::string buffer)
 	{
 		log(DEBUG, command);
 		std::getline (iss, trailing);
-		if (command == "353" && trailing.find("@bot ") == std::string::npos && trailing.find("@bot\r\n") == std::string::npos)
+		if (command == "353")
 		{
+			trailing.erase(0, trailing.find_first_of(':'));
+			log(DEBUG, trailing);
+			std::vector<std::string> clients = split(trailing.substr(1), ' ');
+			for (std::vector<std::string>::iterator _it = clients.begin(); _it != clients.end(); _it++)
+			{
+				log(DEBUG, *_it + "|");
+				if (*_it == "@bot")
+					return (true);
+			}
+			usleep(1500);
 			log (ERROR, "Not operator");
 			return (false);
 		}
