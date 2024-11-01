@@ -108,8 +108,3 @@ Whois
 - add log system bot
 - Camel case
 - Makefile clean
-
-
-check ca : .param("toto", ParamTemplate::Builder()
-ping ?
-autre nom pour les fonctions de quit
