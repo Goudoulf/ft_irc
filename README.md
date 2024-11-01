@@ -11,29 +11,31 @@
 
 - test toutes les commandes, avec checker et erreurs les reply
 
+edit servername au debut des reply
+
 > Password
->	rpl :	~~OK ERR_NEEDMOREPARAM~~		~~ERR_ALREADYREGISTRED~~
+	rpl :	~~OK ERR_NEEDMOREPARAM~~		~~ERR_ALREADYREGISTRED~~
 
 >Nickname
 	rpl :	ERR_NONICKNAMEGIVEN(n'est pas utilise sur Nick)		~~ERR_ERRONEUSNICKNAME~~
 			~~ERR_NICKNAMEINUSE~~
 
 >User
-	rpl :	~~ERR_NEEDMOREPARAMS~~		ERR_ALREADYREGISTRED (Potentiel probleme : Si j'utilise USER sans arg, est ce aue je dois avoir needmoreparam ou alreadyregistred apres m'etre enregistre)
+	rpl :	~~ERR_NEEDMOREPARAMS~~		ERR_ALREADYREGISTRED (Potentiel probleme : Si j'utilise USER sans arg, est ce que je dois avoir needmoreparam ou alreadyregistred apres m'etre enregistre)
 
 >Quit
 >	rpl :	None
 
-Join
-	rpl :	ERR_NEEDMOREPARAMS		ERR_BANNEDFROMCHAN
-			ERR_INVITEONLYCHAN		ERR_BADCHANNELKEY
-			ERR_CHANNELISFULL		ERR_BADCHANMASK
-			ERR_NOSUCHCHANNEL		ERR_TOOMANYCHANNELS
-			RPL_TOPIC
+>Join (Le message "Now talking on channel" revient a chaque fois qu'on join un channel dans lequel on se trouve)
+	rpl :	~~ERR_NEEDMOREPARAMS~~
+			~~ERR_INVITEONLYCHAN~~		~~ERR_BADCHANNELKEY~~
+			~~ERR_CHANNELISFULL~~
+			ERR_NOSUCHCHANNEL (doute sur les espaces et les surplus de parametres)		ERR_TOOMANYCHANNELS (pas utile ?)
+			~~RPL_TOPIC~~
 
-Part
-	rpl :	ERR_NEEDMOREPARAMS		ERR_NOSUCHCHANNEL
-			ERR_NOTONCHANNEL
+Part (pas de gestion de plusieurs channel)
+	rpl :	~~ERR_NEEDMOREPARAMS~~		~~ERR_NOSUCHCHANNEL~~
+			~~ERR_NOTONCHANNEL~~
 
 Mode
 	rpl :	ERR_NEEDMOREPARAMS		RPL_CHANNELMODEIS
@@ -89,7 +91,7 @@ Whois
 			RPL_ENDOFWHOIS
 
 - test nc : envoi partiel, ctrl c ctrl d ctrl z test quelque commande avec cas chelou
-	erreur ? avec echo "PASS 123456\r\nNICK test\r\nUSER a a a :a\r\nJOIN #42\r\nPRIVMSG #42 :the cake is a lie\r\nQUIT\n\rJOIN #43\n\rJOIN #42" | nc 127.0.0.1 6665 (le probleme vient des \n\r qui sont inverse)
+	erreur ? avec echo "PASS 123456\r\nNICK test\r\nUSER a a a :a\r\nJOIN #42\r\nPRIVMSG #42 :the cake is a lie\r\nQUIT\n\rJOIN #43\n\rJOIN #42" | nc 127.0.0.1 6665
 	arrive a join sans \r\n (pareil pour toutes les commandes ?)
 - check les leaks
 - dictionary check validity
