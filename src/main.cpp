@@ -6,7 +6,7 @@
 /*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 10:23:27 by cassie            #+#    #+#             */
-/*   Updated: 2024/10/31 10:21:57 by lvallini         ###   ########.fr       */
+/*   Updated: 2024/10/31 13:32:47 by lvallini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,8 @@ bool isValidPort(const std::string& port)
     return true;
 }
 
-bool isValidPassword(const std::string& password) {
+bool isValidPassword(const std::string& password)
+{
     log(INFO, "Checking password validity");
     if (password.length() < 1 || password.length() > 23)
     {

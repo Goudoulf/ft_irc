@@ -27,8 +27,9 @@ class Bot
 		std::vector<std::string> _params;
 
 	public:
-		Bot(std::string port);
+		Bot();
 		~Bot();
+		bool initialize(std::string port, std::string password);
 		Game *findGame(std::string toFind);
 		void addGame(std::string game, std::vector<std::string> params);
 		std::vector<Game*> getGames();
