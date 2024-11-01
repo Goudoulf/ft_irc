@@ -1,5 +1,5 @@
 NAME = bot
-SRCS_FILE = main.cpp bot.cpp game.cpp hangman.cpp connectfour.cpp morpion.cpp
+SRCS_FILE = main.cpp bot.cpp game.cpp hangman.cpp connectfour.cpp morpion.cpp botDebug.cpp
 DIR_SRC := botsrc/
 DIR_OBJ := .object/
 

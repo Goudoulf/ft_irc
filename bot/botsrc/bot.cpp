@@ -1,4 +1,5 @@
 #include "../bot.hpp"
+#include "../debug.h"
 
 std::vector<std::string> split(const std::string& input, char delimiter)
 {
@@ -35,58 +36,62 @@ std::map<std::string, Game *(*)(std::string, std::vector<std::string>)> init_map
 	return gameMap;
 }
 
-Bot::Bot(std::string port)
+bool	errorExit(std::string message)
+{
+	log(ERROR, message);
+	return (false);
+}
+
+bool	Bot::initialize(std::string port, std::string password)
 {
 	char *end;
-	int test = 1;
+	int opt = 1;
 
+	_socketFd = -1;
 	memset(&_address, 0, sizeof(_address));
 	_port = static_cast<unsigned short>(std::strtod(port.c_str(), &end)); 
 	if ((_socketFd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
-	{
-		std::cout << "ERROR socket" << std::endl;
-		delete (this);
-		exit(1);
-	}
-	if (setsockopt(_socketFd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &test, sizeof(test)))
-	{
-		std::cout << "ERROR socketopt" << std::endl;
-		delete (this);
-		exit(1);
-	}
+		return (errorExit(strerror(errno)));
+	if (setsockopt(_socketFd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)))
+		return (errorExit(strerror(errno)));
 	_address.sin_family = AF_INET;
 	_address.sin_addr.s_addr = INADDR_ANY;
 	_address.sin_port = htons(_port);
 	if (connect(_socketFd, (struct sockaddr *)&_address, sizeof(_address)) < 0)
-	{
-		std::cout << "ERROR CONNECT" << std::endl;
-		delete (this);
-		exit(1);
-	}
+		return (errorExit(strerror(errno)));
 	_gameMap = init_map();
+	std::string passwordMessage = "PASS " + password + "\r\n"; 
+	send(_socketFd, passwordMessage.c_str(), passwordMessage.length(), 0);
+	send(_socketFd, "NICK bot\r\n", 10, 0);
+	send(_socketFd, "USER bot 0 * :realname\r\n", 24, 0);
+	send(_socketFd, "JOIN #botchan\r\n", 15, 0);
+	return (true);
 }
 
+Bot::Bot() {}
 
-Bot::~Bot(){}
+Bot::~Bot()
+{
+	log(INFO, "Bot is disconnecting");
+	for (std::vector<Game*>::iterator it = _games.begin(); it != _games.end(); it++)
+		delete (*it);
+	if (_socketFd != -1)
+		close(_socketFd);
+}
 
 void Bot::run()
 {
 	char buffer[1024];
 	
-	send(_socketFd, "PASS tutu\r\n", 11, 0);
-	send(_socketFd, "NICK bot\r\nUSER bot 0 * :realname\r\n", 34, 0);
-	send(_socketFd, "JOIN #botchan\r\n", 15, 0);
 	while (1)
 	{
 		int valread = 0;
 		bzero(buffer, 1024);
 		valread = recv(_socketFd, buffer, 1024, 0);
+		log(DEBUG, buffer);
 		if (valread <= 0 || !readData (buffer))
 		{
-			close (_socketFd);
-			std::cout << "CONNECTION CLOSED" << std::endl;
-			for (std::vector<Game*>::iterator it = _games.begin(); it != _games.end(); it++)
-				delete (*it);
+			log (ERROR, "CONNECTION CLOSED");
 			return;
 		}
 	}
@@ -132,6 +137,8 @@ bool Bot::readData (std::string buffer)
 	std::istringstream iss(buffer);
 	std::string prefix, command, channel, game, trailing;
 
+	if (buffer.find("You have not registered") != std::string::npos)
+		return (errorExit("Invalid details"));
 	buffer.erase(0, buffer.find_first_not_of(" \r\n"));
 	buffer.erase(buffer.find_last_not_of(" \r\n") + 1);
 	iss >> prefix;
@@ -139,7 +146,7 @@ bool Bot::readData (std::string buffer)
 		return false;
 	prefix = prefix.substr(1);
 	std::string client(prefix);
-	if (client.find('!') <= client.length())
+	if (client.find('!') != std::string::npos)
 		client.erase(client.find('!'));
 	iss >> command;
 	if (command != "PRIVMSG")

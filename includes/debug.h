@@ -3,16 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   debug.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cassie <cassie@student.42lyon.fr>          +#+  +:+       +#+        */
+/*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 08:34:54 by cassie            #+#    #+#             */
-/*   Updated: 2024/08/26 08:36:59 by cassie           ###   ########.fr       */
+/*   Updated: 2024/10/31 13:30:09 by lvallini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef DEBUG_H
 #define DEBUG_H
-#include <string>
 
 enum LogLevel { DEBUG, INFO, CMD, REPLY, WARN , ERROR};
 extern LogLevel currentLogLevel;
