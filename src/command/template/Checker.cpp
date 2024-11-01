@@ -38,7 +38,7 @@ bool	nickExists(const std::string param, Client *client)
 	    if (it->second && it->second->getNickname() == param)
 		return true;
 	}
-	rplSend(client->getSocket(), ERR_NOSUCHNICK(param));
+	rplSend(client->getSocket(), ERR_NOSUCHNICK(client->getNickname() ,param));
 	return false;
 }
 

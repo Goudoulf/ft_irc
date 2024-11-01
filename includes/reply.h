@@ -31,7 +31,7 @@
 
 #define ERR_NOSUCHCHANNEL(nickname, channel) (":NeTwerkers 403 " + nickname + " " +  channel + " :No such channel" + "\r\n")
 #define ERR_BADCHANNELKEY(client, channel) (":NeTwerkers 475 " + client + " " + channel + " :Cannot join channel (+k) \r\n")
-#define ERR_NOSUCHNICK(nickname) (":NeTwerkers 401 " + nickname + " :No such nick/channel\r\n")
+#define ERR_NOSUCHNICK(client, nickname) (":NeTwerkers 401 " + client + " " + nickname + " :No such nick/channel\r\n")
 // #define ERR_CANNOTSENDTOCHAN(channel) (":NeTwerkers 404 " + channel + " :Cannot send to channel\r\n")
 // #define ERR_TOOMANYCHANNELS(channel) (":NeTwerkers 405 " + channel + " :You have joined too many channels\r\n")
 // #define ERR_TOOMANYTARGETS(target) (":NeTwerkers 407 " + target + " :Duplicate recipients. No message delivered\r\n")

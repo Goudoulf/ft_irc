@@ -12,8 +12,8 @@ bool KickCommandParser::parse(const std::string &input, std::vector<std::vector<
     std::string command;
 
     iss >> command;
-    if (!(iss >> token))
-	return false;
+	//    if (!(iss >> token))
+	// return false;
     while (iss >> token)
     {
 	std::vector<std::string> temp;

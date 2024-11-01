@@ -68,7 +68,7 @@ class Client
 		std::string _prefix;
 		std::string _partialBuffer;
 		time_t		_signOnTime;
-		time_t		_lastActivity; //TODO: update on privmsg 
+		time_t		_lastActivity;
 		bool		_isconnected;
 		bool		_isRegistered;
 		CmdLevel	_level;

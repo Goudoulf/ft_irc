@@ -9,6 +9,11 @@ void WhoisCommand::execute(Client *client, const std::map<std::string, std::vect
 {
     IRCServer *server = IRCServer::getInstance();
     Client *target = server->findClient(params.find("target")->second[0]);
+    if (!target)
+    {
+        client->replyServer(ERR_NOSUCHNICK(client->getNickname(),params.find("target")->second[0] ));
+        return ;
+    }
     std::string nickName = target->getNickname();
     std::map<std::string, Channel *> *channels = server->getChannels();
     std::string channelsToSend;
