@@ -24,7 +24,7 @@ edit servername au debut des reply
 	rpl :	~~ERR_NEEDMOREPARAMS~~		ERR_ALREADYREGISTRED (Potentiel probleme : Si j'utilise USER sans arg, est ce que je dois avoir needmoreparam ou alreadyregistred apres m'etre enregistre)
 
 >Quit
->	rpl :	None
+	rpl :	None
 
 >Join (Le message "Now talking on channel" revient a chaque fois qu'on join un channel dans lequel on se trouve)
 	rpl :	~~ERR_NEEDMOREPARAMS~~
@@ -33,18 +33,15 @@ edit servername au debut des reply
 			ERR_NOSUCHCHANNEL (doute sur les espaces et les surplus de parametres)		ERR_TOOMANYCHANNELS (pas utile ?)
 			~~RPL_TOPIC~~
 
-Part (pas de gestion de plusieurs channel)
+>Part (pas de gestion de plusieurs channel)
 	rpl :	~~ERR_NEEDMOREPARAMS~~		~~ERR_NOSUCHCHANNEL~~
 			~~ERR_NOTONCHANNEL~~
 
-Mode
-	rpl :	ERR_NEEDMOREPARAMS		RPL_CHANNELMODEIS
-			ERR_CHANOPRIVSNEEDED	ERR_NOSUCHNICK
-			ERR_NOTONCHANNEL		ERR_KEYSET
-			RPL_BANLIST				RPL_ENDOFBANLIST
-			ERR_UNKNOWNMODE			ERR_NOSUCHCHANNEL
-			ERR_USERSDONTMATCH		RPL_UMODEIS
-			ERR_UMODEUNKNOWNFLAG
+>Mode
+	rpl :	~~ERR_NEEDMOREPARAMS~~		~~RPL_CHANNELMODEIS~~
+			~~ERR_CHANOPRIVSNEEDED~~	ERR_NOSUCHNICK (pas utilise dans MODE)
+			~~ERR_NOTONCHANNEL~~
+			~~ERR_UNKNOWNMODE~~			~~ERR_NOSUCHCHANNEL~~
 
 Topic
 	rpl :	ERR_NEEDMOREPARAMS		ERR_NOTONCHANNEL
@@ -58,7 +55,7 @@ Invite
 	rpl :	ERR_NEEDMOREPARAMS		ERR_NOSUCHNICK
 			ERR_NOTONCHANNEL		ERR_USERONCHANNEL
 			ERR_CHANOPRIVSNEEDED
-			RPL_INVITING			RPL_AWAY
+			RPL_INVITING
 
 Kick
 	rpl :	ERR_NEEDMOREPARAMS		ERR_NOSUCHCHANNEL
@@ -66,19 +63,18 @@ Kick
 			ERR_NOTONCHANNEL
 
 Ping
-	rpl :	ERR_NOORIGIN			ERR_NOSUCHSERVER
+	rpl :	ERR_NOORIGIN
 
 Pong
-	rpl :	ERR_NOORIGIN			ERR_NOSUCHSERVER
+	rpl :	ERR_NOORIGIN
 
 Privmsg
 	rpl :	ERR_NORECIPIENT			ERR_NOTEXTTOSEND
 			ERR_CANNOTSENDTOCHAN	ERR_NOTOPLEVEL
 			ERR_WILDTOPLEVEL		ERR_TOOMANYTARGETS
 			ERR_NOSUCHNICK
-			RPL_AWAY
 
-Who
+(Who
 	rpl :	ERR_NOSUCHSERVER
 			RPL_WHOREPLY			RPL_ENDOFWHO
 
@@ -88,7 +84,7 @@ Whois
 			RPL_WHOISCHANNELS		RPL_WHOISSERVER
 			RPL_AWAY				RPL_WHOISOPERATOR
 			RPL_WHOISIDLE			ERR_NOSUCHNICK
-			RPL_ENDOFWHOIS
+			RPL_ENDOFWHOIS)
 
 - test nc : envoi partiel, ctrl c ctrl d ctrl z test quelque commande avec cas chelou
 	erreur ? avec echo "PASS 123456\r\nNICK test\r\nUSER a a a :a\r\nJOIN #42\r\nPRIVMSG #42 :the cake is a lie\r\nQUIT\n\rJOIN #43\n\rJOIN #42" | nc 127.0.0.1 6665

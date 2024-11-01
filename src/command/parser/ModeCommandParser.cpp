@@ -18,18 +18,18 @@ bool ModeCommandParser::parse(const std::string &input, std::vector<std::vector<
     std::vector<std::string>modes;
     iss >> token;
     if (token.at(0) != '+' && token.at(0) != '-')
-	return (false);
+		return (false);
     tempString += token + " ";
     while (iss >> token)
     {
-	if (token.at(0) == '+' || token.at(0) == '-')
-	{
-	    modes.push_back(tempString);
-	    tempString.erase();
-	    tempString += token + " ";
-	}
-	else
-	tempString += token + " ";
+		if (token.at(0) == '+' || token.at(0) == '-')
+		{
+			modes.push_back(tempString);
+			tempString.erase();
+			tempString += token + " ";
+		}
+		else
+			tempString += token + " ";
     }
     modes.push_back(tempString);
     params.push_back(modes);
