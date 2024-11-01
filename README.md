@@ -6,6 +6,7 @@
 - OK check les leaks
 - Input bot port et mot de passe check parsing
 - check bot parsing et command et gestion erreurs
+jsp pb qui fait qu'on recoit le RPL 266 trop tot parfois donc des fois on a "@bot" des fois "@bot\r\n" des fois "@bot "
 
 ## ROMAIN
 
@@ -114,3 +115,4 @@ Whois
 check ca : .param("toto", ParamTemplate::Builder()
 ping ?
 autre nom pour les fonctions de quit
+- Makefile clean
