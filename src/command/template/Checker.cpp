@@ -55,6 +55,30 @@ bool	isOnChannel(const std::string param, Client *client)
     return true;
 }
 
+bool	checkTooManyTargets(const std::string param, Client *client)
+{
+    std::vector<std::string> params = split(param, ',');
+    if (params.size() > 1)
+    {
+        client->replyServer(ERR_TOOMANYTARGETS(client->getNickname(), param));
+        return false;
+    }
+    return true;
+}
+
+bool	checkRecipient(const std::string param, Client *client)
+{
+    if (param.size() > 0)
+    {
+        if (param[0] == ':')
+        {
+            client->replyServer(ERR_NORECIPIENT(client->getNickname()));
+            return false;
+        }
+    }
+    return true;
+}
+
 bool	channelExists(const std::string param, Client *client)
 {
     IRCServer *server = IRCServer::getInstance();
@@ -86,7 +110,7 @@ bool	checkIsEmpty(const std::string param, Client *client)
 {
     if (param.empty())
     {
-	    rplSend(client->getSocket(), ERR_NONICKNAMEGIVEN());
+	    rplSend(client->getSocket(), ERR_NONICKNAMEGIVEN(client->getNickname()));
         return false;
     }
     return true;

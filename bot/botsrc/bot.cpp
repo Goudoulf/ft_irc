@@ -1,6 +1,33 @@
 #include "../bot.hpp"
 #include "../debug.h"
 
+std::vector<std::string> splitBuffer(const std::string& buffer, std::string& remainingPartial)
+{
+    std::vector<std::string> lines;
+    std::string temp;
+    std::istringstream stream(buffer);  
+
+    while (std::getline(stream, temp))
+    {
+        if (!temp.empty() && temp[temp.size() - 1] == '\r')
+            temp.erase(temp.size() - 1);
+        lines.push_back(temp);
+    }
+    if (!buffer.empty() && buffer[buffer.size() - 1] != '\n')
+    {
+        if (!lines.empty())
+        {
+            remainingPartial = lines.back();
+            lines.pop_back(); 
+        }
+        else
+            remainingPartial = buffer; 
+    }
+    else
+        remainingPartial.clear(); 
+    return lines;
+}
+
 std::vector<std::string> split(const std::string& input, char delimiter)
 {
 	std::vector<std::string> tokens;
@@ -97,11 +124,16 @@ void Bot::run()
 	{
 		bzero(buffer, 1024);
 		valread = recv(_socketFd, buffer, 1024, 0);
-		log(DEBUG, buffer);
-		if (valread <= 0 || !readData (buffer))
+		std::string temp = "";
+		std::vector<std::string> buf = splitBuffer(buffer, temp);
+		for (std::vector<std::string>::iterator it = buf.begin(); it != buf.end(); it++)
 		{
-			log (ERROR, "CONNECTION CLOSED");
-			return;
+			log(DEBUG, buffer);
+			if (valread <= 0 || !readData (*it))
+			{
+				log (ERROR, "CONNECTION CLOSED");
+				return;
+			}
 		}
 	}
 }

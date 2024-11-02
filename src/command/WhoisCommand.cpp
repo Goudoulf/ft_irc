@@ -27,9 +27,9 @@ void WhoisCommand::execute(Client *client, const std::map<std::string, std::vect
     std::stringstream ss, ss2;
     ss << time(NULL) - target->getLastActivity();
     ss2 << target->getSignOnTime();
-    rplSend(client->getSocket(), RPL_WHOISUSER(client->getNickname(), nickName, target->getUsername(), target->getHostname(), target->getRealname()) 
-                        + RPL_WHOISIDLE(client->getNickname(), ss.str(), ss2.str())
-                        + RPL_WHOISSERVER(client->getNickname(), "NetTwerkers Deluxe Edition", "Insane Package Turbo Deluxe")
-                        + RPL_WHOISCHANNELS(client->getNickname(), channelsToSend)
-                        + RPL_ENDOFWHOIS(client->getNickname()));
+    client->replyServer(RPL_WHOISUSER(client->getNickname(), nickName, target->getUsername(), target->getHostname(), target->getRealname()));
+    client->replyServer(RPL_WHOISIDLE(client->getNickname(), target->getNickname(), ss.str(), ss2.str()));
+    client->replyServer(RPL_WHOISSERVER(client->getNickname(), target->getNickname(), "NetTwerkers", "Insane Package Turbo Deluxe"));
+    client->replyServer(RPL_WHOISCHANNELS(client->getNickname(), target->getNickname(), channelsToSend));
+    client->replyServer(RPL_ENDOFWHOIS(client->getNickname(), target->getNickname()));
 }

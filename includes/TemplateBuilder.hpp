@@ -51,8 +51,8 @@ private:
   friend class CommandDirector;
   std::string     _name;
   CmdLevel        _levelNeeded;
-  std::map<std::string, std::vector<std::string> > _parsedParams;
   CommandParser *_parser;
+  std::map<std::string, std::vector<std::string> > _parsedParams;
   std::vector<std::pair<std::string, const ParamTemplate *> > _params;
   Command *_command;
   bool    checkLevel(Client *client)const;

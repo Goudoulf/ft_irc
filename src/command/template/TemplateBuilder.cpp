@@ -95,7 +95,11 @@ bool	TemplateBuilder::fillParam(Client *client, std::vector<std::vector<std::str
 		log(INFO, "Param = " + it->first);
 		if (it->second->_isOptional == false && it2 == param.end())
 		{
-			client->replyServer(ERR_NEEDMOREPARAMS(client->getNickname(), this->getName()));
+			if (this->getName() == "WHOIS")
+				client->replyServer(ERR_NONICKNAMEGIVEN(client->getNickname()));
+			else
+				client->replyServer(ERR_NEEDMOREPARAMS(client->getNickname(), this->getName()));
+				
 			return false;
 		}
 		if (it->second->_isOptional == true && it2 == param.end())
@@ -128,6 +132,7 @@ void    TemplateBuilder::executeCommand(Client *client, const std::string &input
 		return ;
 	if (!fillParam(client, params))
 		return;
+	client->setLastActivity(time(NULL));
 	_command->execute(client, _parsedParams);
 	_parsedParams.clear();
 }

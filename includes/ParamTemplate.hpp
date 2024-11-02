@@ -26,7 +26,6 @@ public:
 
     private:
 
-        // bool (Builder::*pmf)(const std::vector<std::string&>);
         std::vector<bool (*)(const std::string, Client*)> _paramChecker;
         bool _isOptional;
     };
@@ -44,6 +43,6 @@ private:
     std::vector<std::string>    _param;
     std::vector<bool (*)(const std::string, Client *)> _paramCheckers;
     bool    checkParam(Client* client, const std::vector<std::string> param)const;
-    };
+};
 
 #endif

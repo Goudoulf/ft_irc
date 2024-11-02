@@ -1,5 +1,4 @@
 #include "ParamTemplate.hpp"
-#include "reply.h"
 
 ParamTemplate::ParamTemplate(std::vector<bool (*)(const std::string, Client*)> checker, bool optional) : _paramCheckers(checker)
 {

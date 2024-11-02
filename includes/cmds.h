@@ -27,6 +27,8 @@ bool    isInvited(const std::string param, Client *client);
 bool    isValidMode(const std::string param, Client *client);
 bool    checkIsOp(const std::string param, Client *client);
 bool    channelSupportsMode(const std::string param, Client *client);
+bool	checkRecipient(const std::string param, Client *client);
+bool	checkTooManyTargets(const std::string param, Client *client);
 
 void    setCommandTemplate(CommandDirector *director);
 

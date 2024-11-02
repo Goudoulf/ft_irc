@@ -12,17 +12,17 @@ bool DefaultCommandParser::parse(const std::string &input, std::vector<std::vect
     iss >> command;
     while (iss >> token)
     {
-		std::vector<std::string> temp;
-		if (token[0] == ':')
-		{
-			std::string trailing;
-			std::getline(iss, trailing);
-			temp.push_back(token.substr(1) + trailing);
-			params.push_back(temp);
-			break;
-		} 
-		temp.push_back(token);
-		params.push_back(temp);
+	std::vector<std::string> temp;
+	if (token[0] == ':')
+	{
+	    std::string trailing;
+	    std::getline(iss, trailing);
+	    temp.push_back(token.substr(1) + trailing);
+	    params.push_back(temp);
+	    break;
+	} 
+	temp.push_back(token);
+	params.push_back(temp);
     }
     return true;
 }
