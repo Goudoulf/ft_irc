@@ -11,7 +11,7 @@ Morpion::Morpion(std::string type, std::vector<std::string> players) : Game()
 	_turn = 0;
 	_gameState = new std::string[3];
 	for (int i = 0; i < 3; i++)
-		_gameState[i] = "...";
+		_gameState[i] = "   ";
 }
 
 Morpion::~Morpion()
@@ -28,8 +28,8 @@ bool Morpion::isGameReady()
 
 bool Morpion::isPlayerTurn()
 {
-	if ((_turn % 2 && _currentPlayer != _player1) ||
-		(!(_turn % 2) && _currentPlayer != _player2))
+	if ((_turn % 2 && _currentPlayer != _player2) ||
+		(!(_turn % 2) && _currentPlayer != _player1))
 		return false;
 	return true;
 }
@@ -76,8 +76,11 @@ void Morpion::displayGame()
 		if (i < 2)
 			_buffer += "  ---|---|---\n";
 	}
-	_input.clear();
-	isBufferFull();
+	if (checkGameOver())
+		return;
+	std::string player = (_turn % 2) ? _player1 : _player2;
+	std::string colorCode = (_turn % 2) ? "\x03" "4" : "\x03" "3";
+	_buffer += "\n" + colorCode + player + "'s turn\nPut coordinates (ex: 1A, 3B, ...):";
 }
 
 bool Morpion::checkStart()

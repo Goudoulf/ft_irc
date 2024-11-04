@@ -25,8 +25,8 @@ bool ConnectFour::isGameReady()
 
 bool ConnectFour::isPlayerTurn()
 {
-	if ((_turn % 2 && _currentPlayer != _player1) ||
-		(!(_turn % 2) && _currentPlayer != _player2))
+	if ((_turn % 2 && _currentPlayer != _player2) ||
+		(!(_turn % 2) && _currentPlayer != _player1))
 		return false;
 	return true;
 }
@@ -75,6 +75,11 @@ void ConnectFour::displayGame()
 		}
 		_buffer += '\n';
 	}
+	if (checkGameOver())
+		return;
+	std::string player = (_turn % 2) ? _player2 : _player1;
+		std::string colorCode = (_turn % 2) ? "\x03" "4" : "\x03" "2";
+		_buffer += "\n" + colorCode + player + "'s turn\nInput a column number (1-7):";
 }
 
 bool ConnectFour::checkStart()

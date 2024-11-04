@@ -145,14 +145,15 @@ std::vector<std::string> Bot::getPlayersList(std::string chanName)
 	std::string toSend("NAMES " + chanName + "\r\n");
 	send(_socketFd, toSend.c_str(), toSend.length(), 0);
 	recv(_socketFd, buffer, 1024, 0);
+	std::cout << "NAMES LIST = " << buffer << std::endl;
 	std::vector<std::string> list;
 	std::string line(buffer);
 	if (line.empty())
 		return list;
-	line.erase(0, line.find_first_not_of("\r\n"));
-	line.erase(line.find_last_not_of("\r\n") + 1);
-	line.erase(0, line.substr(1).find_first_of(":"));
-	line.erase(line.find_first_of("\r\n"));
+	line.erase(0, 1);
+	line.erase(0, line.find_first_of(":", 0));
+	line.erase(line.find_first_of("\r\n"), std::string::npos);
+	line.erase(0, 1);
 	std::istringstream iss(line);
 	std::string param;
 	while (iss >> param)
