@@ -21,7 +21,7 @@ Morpion::~Morpion()
 
 bool Morpion::isGameReady()
 {
-	if (!checkStart() || isBufferFull())
+	if (checkStart() || !isPlayerTurn() || isBufferFull())
 		return false;
 	return true;
 }
@@ -76,9 +76,10 @@ void Morpion::displayGame()
 		if (i < 2)
 			_buffer += "  ---|---|---\n";
 	}
+	_input.clear();
 	if (checkGameOver())
 		return;
-	std::string player = (_turn % 2) ? _player1 : _player2;
+	std::string player = (_turn % 2) ? _player2 : _player1;
 	std::string colorCode = (_turn % 2) ? "\x03" "4" : "\x03" "3";
 	_buffer += "\n" + colorCode + player + "'s turn\nPut coordinates (ex: 1A, 3B, ...):";
 }
@@ -101,7 +102,7 @@ bool Morpion::isBufferFull()
 
 	if (_input.empty())
 	{
-		std::string player = (_turn % 2) ? _player1 : _player2;
+		std::string player = (_turn % 2) ? _player2 : _player1;
 		std::string colorCode = (_turn % 2) ? "\x03" "4" : "\x03" "3";
 		_buffer += "\n" + colorCode + player + "'s turn\nPut coordinates (ex: 1A, 3B, ...):";
 		return true;
@@ -127,7 +128,7 @@ bool Morpion::handleStartCommand()
 	if (_players.size() < 2)
 	{
 		_buffer = "Not enough player, please wait for another player!";
-		return false;
+		return true;
 	}
 
 	initializePlayers();

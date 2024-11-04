@@ -26,7 +26,7 @@ HangMan::~HangMan()
 
 bool HangMan::isGameReady()
 {
-	if (!checkStart() || isBufferFull())
+	if (checkStart() || !isPlayerTurn() || isBufferFull())
 		return false;
 	return true;
 }
@@ -101,7 +101,7 @@ void HangMan::displayGame()
 	}
 	if (checkGameOver())
 		return;
-	_buffer += "\n " "\x02" "\x03" "2" + (*_itPlayer) + "'s turn\nInput a letter or a word: ";
+	_buffer += "\n" "\x02" "\x03" "2" + (*_itPlayer) + "'s turn\nInput a letter or a word: ";
 }
 
 bool HangMan::isBufferFull()
@@ -156,9 +156,9 @@ bool HangMan::checkGameOver()
 	if (_attempt >= 7 || winCondition())
 	{
 		if (_attempt >= 7)
-			_buffer += "Oh no! You didn't guess the word " "\x03" "3" + _wordToGuess;
+			_buffer += "Oh no! You didn't guessed the word " "\x03" "3" + _wordToGuess;
 		else
-			_buffer += "Well play " + _currentPlayer + "! You guess the word " "\x03" "3" + _wordToGuess;
+			_buffer += "Well play " + _currentPlayer + "! You guessed the word " "\x03" "3" + _wordToGuess;
 		_finished = true;
 		return true;
 	}

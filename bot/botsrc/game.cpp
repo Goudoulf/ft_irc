@@ -27,8 +27,32 @@ std::string Game::generateChanId()
 }
 void Game::gameLoop()
 {
-	if (_error || !isGameReady() || !isPlayerTurn() || !isInputValid())
+	if (_error)
+	{
+		std::cout << "_____ERROR" << std::endl;
 		return;
+	}
+	if (!isGameReady())
+	{
+		std::cout << "_____isGameReady" << std::endl;
+		return;
+	}
+	if (!isPlayerTurn())
+	{
+		std::cout << "_____isPlayerTurn" << std::endl;
+		return;
+	}
+	if (!isInputValid())
+	{
+		std::cout << "_____isInputValid" << std::endl;
+		return;
+	}
+
+	/*if (_error || !isGameReady() || !isPlayerTurn() || !isInputValid())
+	{
+
+		return;
+	}*/
 
 	updateGameState();
 	displayGame();

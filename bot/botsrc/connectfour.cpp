@@ -18,15 +18,15 @@ ConnectFour::~ConnectFour()
 
 bool ConnectFour::isGameReady()
 {
-	if (!checkStart() || isBufferFull())
+	if (checkStart() || !isPlayerTurn() || isBufferFull())
 		return false;
 	return true;
 }
 
 bool ConnectFour::isPlayerTurn()
 {
-	if ((_turn % 2 && _currentPlayer != _player2) ||
-		(!(_turn % 2) && _currentPlayer != _player1))
+	if ((_turn % 2 && _currentPlayer != _player1) ||
+		(!(_turn % 2) && _currentPlayer != _player2))
 		return false;
 	return true;
 }
@@ -75,11 +75,12 @@ void ConnectFour::displayGame()
 		}
 		_buffer += '\n';
 	}
+	_input.clear();
 	if (checkGameOver())
 		return;
-	std::string player = (_turn % 2) ? _player2 : _player1;
-		std::string colorCode = (_turn % 2) ? "\x03" "4" : "\x03" "2";
-		_buffer += "\n" + colorCode + player + "'s turn\nInput a column number (1-7):";
+	std::string player = (_turn % 2) ? _player1 : _player2;
+	std::string colorCode = (_turn % 2) ? "\x03" "4" : "\x03" "2";
+	_buffer += "\n" + colorCode + player + "'s turn\nInput a column number (1-7):";
 }
 
 bool ConnectFour::checkStart()
@@ -96,11 +97,15 @@ bool ConnectFour::checkStart()
 bool ConnectFour::isBufferFull()
 {
 	if (checkGameOver())
+	{
+		std::cout << "GAME OVER" << std::endl;
 		return true;
+	}
 
 	if (_input.empty())
 	{
-		std::string player = (_turn % 2) ? _player2 : _player1;
+		std::cout << "INPUT IS EMPTY" <<std::endl;
+		std::string player = (_turn % 2) ? _player1 : _player2;
 		std::string colorCode = (_turn % 2) ? "\x03" "4" : "\x03" "2";
 		_buffer += "\n" + colorCode + player + "'s turn\nInput a column number (1-7):";
 		return true;
@@ -123,7 +128,7 @@ bool ConnectFour::handleStartCommand()
 	if (_players.size() < 2)
 	{
 		_buffer = "Not enough player, please wait for another player!";
-		return false;
+		return true;
 	}
 
 	initializePlayers();
@@ -134,12 +139,12 @@ bool ConnectFour::handleStartCommand()
 
 bool ConnectFour::checkGameOver()
 {
-	if (winCondition() || _turn >= 43)
+	if (winCondition() || _turn >= 42)
 	{
-		if (_turn >= 43)
+		if (_turn >= 42)
 			_buffer += "Draw!";
 		else
-			_buffer += (_turn % 2 ? _player1 : _player2) + " wins!";
+			_buffer += (_turn % 2 ? _player2 : _player1) + " wins!";
 		_finished = true;
 		return true;
 	}
