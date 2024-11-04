@@ -111,6 +111,7 @@ int main(int argc, char **argv)
     else
         currentLogLevel = INFO;
     signal_handling();
+    // signal(SIGPIPE, SIG_IGN);
     log(INFO, "IRC Server launching");
     if (isValidPassword(argv[2]) && isValidPort(argv[1]))
     {

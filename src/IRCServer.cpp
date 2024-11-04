@@ -224,7 +224,7 @@ bool    IRCServer::acceptConnection()
 void    IRCServer::sendReply(int target, std::string message)
 {
 	log(DEBUG, "REPLY SERVER :" + message);
-	send(target, message.c_str(), message.length(), 0);
+	send(target, message.c_str(), message.length(), MSG_NOSIGNAL);
 }
 
 Channel *IRCServer::createChannel(std::string channel, Client *client, std::string key)

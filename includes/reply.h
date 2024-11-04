@@ -21,6 +21,9 @@
 #define RPL_PART(prefix, channel, message) (":" + prefix + " PART " + channel + " :" + message + "\r\n")
 #define RPL_PRIVMSG(prefix, target, message) (":" + prefix + " PRIVMSG " + target + " :" + message + "\r\n")
 #define RPL_NEWNICK(prefix, nickname) (":" + prefix + " NICK " + nickname + "\r\n")
+#define RPL_NEWOP(prefix, channel, nickname) (":" + prefix + "  MODE " + channel + " +o " + nickname + "\r\n")
+#define RPL_DELOP(prefix, channel, nickname) (":" + prefix + "  MODE " + channel + " -o " + nickname + "\r\n")
+#define RPL_NEWMODE(prefix, channel, mode) (":" + prefix + "  MODE " + channel + " " + mode + "\r\n")
 
 #define ERR_NOSUCHCHANNEL(nickname, channel) (":NeTwerkers 403 " + nickname + " " +  channel + " :No such channel" + "\r\n")
 #define ERR_TOOMANYTARGETS(nickname, target) (":NeTwerkers 407 " + nickname + " " +  target + " :Duplicate recipients. No message delivered" + "\r\n")
@@ -33,7 +36,7 @@
 #define ERR_NICKNAMEINUSE(nickname) (":NeTwerkers 433 NICK " + nickname + " :Nickname is already in use\r\n")
 #define ERR_USERNOTINCHANNEL(client, nickname, channel) (":NeTwerkers 441 " + client + " " + nickname + " " + channel + " :They aren't on that channel\r\n")
 #define ERR_NOTONCHANNEL(client, channel) (":NeTwerkers 442 " + client + " " + channel + " :You're not on that channel\r\n")
-#define ERR_USERONCHANNEL(nickname, channel) (":NeTwerkers 443 " + nickname + " " + channel + " :is already on channel\r\n")
+#define ERR_USERONCHANNEL(client, nickname, channel) (":NeTwerkers 443 " + client + " " + nickname + " " + channel + " :is already on channel\r\n")
 #define ERR_NOTREGISTERED(command) (":NeTwerkers 451 " + command + " :You have not registered\r\n")
 #define ERR_NEEDMOREPARAMS(nickname, command) (":NeTwerkers 461 " + nickname + " " + command + " :Not enough parameters\r\n")
 #define ERR_ALREADYREGISTRED(command) (":NeTwerkers 462 " + command + " :You may not reregister\r\n")

@@ -18,7 +18,7 @@ void	messageServer(std::string target, std::string command, Client &client, std:
 {
 	std::string rpl(":" + client.getPrefix() + " " + command + " " + target + " " + message +"\r\n");
 	log(REPLY, rpl);
-	send(sd, rpl.c_str(), rpl.length(), 0);
+	send(sd, rpl.c_str(), rpl.length(), MSG_NOSIGNAL);
 }
 
 void	rplSend(int fd, std::string rpl)

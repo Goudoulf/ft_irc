@@ -16,10 +16,11 @@ void InviteCommand::execute(Client *client, const std::map<std::string, std::vec
 
     if (channel && channel->inChannel(target))
     {
-        rplSend(client->getSocket(), ERR_USERONCHANNEL(target, channelTargetName));
+        rplSend(client->getSocket(), ERR_USERONCHANNEL(client->getNickname(), target, channelTargetName));
         return ;
     }
     rplSend(client->getSocket(), RPL_INVITING(client->getNickname(), target, channelTargetName));
-    server->findChannel(channelTargetName)->addInvitation(clientTarget);
+    if (channel)
+        channel->addInvitation(clientTarget);
     rplSend(clientTarget->getSocket(), RPL_INVITED(channelTargetName, target, prefixSend));
 }

@@ -1,4 +1,5 @@
 #include "../hangman.hpp"
+#include <string>
 
 HangMan::HangMan(std::string type, std::vector<std::string> players) : Game()
 {	
@@ -185,18 +186,27 @@ bool HangMan::winCondition()
 void HangMan::setNewWordToGuess()
 {
 	char buff[50];
+	size_t	linesNumber = 0;
 	std::ifstream dictionary;
 	dictionary.open("easy_dictionary");
-
 	if (!dictionary) {
 		_buffer += "Error to start the game! Please create a new game.";
 		_error = true;
 		_finished = true;
 		return;
 	}
-
+	while (dictionary.getline(buff, 50))
+		linesNumber++;
+	dictionary.close();
+	dictionary.open("easy_dictionary");
+	if (!dictionary) {
+		_buffer += "Error to start the game! Please create a new game.";
+		_error = true;
+		_finished = true;
+		return;
+	}
 	srand(time(0));
-	size_t line = (rand() % 852);
+	size_t line = (rand() % linesNumber);
 	for (size_t i = 0; i < line - 1; i++)
 		dictionary.ignore(50, '\n');
 	dictionary.getline(buff, 50);
