@@ -158,7 +158,6 @@ std::vector<std::string> Bot::getPlayersList(std::string chanName)
 	line.erase(0, 1);
 	std::istringstream iss(line);
 	std::string param;
-	param = param.substr(1);
 	while (iss >> param)
 	{
 		if (param.find("@bot") == std::string::npos)
@@ -169,7 +168,6 @@ std::vector<std::string> Bot::getPlayersList(std::string chanName)
 
 bool	Bot::processPrivMSG(std::string command, std::string trailing)
 {
-	log(DEBUG, command);
 	if (command == "433" || command == "451")
 	{
 		log (ERROR, "Invalid details");
@@ -220,7 +218,7 @@ bool Bot::readData (std::string buffer)
 		std::getline(iss, trailing);
 		if (trailing.empty())
 		{
-			std::string errorMessage("PRIVMSG #botchan :not enough players to play " + game + "\r\n");
+			std::string errorMessage("PRIVMSG #botchan :not enough players to play\r\n");
 			log(WARN, errorMessage);
 			send(_socketFd, errorMessage.c_str(), errorMessage.length(), 0);
 			return (true);
@@ -265,6 +263,7 @@ void Bot::addGame(std::string game, std::vector<std::string> params)
 		return ;
 	}
 	std::vector<std::string> playersInLobby = getPlayersList("#botchan");
+	std::vector<std::string> uniquePlayers;
 	for (std::vector<std::string>::iterator _it = params.begin(); _it != params.end(); _it++)
 	{
 		bool found = false;
@@ -276,9 +275,21 @@ void Bot::addGame(std::string game, std::vector<std::string> params)
 		if (!found)
 		{
 			std::string errorMessage("PRIVMSG #botchan :" + *_it + " is not there\r\n");
+			log(WARN, errorMessage);
 			send(_socketFd, errorMessage.c_str(), errorMessage.length(), 0);
 			return ;
 		}
+		for (std::vector<std::string>::iterator _it3 = uniquePlayers.begin(); _it3 != uniquePlayers.end(); _it3++)
+		{
+			if (*_it3 == *_it)
+			{
+				std::string errorMessage ("PRIVMSG #botchan :" + *_it + " can't invite the same player multiple times !\r\n");
+				log(WARN, errorMessage);
+				send (_socketFd, errorMessage.c_str(), errorMessage.length(), 0);
+				return ;
+			}
+		}
+		uniquePlayers.push_back(*_it);
 	}
 	_games.push_back(toAdd->second(game, params));
 	std::string joinMessage("JOIN " + _games.back()->getChanName() + "\r\n");
@@ -290,6 +301,7 @@ void Bot::addGame(std::string game, std::vector<std::string> params)
 	std::vector<std::string> players = _games.back()->getPlayers();
 	for (std::vector<std::string>::iterator it = players.begin(); it != players.end(); it++)
 	{
+
 		std::string inviteMessage("INVITE " + *it + " " + _games.back()->getChanName() + "\r\n");
 		send(_socketFd, inviteMessage.c_str(), inviteMessage.length(), 0);
 	}
