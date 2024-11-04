@@ -147,7 +147,6 @@ std::vector<std::string> Bot::getPlayersList(std::string chanName)
 	std::string toSend("NAMES " + chanName + "\r\n");
 	send(_socketFd, toSend.c_str(), toSend.length(), 0);
 	recv(_socketFd, buffer, 1024, 0);
-	std::cout << "NAMES LIST = " << buffer << std::endl;
 	std::vector<std::string> list;
 	std::string line(buffer);
 	if (line.empty())

@@ -1,4 +1,5 @@
 #include "../game.hpp"
+#include "../debug.h"
 
 Game::Game()
 {
@@ -29,31 +30,24 @@ void Game::gameLoop()
 {
 	if (_error)
 	{
-		std::cout << "_____ERROR" << std::endl;
+		log(DEBUG, "ERROR");
 		return;
 	}
 	if (!isGameReady())
 	{
-		std::cout << "_____isGameReady" << std::endl;
+		log(DEBUG, "isGameReady");
 		return;
 	}
 	if (!isPlayerTurn())
 	{
-		std::cout << "_____isPlayerTurn" << std::endl;
+		log(DEBUG, "isPlayerTurn");
 		return;
 	}
 	if (!isInputValid())
 	{
-		std::cout << "_____isInputValid" << std::endl;
+		log(DEBUG, "isInputValid");
 		return;
 	}
-
-	/*if (_error || !isGameReady() || !isPlayerTurn() || !isInputValid())
-	{
-
-		return;
-	}*/
-
 	updateGameState();
 	displayGame();
 }

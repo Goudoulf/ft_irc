@@ -6,7 +6,7 @@
 /*   By: lvallini <lvallini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 10:23:27 by cassie            #+#    #+#             */
-/*   Updated: 2024/10/31 13:32:47 by lvallini         ###   ########.fr       */
+/*   Updated: 2024/11/04 15:30:18 by lvallini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,6 @@ int main(int argc, char **argv)
     else
         currentLogLevel = INFO;
     signal_handling();
-    // signal(SIGPIPE, SIG_IGN);
     log(INFO, "IRC Server launching");
     if (isValidPassword(argv[2]) && isValidPort(argv[1]))
     {

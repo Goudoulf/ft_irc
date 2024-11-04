@@ -1,10 +1,11 @@
 #include "../connectfour.hpp"
+#include "../debug.h"
 
 ConnectFour::ConnectFour(std::string type, std::vector<std::string> players) : Game()
 {	
 	_players = players;
 	_chanName = "#" + type + generateChanId();
-	std::cout << "Connectfour game created" << std::endl;
+	log(DEBUG, "Connectfour game created");
 	_turn = 0;
 	_gameState = new std::string[6];
 	for (int i = 0; i < 6; i++)
@@ -98,13 +99,13 @@ bool ConnectFour::isBufferFull()
 {
 	if (checkGameOver())
 	{
-		std::cout << "GAME OVER" << std::endl;
+		log(DEBUG, "GAME OVER");
 		return true;
 	}
 
 	if (_input.empty())
 	{
-		std::cout << "INPUT IS EMPTY" <<std::endl;
+		log(DEBUG, "INPUT IS EMPTY");
 		std::string player = (_turn % 2) ? _player1 : _player2;
 		std::string colorCode = (_turn % 2) ? "\x03" "4" : "\x03" "2";
 		_buffer += "\n" + colorCode + player + "'s turn\nInput a column number (1-7):";

@@ -1,11 +1,12 @@
 #include "../hangman.hpp"
 #include <string>
+#include "../debug.h"
 
 HangMan::HangMan(std::string type, std::vector<std::string> players) : Game()
 {	
 	_players = players;
 	_chanName = "#" + type + generateChanId();
-	std::cout << "HangMan game created" << std::endl;
+	log(DEBUG, "Hangman game created");
 	_attempt = 0;
 	_gameState = new std::string[8];
 	_gameState[0] = "_______\n |    |\n |    o\n |   /|\\\n |   / \\\n_|_______";

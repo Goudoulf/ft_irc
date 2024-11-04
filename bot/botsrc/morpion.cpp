@@ -1,11 +1,12 @@
 #include "../morpion.hpp"
 #include <iostream>
+#include "../debug.h"
 
 Morpion::Morpion(std::string type, std::vector<std::string> players) : Game()
 {
 	_players = players;
 	_chanName = "#" + type + generateChanId();
-	std::cout << "Morpion game created" << std::endl;
+	log(DEBUG, "Morpion game created");
 	_x = 0;
 	_y = 0;
 	_turn = 0;
