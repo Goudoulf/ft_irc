@@ -36,6 +36,7 @@ void	modeKey(bool sign, std::vector<std::string> params, Client& client, Channel
 		client.replyServer(ERR_INVALIDMODEPARAM(client.getNickname(), channel.getChannelName(), "+k", "", "need param"));
 	for (std::vector<std::string>::iterator it = params.begin() + 1; it != params.end(); it++)
 	{
+		log (DEBUG, *it + "|");
 		if ((*it).find(' ') <= (*it).length())
 		{
 			rplSend(client.getSocket(), ERR_INVALIDKEY(client.getNickname(), channel.getChannelName()));

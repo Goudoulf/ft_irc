@@ -36,6 +36,7 @@ class Bot
 		std::vector<std::string> getPlayersList(std::string chanName);
 		void run();
 		bool readData(std::string buffer);
+		bool processPrivMSG(std::string command, std::string trailing);
 };
 
 #endif

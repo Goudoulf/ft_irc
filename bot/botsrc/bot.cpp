@@ -94,12 +94,9 @@ bool	Bot::initialize(std::string port, std::string password)
 	usleep (1500);
 	char buffer[1024];
 	int valread = recv(_socketFd, buffer, 1024, 0);
-	log(DEBUG, buffer);
 	std::string stringBuffer(buffer);
 	if (valread <= 0)
 		return (errorExit("CONNECTION CLOSED"));
-	if (stringBuffer.find("You have not registered") != std::string::npos)
-		return (errorExit("Invalid details"));
 	return (true);
 }
 
@@ -124,12 +121,17 @@ void Bot::run()
 	{
 		bzero(buffer, 1024);
 		valread = recv(_socketFd, buffer, 1024, 0);
+		if (valread <= 0)
+		{
+			log (ERROR, "CONNECTION CLOSED");
+			return;
+		}
 		std::string temp = "";
 		std::vector<std::string> buf = splitBuffer(buffer, temp);
 		for (std::vector<std::string>::iterator it = buf.begin(); it != buf.end(); it++)
 		{
 			log(DEBUG, buffer);
-			if (valread <= 0 || !readData (*it))
+			if (!readData (*it))
 			{
 				log (ERROR, "CONNECTION CLOSED");
 				return;
@@ -145,14 +147,15 @@ std::vector<std::string> Bot::getPlayersList(std::string chanName)
 	std::string toSend("NAMES " + chanName + "\r\n");
 	send(_socketFd, toSend.c_str(), toSend.length(), 0);
 	recv(_socketFd, buffer, 1024, 0);
+	std::cout << "NAMES LIST = " << buffer << std::endl;
 	std::vector<std::string> list;
 	std::string line(buffer);
 	if (line.empty())
 		return list;
-	line.erase(0, line.find_first_not_of("\r\n"));
-	line.erase(line.find_last_not_of("\r\n") + 1);
-	line.erase(0, line.substr(1).find_first_of(":"));
-	line.erase(line.find_first_of("\r\n"));
+	line.erase(0, 1);
+	line.erase(0, line.find_first_of(":", 0));
+	line.erase(line.find_first_of("\r\n"), std::string::npos);
+	line.erase(0, 1);
 	std::istringstream iss(line);
 	std::string param;
 	while (iss >> param)
@@ -161,6 +164,29 @@ std::vector<std::string> Bot::getPlayersList(std::string chanName)
 			list.push_back(param);
 	}
 	return list;
+}
+
+bool	Bot::processPrivMSG(std::string command, std::string trailing)
+{
+	if (command == "433" || command == "451")
+	{
+		log (ERROR, "Invalid details");
+		return (false);
+	}
+	if (command == "353")
+	{
+		trailing.erase(0, trailing.find_first_of(':'));
+		std::vector<std::string> clients = split(trailing.substr(1), ' ');
+		for (std::vector<std::string>::iterator _it = clients.begin(); _it != clients.end(); _it++)
+		{
+			if (*_it == "@bot")
+				return (true);
+		}
+		usleep(1500);
+		log (ERROR, "Not operator");
+		return (false);
+	}
+	return (true);
 }
 
 bool Bot::readData (std::string buffer)
@@ -180,24 +206,8 @@ bool Bot::readData (std::string buffer)
 	iss >> command;
 	if (command != "PRIVMSG")
 	{
-		log(DEBUG, command);
-		std::getline (iss, trailing);
-		if (command == "353")
-		{
-			trailing.erase(0, trailing.find_first_of(':'));
-			log(DEBUG, trailing);
-			std::vector<std::string> clients = split(trailing.substr(1), ' ');
-			for (std::vector<std::string>::iterator _it = clients.begin(); _it != clients.end(); _it++)
-			{
-				log(DEBUG, *_it + "|");
-				if (*_it == "@bot")
-					return (true);
-			}
-			usleep(1500);
-			log (ERROR, "Not operator");
-			return (false);
-		}
-		return (true);
+		std::getline(iss, trailing);
+		return (processPrivMSG(command, trailing));
 	}
 	iss >> channel;
 	iss >> game;
@@ -208,7 +218,7 @@ bool Bot::readData (std::string buffer)
 		std::getline(iss, trailing);
 		if (trailing.empty())
 		{
-			std::string errorMessage("PRIVMSG #botchan :not enough players to play " + game + "\r\n");
+			std::string errorMessage("PRIVMSG #botchan :not enough players to play\r\n");
 			log(WARN, errorMessage);
 			send(_socketFd, errorMessage.c_str(), errorMessage.length(), 0);
 			return (true);
@@ -222,7 +232,6 @@ bool Bot::readData (std::string buffer)
 		Game *actualGame = findGame(channel);
 		if (actualGame != NULL && !actualGame->isFinished())
 		{
-			log(DEBUG, "TEST");
 			actualGame->setCurrentPlayer(client);
 			actualGame->setInput(game);
 			if (game == "!start" && !actualGame->isStarted())
@@ -239,7 +248,6 @@ bool Bot::readData (std::string buffer)
 			}
 			actualGame->cleanBuffer();
 		}
-		log(DEBUG, "TEST2");
 	}
 	return (true);
 }
@@ -255,24 +263,33 @@ void Bot::addGame(std::string game, std::vector<std::string> params)
 		return ;
 	}
 	std::vector<std::string> playersInLobby = getPlayersList("#botchan");
+	std::vector<std::string> uniquePlayers;
 	for (std::vector<std::string>::iterator _it = params.begin(); _it != params.end(); _it++)
 	{
 		bool found = false;
 		for (std::vector<std::string>::iterator _it2 = playersInLobby.begin(); _it2 != playersInLobby.end() && !found; _it2++)
 		{
 			if ((*_it).compare(*_it2) == 0)
-			{
-				log (DEBUG, "FOUND");
 				found = true;
-			}
 		}
-		log (DEBUG, *_it + "|all compared");
 		if (!found)
 		{
 			std::string errorMessage("PRIVMSG #botchan :" + *_it + " is not there\r\n");
+			log(WARN, errorMessage);
 			send(_socketFd, errorMessage.c_str(), errorMessage.length(), 0);
 			return ;
 		}
+		for (std::vector<std::string>::iterator _it3 = uniquePlayers.begin(); _it3 != uniquePlayers.end(); _it3++)
+		{
+			if (*_it3 == *_it)
+			{
+				std::string errorMessage ("PRIVMSG #botchan :" + *_it + " can't invite the same player multiple times !\r\n");
+				log(WARN, errorMessage);
+				send (_socketFd, errorMessage.c_str(), errorMessage.length(), 0);
+				return ;
+			}
+		}
+		uniquePlayers.push_back(*_it);
 	}
 	_games.push_back(toAdd->second(game, params));
 	std::string joinMessage("JOIN " + _games.back()->getChanName() + "\r\n");
@@ -284,6 +301,7 @@ void Bot::addGame(std::string game, std::vector<std::string> params)
 	std::vector<std::string> players = _games.back()->getPlayers();
 	for (std::vector<std::string>::iterator it = players.begin(); it != players.end(); it++)
 	{
+
 		std::string inviteMessage("INVITE " + *it + " " + _games.back()->getChanName() + "\r\n");
 		send(_socketFd, inviteMessage.c_str(), inviteMessage.length(), 0);
 	}

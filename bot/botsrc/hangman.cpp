@@ -99,10 +99,9 @@ void HangMan::displayGame()
 			_buffer += ", ";
 		_buffer += (*it);
 	}
-	_buffer += '\n';
 	if (checkGameOver())
 		return;
-	_buffer += "\x02" "\x03" "2" + (*_itPlayer) + "'s turn\nInput a letter or a word: ";
+	_buffer += "\n " "\x02" "\x03" "2" + (*_itPlayer) + "'s turn\nInput a letter or a word: ";
 }
 
 bool HangMan::isBufferFull()
