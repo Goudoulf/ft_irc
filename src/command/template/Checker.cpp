@@ -12,20 +12,15 @@ bool isValidInvite(const std::string param, Client *client)
 {
     IRCServer *server = IRCServer::getInstance();
     Channel *channel = server->findChannel(param);
-    if (!channel)
-        return (true);
-    else
+    if (isOnChannel(param, client))
     {
-        if (isOnChannel(param, client))
+        if (channel->getInviteOnly())
         {
-            if (channel->getInviteOnly())
-            {
-                if (checkIsOp(param, client))
-                    return (true);
-            }
-            else
+            if (checkIsOp(param, client))
                 return (true);
         }
+        else
+        return (true);
     }
     return (false);
 }

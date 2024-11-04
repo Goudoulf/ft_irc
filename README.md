@@ -26,15 +26,16 @@ Invite
 
 Kick
 	rpl :	ERR_NEEDMOREPARAMS		ERR_NOSUCHCHANNEL
-			ERR_BADCHANMASK			ERR_CHANOPRIVSNEEDED
-			ERR_NOTONCHANNEL
+			ERR_BADCHANMASK			~ERR_CHANOPRIVSNEEDED~
+			ERR_NOTONCHANNEL		~ERR_USERNOTINCHANNEL~
 
 Privmsg
 	rpl :	~ERR_NORECIPIENT~			~ERR_NOTEXTTOSEND~
 			ERR_TOOMANYTARGETS
 			~ERR_NOSUCHNICK~
+			Rajouter check channel privmsg
 
-- test nc : envoi partiel, ctrl c ctrl d ctrl z test quelque commande avec cas chelou
+-test nc : envoi partiel, ctrl c ctrl d ctrl z test quelque commande avec cas chelou
 	erreur ? avec echo "PASS 123456\r\nNICK test\r\nUSER a a a :a\r\nJOIN #42\r\nPRIVMSG #42 :the cake is a lie\r\nQUIT\n\rJOIN #43\n\rJOIN #42" | nc 127.0.0.1 6665
 	arrive a join sans \r\n (pareil pour toutes les commandes ?)
 - check les leaks

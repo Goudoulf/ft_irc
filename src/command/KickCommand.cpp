@@ -18,7 +18,7 @@ void KickCommand::execute(Client *client, const std::map<std::string, std::vecto
         Client *clientToKick = server->findClient(*usersIt);
         if (clientToKick == NULL || !channel->inChannel(clientToKick->getNickname()))
         {
-            rplSend(client->getSocket(), ERR_USERNOTINCHANNEL((*usersIt), channelName));
+            rplSend(client->getSocket(), ERR_USERNOTINCHANNEL(client->getNickname(),(*usersIt), channelName));
             return;
         }
         std::string message = "";

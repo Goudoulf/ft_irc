@@ -14,7 +14,7 @@ void InviteCommand::execute(Client *client, const std::map<std::string, std::vec
     Client* clientTarget = server->findClient(target);
     std::string prefixSend = client->getPrefix();
 
-    if (channel->inChannel(target))
+    if (channel && channel->inChannel(target))
     {
         rplSend(client->getSocket(), ERR_USERONCHANNEL(target, channelTargetName));
         return ;

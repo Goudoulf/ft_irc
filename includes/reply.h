@@ -1,4 +1,5 @@
-#pragma once
+#ifndef REPLY_H
+#define REPLY_H
 #include <string>
 
 #define RPL_WELCOME(nickname) (":NeTwerkers 001 " + nickname + " :Welcome to the Internet Relay Network, " + nickname + "!\r\n")
@@ -30,7 +31,7 @@
 #define ERR_NONICKNAMEGIVEN(client) (":NeTwerkers 431 " + client + " :No nickname given\r\n")
 #define ERR_ERRONEUSNICKNAME(nickname) (":NeTwerkers 432 NICK " + nickname + " :Erroneous nickname\r\n")
 #define ERR_NICKNAMEINUSE(nickname) (":NeTwerkers 433 NICK " + nickname + " :Nickname is already in use\r\n")
-#define ERR_USERNOTINCHANNEL(nickname, channel) (":NeTwerkers 441 " + channel + " " + nickname + " :They aren't on that channel\r\n")
+#define ERR_USERNOTINCHANNEL(client, nickname, channel) (":NeTwerkers 441 " + client + " " + nickname + " " + channel + " :They aren't on that channel\r\n")
 #define ERR_NOTONCHANNEL(client, channel) (":NeTwerkers 442 " + client + " " + channel + " :You're not on that channel\r\n")
 #define ERR_USERONCHANNEL(nickname, channel) (":NeTwerkers 443 " + nickname + " " + channel + " :is already on channel\r\n")
 #define ERR_NOTREGISTERED(command) (":NeTwerkers 451 " + command + " :You have not registered\r\n")
@@ -46,3 +47,5 @@
 #define ERR_INVALIDKEY(client, target) (":NeTwerkers 525 " + client + " " + target + " :Key is not well-formed\r\n")
 
 void	rplSend(int fd, std::string rpl);
+
+#endif
