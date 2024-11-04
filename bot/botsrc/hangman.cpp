@@ -26,7 +26,7 @@ HangMan::~HangMan()
 
 bool HangMan::isGameReady()
 {
-	if (checkStart() || isBufferFull())
+	if (!checkStart() || isBufferFull())
 		return false;
 	return true;
 }

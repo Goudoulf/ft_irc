@@ -21,7 +21,7 @@ Morpion::~Morpion()
 
 bool Morpion::isGameReady()
 {
-	if (checkStart() || isBufferFull())
+	if (!checkStart() || isBufferFull())
 		return false;
 	return true;
 }
@@ -138,12 +138,12 @@ bool Morpion::handleStartCommand()
 
 bool Morpion::checkGameOver()
 {
-	if (winCondition() || _turn >= 10)
+	if (winCondition() || _turn >= 9)
 	{
-		if (_turn >= 10)
+		if (_turn >= 9)
 			_buffer += "Draw!";
 		else
-			_buffer += (_turn % 2 ? _player2 : _player1) + " wins!";
+			_buffer += (_turn % 2 ? _player1 : _player2) + " wins!";
 		_finished = true;
 		return true;
 	}

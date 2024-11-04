@@ -18,7 +18,7 @@ ConnectFour::~ConnectFour()
 
 bool ConnectFour::isGameReady()
 {
-	if (checkStart() || isBufferFull())
+	if (!checkStart() || isBufferFull())
 		return false;
 	return true;
 }
@@ -139,7 +139,7 @@ bool ConnectFour::checkGameOver()
 		if (_turn >= 43)
 			_buffer += "Draw!";
 		else
-			_buffer += (_turn % 2 ? _player2 : _player1) + " wins!";
+			_buffer += (_turn % 2 ? _player1 : _player2) + " wins!";
 		_finished = true;
 		return true;
 	}
